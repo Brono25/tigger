@@ -6,3 +6,16 @@ then
 	echo "usage: $0 " 1>&2
 	exit 1
 fi
+
+
+
+if [ -d '.tigger' ] 
+then
+	echo "$0: error: .tigger already exists" 1>&2
+	exit 1
+fi 
+
+
+mkdir -- '.tigger'
+
+echo "Initialized empty tigger repository in .tigger"
