@@ -1,14 +1,25 @@
 #!/bin/dash
 
+  #################
+ #    Defines    #
+#################
+
+
+PWD=$(pwd)
+REPO="$PWD/.tigger"
+INDEX_DIR="$REPO/index"
+TGGR=$(basename $0)
 
 
 
 
-
+  #################
+ #   Functions   #
+#################
 
 
 #emulate perls die function
-or_die()
+die()
 {
 	err_msg="$1"
 	echo "$err_msg" 1>&2

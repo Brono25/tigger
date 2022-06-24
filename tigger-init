@@ -4,17 +4,30 @@
 . tigger-utilities
 
 
-! [ $# -ne 0 ] || or_die "usage: $0 "
+
+[ $# -ne 0 ] && die "usage: $TGGR "
 
 
 
-if [ -d '.tigger' ] 
+[ -d '.tigger' ] && die "$TGGR: error: .tigger already exists"
+
+
+#initialise the repo if it doesnt exist.
+if [ ! -d "$REPO" ]
 then
-	echo "$0: error: .tigger already exists" 1>&2
-	exit 1
-fi 
+	mkdir -- "$REPO"                      || die "$TGGR: error: unable to create .tigger"
+	mkdir -- "$REPO/commit"               || die "$TGGR: error: unable to create commit"
+	mkdir -- "$REPO/index"                || die "$TGGR: error: unable to create index"
+	mkdir -- "$REPO/heads"                || die "$TGGR: error: unable to create heads"
+	echo -n "NULL" > "$REPO/heads/master" || die "$TGGR: error: unable to create master branch"
+	echo -n "master" > "$REPO/HEAD"       || die "$TGGR: error: unable to create HEAD"
+	touch  "$REPO/.log"                   || die "$TGGR: error: unable to create .log"
 
+	
+	echo "Initialized empty tigger repository in .tigger"
+	exit 0
 
-mkdir -- '.tigger'
+else
+	die "$TGGR: error: .tigger already exists" 
+fi
 
-echo "Initialized empty tigger repository in .tigger"
