@@ -1,11 +1,10 @@
 #!/bin/dash
 
 
-if [ $# -ne 0 ]
-then
-	echo "usage: $0 " 1>&2
-	exit 1
-fi
+. tigger-utilities
+
+
+! [ $# -ne 0 ] || or_die "usage: $0 "
 
 
 

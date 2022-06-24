@@ -1,0 +1,16 @@
+#!/bin/dash
+
+
+
+
+
+
+
+
+#emulate perls die function
+or_die()
+{
+	err_msg="$1"
+	echo "$err_msg" 1>&2
+	exit 1
+}
