@@ -1,7 +1,7 @@
 #!/bin/dash
 
 
-PATH=$PATH:/import/cage/3/z5146619/tigger
+. ./test_functions.sh
 
 
 
