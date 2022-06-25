@@ -21,6 +21,13 @@ echo "-------------WRONG USAGE------------"
 echo "$?"
 echo "\n"
 
+echo "-------------GIT PRESENT------------"
+git init 2> /dev/null
+2041 tigger-init 
+rm -r '.git'
+echo "$?"
+echo "\n"
+
 
 echo "-------------INITIALISE tigger------------"
 2041 tigger-init

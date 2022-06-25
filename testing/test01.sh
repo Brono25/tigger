@@ -25,6 +25,14 @@ echo "$?"
 echo "\n"
 
 
+echo "-------------GIT PRESENT------------"
+git init 2> /dev/null
+tigger-init 
+rm -r '.git'
+echo "$?"
+echo "\n"
+
+
 echo "-------------INITIALISE tigger------------"
 tigger-init
 echo "$?"

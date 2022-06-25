@@ -10,6 +10,10 @@
 
 [ -d '.tigger' ] && die "$PRGRM: error: .tigger already exists"
 
+[ -d '.git' ] && die "$PRGRM: error: can not run tigger because .git present in current directory" 
+
+
+
 
 #initialise the repo if it doesnt exist.
 if [ ! -d "$REPO" ]

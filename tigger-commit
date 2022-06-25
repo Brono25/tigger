@@ -1,0 +1,54 @@
+#!/bin/dash
+
+
+. tigger-utilities
+check_repo_exists
+
+
+
+  #################
+ #   Functions   #
+#################
+
+OPTION_A=$FALSE
+OPTION_M=$FALSE
+
+  #################
+ #     Main      #
+#################
+
+
+# -m option needs a message
+# -a updates files in index 
+while getopts ':am' opt
+do
+  case "$opt" in 
+		a) OPTION_A=$TRUE;;
+		m) OPTION_M=$TRUE;;	
+		\?)die "usage: $PRGRM [-a] -m commit-message";;
+
+  esac
+done
+
+
+#if option -m present then check for message
+if [ $OPTION_M -eq $TRUE ] 
+then
+	shift "$(($OPTIND - 1))"
+	message="$@"
+fi
+
+
+#if no message given
+[ -n "$message" ] || die "usage: $PRGRM [-a] -m commit-message"
+
+
+[ $OPTION_A -eq $TRUE ] && die "TO DO LATER"
+
+
+
+
+
+
+
+

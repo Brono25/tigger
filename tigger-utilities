@@ -10,7 +10,8 @@ REPO="$PWD/.tigger"
 INDEX_DIR="$REPO/index"
 PRGRM=$(basename $0)
 
-
+TRUE=0
+FALSE=1
 
 
   #################
