@@ -5,7 +5,7 @@
 
 
 
-[ $# -ne 0 ] && die "usage: $TGGR "
+[ $# -ne 0 ] && die "usage: $TGGR"
 
 
 

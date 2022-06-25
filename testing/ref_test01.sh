@@ -1,7 +1,6 @@
 #!/bin/dash
 
 
-PATH=$PATH:.
 
 
 trap 'rm -r delete' EXIT INT
@@ -11,33 +10,31 @@ mkdir delete
 
 cd delete
 
-
-
-[ -d  'delete' ] && rm -r 'delete'
+[ -d  '.tigger' ] && rm -r '.tigger'
 
 
 #wrong usage before init
 
 echo "-------------WRONG USAGE------------"
-tigger-init -g wrong_usage
-tigger-init  wrong usage
+2041 tigger-init -g wrong_usage
+2041 tigger-init  wrong usage
 echo "$?"
 echo "\n"
 
 
 echo "-------------INITIALISE tigger------------"
-tigger-init
+2041 tigger-init
 echo "$?"
 echo "\n" 
 
 
 echo "-------------WRONG USAGE AFTER INIT------------"
-tigger-init -g wrong_usage
-tigger-init  wrong usage
+2041 tigger-init -g wrong_usage
+2041 tigger-init  wrong usage
 echo "$?"
 echo "\n" 
 
 echo "-------------REPO EXISTS------------"
-tigger-init
+2041 tigger-init
 echo "$?"
 cd ..
