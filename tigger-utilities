@@ -8,7 +8,7 @@
 PWD=$(pwd)
 REPO="$PWD/.tigger"
 INDEX_DIR="$REPO/index"
-TGGR=$(basename $0)
+PRGRM=$(basename $0)
 
 
 
@@ -24,4 +24,11 @@ die()
 	err_msg="$1"
 	echo "$err_msg" 1>&2
 	exit 1
+}
+
+
+check_repo_exists()
+{
+  [ -d  "$REPO" ] || die "$PRGRM: error: tigger repository directory .tigger not found"
+  return 0  
 }

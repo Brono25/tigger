@@ -11,7 +11,7 @@ open_tigger()
 	[ -d  'x' ] && rm -r 'x'
 	mkdir x
 	cd x
-	tigger-init.sh 1> /dev/null
+	tigger-init 1> /dev/null
 }
 
 ref_open_tigger()
