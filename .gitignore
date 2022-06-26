@@ -1,2 +1,5 @@
 
 .DS_Store
+give.sh
+auto-test.sh
+add_ssh.sh
