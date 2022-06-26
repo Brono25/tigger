@@ -1,0 +1,11 @@
+#!/bin/dash
+
+
+. tigger-utilities
+check_repo_exists
+
+
+
+[ $# -eq 0 ] || die "usage: $PRGRM"
+
+cat "$REPO/.log"

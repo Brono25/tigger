@@ -33,3 +33,23 @@ check_repo_exists()
   [ -d  "$REPO" ] || die "$PRGRM: error: tigger repository directory .tigger not found"
   return 0  
 }
+
+
+# The 'heads' directory holds files (pointers) to branches and their most current commit.
+# The HEAD file points to the current active branch in 'heads'. This function returns the current
+# active branch.
+find_head()
+{
+  head=$(cat "$REPO/HEAD")
+  echo -n "$head"
+  return 0
+}
+
+# Finds the current active branch and returns the commit it points to.
+find_where_head_points()
+{
+  head=$("find_head")
+  commit_num=$(cat "$REPO/heads/$head")
+  echo -n "$commit_num"
+  return 0
+}

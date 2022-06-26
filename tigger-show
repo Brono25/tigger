@@ -1,0 +1,70 @@
+#!/bin/dash
+
+
+. tigger-utilities
+check_repo_exists
+
+
+
+  #################
+ #   Functions   #
+#################
+
+
+# filename must only be alphanumeric with exception of '.'  '_' or '-'
+#but filenames must start with alphanumeric
+is_filename_valid()
+{
+	filename="$1"
+	[ -z "$filename" ] && return 1 #empty string check
+	[ $(echo "$filename" | grep -Eiv '[-A-Z0-9._]') ] && return 1
+	[ $(echo "$filename" | grep -E '^[-_.]') ] && return 1
+	return 0
+}
+
+
+  #################
+ #     Main      #
+#################
+
+num_args=$#
+arg="$1"
+
+
+#should only have one argument
+[ $num_args -eq 1 ]         || die "usage: $PRGRM <commit>:<filename>"
+
+# argument must contain delimiter ':'
+[ $(echo $arg | grep ':') ] || die "$PRGRM: error: invalid object $arg"
+
+
+#get commit number and filename from commandline
+commit_num="${arg%%:*}"
+filename="${arg#*:}"
+
+
+is_filename_valid "$filename"       || die "$PRGRM: error: invalid filename '$filename'"
+
+#if commit number omitted print file in index
+if [  ! -n "$commit_num" ]
+then
+	[ -f "$REPO/index/$filename" ]  || die "$PRGRM: error: '$filename' not found in index"
+	cat "$REPO/index/$filename"
+	exit 0
+
+# if commit number given search commit
+else 
+
+	#check commit exists
+	[ -d "$REPO/commit/$commit_num" ]            || die "$PRGRM: error: unknown commit '$commit_num'"
+	#search for file in the selected commit folder
+	[ -f  "$REPO/commit/$commit_num/$filename" ] || die "$PRGRM: error: '$filename' not found in commit $commit_num"
+
+	cat "$REPO/commit/$commit_num/$filename" #print file
+
+
+fi
+
+
+exit 0
+

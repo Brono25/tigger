@@ -7,15 +7,96 @@ check_repo_exists
 
 
   #################
+ #    Defines    #
+#################
+
+COMMIT_DIR="$REPO/commit/$("find_where_head_points")"
+OPTION_A=$FALSE
+OPTION_M=$FALSE
+
+
+
+  #################
  #   Functions   #
 #################
 
-OPTION_A=$FALSE
-OPTION_M=$FALSE
+
+#retreives the latest commit number
+find_commit_number()
+{
+	next_commit=$(ls "$REPO/commit"|wc -l |xargs)
+	echo -n "$next_commit"
+}
+
+
+is_index_empty()
+{
+	index_contents=$(ls -A1 "$REPO/index"|wc -l|xargs)
+	if [ "$index_contents" -eq 0 ] 
+	then
+		return 0
+	else
+		return 1
+	fi
+}
+
+#TODO: make this function log seperatley for different branches
+#logs commits messages into '.log'
+log_comment()
+{
+	
+	commit="$1"
+	comment="$2"
+
+	if [ ! -s "$REPO/.log" ]
+	then
+		echo "$1 $2" > "$REPO/.log"
+	else 
+		tmp=$(cat -- "$REPO/.log")
+		echo  "$1 $2" > "$REPO/.log"
+		echo "$tmp" >> "$REPO/.log"
+	fi
+
+}
+
+
+# Merging two branches will require a common ancestor branch to compare with.
+# This function will create a hidden file in each commit which will keep track 
+# of each commits lineage so that it will be easy to find the last common 
+# ancestor between any two commits.
+# for example           the lineage of commit 5 may be: 5->4->1->0->NULL
+# and the lineage of commit 3 on another branch may be: 3->2->1->0->NULL
+# The last common ancestor of both commits can easily be found as commit 1.
+# Hence, when merging the branches pointing to commit 5 and 3, commit 1 will be used
+# as the base of comparison. 
+create_lineage()
+{
+	parent_commit=$1
+	next_commit=$2
+
+	if [ "$parent_commit" = "NULL" ]
+	then
+		echo -n '0->NULL' > "$REPO/commit/$next_commit/.lineage" || 
+		die "$PRGRM: error: unable to create .lineage"
+		
+	else
+		curr_lineage=$(sed "s/^/$next_commit->/" "$REPO/commit/$parent_commit/.lineage")
+		echo -n "$curr_lineage" > "$REPO/commit/$next_commit/.lineage" || 
+		die "$PRGRM: error: unable to append .lineage"
+	fi
+}
+
+
+
 
   #################
  #     Main      #
 #################
+
+
+curr_branch="$(find_head)"
+parent_commit=$(basename "$COMMIT_DIR")
+next_commit=$(find_commit_number)
 
 
 # -m option needs a message
@@ -32,7 +113,7 @@ done
 
 
 #if option -m present then check for message
-if [ $OPTION_M -eq $TRUE ] 
+if [ "$OPTION_M" -eq "$TRUE" ] 
 then
 	shift "$(($OPTIND - 1))"
 	message="$@"
@@ -43,7 +124,31 @@ fi
 [ -n "$message" ] || die "usage: $PRGRM [-a] -m commit-message"
 
 
-[ $OPTION_A -eq $TRUE ] && die "TO DO LATER"
+[ "$OPTION_A" -eq "$TRUE" ] && die "TO DO LATER"
+
+is_index_empty && die "nothing to commit"
+
+#create new commit
+mkdir "$REPO/commit/$next_commit" || die "$PRGRM: error: unable to create commit directory $next_commit"
+
+#update the branch so that it now points to this latest commit
+echo "$next_commit" > "$REPO/heads/$curr_branch" 
+
+
+create_lineage "$parent_commit" "$next_commit"
+
+
+#Copy contents of index to next_commit
+rsync -a "$REPO/index/" "$REPO/commit/$next_commit" 
+echo "Committed as commit $next_commit"
+
+log_comment "$next_commit" "$@"
+
+
+
+
+
+
 
 
 
