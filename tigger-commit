@@ -40,6 +40,16 @@ is_index_empty()
 	fi
 }
 
+is_file_in_pwd()
+{	
+	directory_file="$1"
+	if [ -f "$directory_file" ] 
+	then
+		return $TRUE
+	else
+		return $FALSE
+	fi
+}
 
 is_file_in_repo()
 {
@@ -78,6 +88,21 @@ is_file_in_repo_diff_to_index()
 		return $FALSE
 	fi
 }
+
+is_file_in_pwd_diff_to_index()
+{
+	directory_file="$1"
+	index_file="$2"
+	is_difference=$(diff -q "$directory_file" "$index_file" |wc -c| tr -d ' ') 2> /dev/null
+	if [ "$is_difference" -ne  0 ]
+	then
+		return $TRUE
+	else
+		return $FALSE
+	fi
+}
+
+
 
 # Only commit if new files appear or file changes found.
 is_there_any_changes_to_commit()
@@ -142,6 +167,37 @@ create_lineage()
 
 
 
+#files in the index that are not in the pwd will be removed
+#files in the pwd which are different to the index will be
+#updated 
+update_index()
+{
+	
+	for file in "$INDEX_DIR"/* 
+	do 
+
+		file_name=$(basename "$file")
+
+		is_file_in_pwd "$PWD/$file_name"
+		if [ $? -eq $FALSE ]
+		then
+			rm -f "$INDEX_DIR/$file_name"
+			continue
+		fi
+
+		is_file_in_pwd_diff_to_index "$PWD/$file_name" "$INDEX_DIR/$file_name"
+		if	[ $? -eq $TRUE ]
+		then
+			cp "$PWD/$file_name" "$INDEX_DIR/$file_name"
+			continue
+		fi
+
+	done
+
+}
+
+
+
 
   #################
  #     Main      #
@@ -178,7 +234,7 @@ fi
 [ -n "$message" ] || die "usage: $PRGRM [-a] -m commit-message"
 
 
-[ "$OPTION_A" -eq "$TRUE" ] && die "TO DO LATER"
+[ "$OPTION_A" -eq "$TRUE" ] && update_index
 
 #to check for changes to the commit a commit dir must first exist. The 'if NULL' prevents
 #errors due to checking a commit directory that doesnt exist

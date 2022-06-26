@@ -421,20 +421,20 @@ echo "log:"
 close_tigger
 
 
-echo "-------------EMPTY COMMIT AFTER INITIAL COMMIT------------"
-ref_open_tigger
-echo x > a
-2041 tigger-add a 
-2041 tigger-commit -m 'first commit' 1>/dev/null
+# echo "-------------EMPTY COMMIT AFTER INITIAL COMMIT------------"
+# ref_open_tigger
+# echo x > a
+# 2041 tigger-add a 
+# 2041 tigger-commit -m 'first commit' 1>/dev/null
 
-tigger-branch.sh b1 
-tigger-checkout.sh b1
+# tigger-branch.sh b1 
+# tigger-checkout.sh b1
 
-2041 tigger-rm a 
-2041 tigger-commit -m 'first commit' 1>/dev/null
+# 2041 tigger-rm a 
+# 2041 tigger-commit -m 'first commit' 1>/dev/null
 
-print_pwd
-close_tigger
+# print_pwd
+# close_tigger
 
 
 
