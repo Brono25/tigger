@@ -1,0 +1,100 @@
+#!/bin/dash
+
+
+. tigger-utilities
+check_repo_exists
+
+  #################
+ #    Defines    #
+#################
+
+
+CACHED_OPT=$FALSE
+FORCE_OPT=$FALSE
+
+
+
+  #################
+ #   Functions   #
+#################
+
+#deletes without checking file status's.
+# if --cached option used only deletes from index
+# otherwise files in pwd and index are deleted.
+force_delete()
+{
+	CACHED_OPT="$1"
+
+	for file in "$@"
+  	do
+	    if [ $CACHED_OPT -eq $TRUE ] 
+	    then
+	      rm -f "$REPO/index/$file" 2> /dev/null
+	    else
+	      rm -f "$REPO/index/$file" "$PWD/$file" 2> /dev/null
+	    fi
+  	done
+}
+
+
+
+  #################
+ #     Main      #
+#################
+
+#convert long options to short options for getopts
+for arg in "$@"; do
+  shift
+  case "$arg" in
+    '--cached') set -- "$@" '-c'   ;;
+    '--force')  set -- "$@" '-f'   ;;
+    *)          set -- "$@" "$arg" ;;
+  esac
+done
+
+
+while getopts ':cf' opts
+do
+	case "$opts" in
+		c) CACHED_OPT=$TRUE;;
+		f) FORCE_OPT=$TRUE;;
+		\?) die "usage: $PRGRM [--force] [--cached] <filenames>"
+	esac
+done
+shift "$(($OPTIND - 1))"
+
+
+#ensure file name given
+[ $# -ne 0 ] || die "usage: $PRGRM [--force] [--cached] <filenames>"
+
+
+#make sure all files exist in the index before proceeding
+for file in "$@"
+do
+  is_file_in_index "$file" || die "$PRGRM: error: '$file' is not in the tigger repository"
+done
+
+
+#if forced is active then no error checking 
+if [ $FORCE_OPT -eq $TRUE ]
+then
+  force_delete $CACHED_OPT
+else
+	echo "TODO: file status checking and throw errors"
+fi
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
