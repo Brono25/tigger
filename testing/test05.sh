@@ -1,7 +1,7 @@
 #!/bin/dash
 
 
-
+. ./test_functions.sh
 
 
 trap 'rm -fr a b c d .tigger' EXIT INT

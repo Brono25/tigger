@@ -8,7 +8,7 @@
 PWD=$(pwd)
 REPO="$PWD/.tigger"
 INDEX_DIR="$REPO/index"
-PRGRM=$(basename $0)
+PRGRM=$(basename "$0")
 
 TRUE=0
 FALSE=1
@@ -53,3 +53,7 @@ find_where_head_points()
   echo -n "$commit_num"
   return 0
 }
+
+
+
+

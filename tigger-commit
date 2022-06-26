@@ -10,7 +10,7 @@ check_repo_exists
  #    Defines    #
 #################
 
-COMMIT_DIR="$REPO/commit/$("find_where_head_points")"
+COMMIT_DIR="$REPO/commit/$("find_where_head_points")" #is the active commit dir
 OPTION_A=$FALSE
 OPTION_M=$FALSE
 
@@ -34,11 +34,65 @@ is_index_empty()
 	index_contents=$(ls -A1 "$REPO/index"|wc -l|xargs)
 	if [ "$index_contents" -eq 0 ] 
 	then
-		return 0
+		return $TRUE
 	else
-		return 1
+		return $FALSE
 	fi
 }
+
+
+is_file_in_repo()
+{
+  commit_file="$1"
+
+  if [ -f "$commit_file" ] 
+  then
+    return $TRUE
+  else
+    return $FALSE
+  fi
+}
+
+is_file_in_index()
+{
+  index_file="$1"
+  file_name=$(basename "$index_file")
+  index_file="$REPO/index/$file_name"
+  if [ -f "$index_file" ] 
+  then
+    return $TRUE
+  else
+    return $FALSE
+  fi
+}
+
+is_file_in_repo_diff_to_index()
+{
+	commit_file="$1"
+	index_file="$2"
+	is_difference=$(diff -q "$commit_file" "$index_file"|wc -c| tr -d ' ') 2> /dev/null
+	if [ "$is_difference" -ne  0 ]
+	then
+		return $TRUE
+	else
+		return $FALSE
+	fi
+}
+
+# Only commit if new files appear or file changes found.
+is_there_any_changes_to_commit()
+{
+	#loop through both directories while ignoring duplicates
+	for file in $(basename --multiple "$COMMIT_DIR"/*  "$INDEX_DIR"/* |sort|uniq|xargs)
+	do 
+		is_file_in_repo "$COMMIT_DIR/$file"  || return $TRUE
+		is_file_in_index "$INDEX_DIR/$file"  || return $TRUE
+		! is_file_in_repo_diff_to_index "$COMMIT_DIR/$file" "$INDEX_DIR/$file" || return $TRUE
+	done
+
+	return $FALSE
+}
+
 
 #TODO: make this function log seperatley for different branches
 #logs commits messages into '.log'
@@ -126,7 +180,17 @@ fi
 
 [ "$OPTION_A" -eq "$TRUE" ] && die "TO DO LATER"
 
-is_index_empty && die "nothing to commit"
+#to check for changes to the commit a commit dir must first exist. The 'if NULL' prevents
+#errors due to checking a commit directory that doesnt exist
+#set -x
+if [ "$parent_commit" = "NULL" ] 
+then
+	is_index_empty  && die "nothing to commit"
+else
+	is_there_any_changes_to_commit || die "nothing to commit"
+fi
+#set +x
+
 
 #create new commit
 mkdir "$REPO/commit/$next_commit" || die "$PRGRM: error: unable to create commit directory $next_commit"
