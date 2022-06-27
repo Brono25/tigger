@@ -1,0 +1,11 @@
+-------------MULTIPLE_FILES FATAL INDEX------------
+
+	PWD:
+		a -> fff
+tigger-rm: error: 'b' is not in the tigger repository
+Exit status: 1
+
+	PWD:
+		a -> fff
+
+
