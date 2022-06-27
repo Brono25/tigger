@@ -7,28 +7,27 @@ PATH=$PATH:/import/cage/3/z5146619/tigger
 mkdir delete
 cd delete
 
-echo "-------------DELTA_IND_PWD_DELTA_REP_PWD------------"
-ref_open_tigger
 
-
-echo f > a
-
-2041 tigger-add a
-2041 tigger-commit -m 'X'
-2041 tigger-rm  a;echo "Exit status: $?"
-
-2041 tigger-rm --cached a;echo "Exit status: $?"
-
-print_pwd
-
-
-
-
-close_tigger
 
 cd ..
 rm -rf delete
 
+
+echo "-------------MULTIPLE FILES ERROR ORDER-[--cached]------------"
+open_tigger
+touch g 
+tigger-add g 
+tigger-commit -m 'first commit' 1>/dev/null
+
+
+echo x > g
+
+
+
+print_pwd;  
+tigger-rm --cached g  ;echo "Exit status: $?"
+print_pwd;  
+close_tigger
 
 
 
@@ -41,34 +40,46 @@ cd delete
 
 
 
-echo "-------------DELTA_IND_PWD_DELTA_REP_PWD------------"
-open_tigger
+echo "-------------MULTIPLE FILES ERROR ORDER-[--cached]------------"
+ref_open_tigger
+touch g 
+2041 tigger-add g 
+2041 tigger-commit -m 'first commit' 1>/dev/null
 
 
 
 
 
-echo f > a
-
-tigger-add a
-tigger-commit -m 'X'
-tigger-rm  a;echo "Exit status: $?"
-
-tigger-rm  --cached a;echo "Exit status: $?"
-
-print_pwd
+echo x > g
 
 
 
-
-
-
-
-
+print_pwd;  
+2041 tigger-rm --cached g    ;echo "Exit status: $?"
+print_pwd;  
 close_tigger
 
 
 
+
+echo "-------------MULTIPLE FILES ERROR ORDER-[--cached]------------"
+ref_open_tigger
+touch g 
+git add g 
+git commit -m 'first commit' 1>/dev/null
+
+
+
+
+
+echo x > g
+
+
+
+print_pwd;  
+git rm --cached g    ;echo "Exit status: $?"
+print_pwd;  
+close_tigger
 
 
 

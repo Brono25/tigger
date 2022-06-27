@@ -1,3 +1,530 @@
+-------------NO REPO------------
+tigger-rm: error: tigger repository directory .tigger not found
+
+
+-------------WRONG USAGE NO REPO------------
+tigger-rm: error: tigger repository directory .tigger not found
+
+
+-------------WRONG USAGE WITH REPO------------
+usage: tigger-rm [--force] [--cached] <filenames>
+
+
+-------------NO FILE GIVEN------------
+usage: tigger-rm [--force] [--cached] <filenames>
+Exit status: 1
+usage: tigger-rm [--force] [--cached] <filenames>
+Exit status: 1
+usage: tigger-rm [--force] [--cached] <filenames>
+Exit status: 1
+
+
+-------------NONE_FOUND------------
+tigger-rm: error: 'a' is not in the tigger repository
+Exit status: 1
+tigger-rm: error: 'a' is not in the tigger repository
+Exit status: 1
+tigger-rm: error: 'b' is not in the tigger repository
+Exit status: 1
+tigger-rm: error: 'a' is not in the tigger repository
+Exit status: 1
+
+
+-------------PWD_ONLY------------
+
+	PWD:
+		a -> f
+tigger-rm: error: 'a' is not in the tigger repository
+Exit status: 1
+tigger-rm: error: 'a' is not in the tigger repository
+Exit status: 1
+tigger-rm: error: 'a' is not in the tigger repository
+Exit status: 1
+tigger-rm: error: 'a' is not in the tigger repository
+Exit status: 1
+
+	PWD:
+		a -> f
+
+
+-------------INDEX_ONLY------------
+[no options]
+initial
+
+	PWD:
+		-
+
+	PWD:
+		-
+[--cached]
+initial
+
+	PWD:
+		-
+Exit status: 0
+
+	PWD:
+		-
+[--force]
+initial
+
+	PWD:
+		-
+Exit status: 0
+
+	PWD:
+		-
+[--force --cached]
+initial
+
+	PWD:
+		-
+Exit status: 0
+
+	PWD:
+		-
+
+
+-------------IND_AND_PWD------------
+[no options]
+initial
+
+	PWD:
+		a -> f
+tigger-rm: error: 'a' has staged changes in the index
+Exit status: 1
+
+	PWD:
+		a -> f
+[--cached]
+
+	PWD:
+		a -> f
+Exit status: 0
+
+	PWD:
+		a -> f
+[--force]
+initial
+
+	PWD:
+		a -> f
+Exit status: 0
+
+	PWD:
+		-
+[--force --cached]
+initial
+
+	PWD:
+		a -> f
+Exit status: 0
+
+	PWD:
+		a -> f
+
+
+-------------DELTA_IND_PWD------------
+[no options]
+initial
+
+	PWD:
+		a -> ff
+tigger-rm: error: 'a' in index is different to both to the working file and the repository
+Exit status: 1
+
+	PWD:
+		a -> ff
+[--cached]
+initial
+
+	PWD:
+		a -> ff
+tigger-rm: error: 'a' in index is different to both to the working file and the repository
+Exit status: 1
+
+	PWD:
+		a -> ff
+[--force]
+initial
+
+	PWD:
+		a -> ff
+Exit status: 0
+
+	PWD:
+		-
+[--force --cached]
+initial
+
+	PWD:
+		a -> ff
+Exit status: 0
+
+	PWD:
+		a -> ff
+
+
+-------------REP_ONLY------------
+
+	PWD:
+		-
+tigger-rm: error: 'a' is not in the tigger repository
+tigger-rm: error: 'a' is not in the tigger repository
+tigger-rm: error: 'a' is not in the tigger repository
+tigger-rm: error: 'a' is not in the tigger repository
+
+	PWD:
+		-
+
+
+-------------REP_AND_PWD------------
+
+	PWD:
+		a -> f
+tigger-rm: error: 'a' is not in the tigger repository
+tigger-rm: error: 'a' is not in the tigger repository
+tigger-rm: error: 'a' is not in the tigger repository
+tigger-rm: error: 'a' is not in the tigger repository
+
+	PWD:
+		a -> f
+
+
+-------------DELTA_REP_PWD------------
+
+	PWD:
+		a -> ff
+tigger-rm: error: 'a' is not in the tigger repository
+tigger-rm: error: 'a' is not in the tigger repository
+tigger-rm: error: 'a' is not in the tigger repository
+tigger-rm: error: 'a' is not in the tigger repository
+
+	PWD:
+		a -> ff
+
+
+-------------REP_AND_IND------------
+[no options]
+initial
+
+	PWD:
+		-
+Exit status: 0
+
+	PWD:
+		-
+
+
+[--force]
+initial
+
+	PWD:
+		-
+Exit status: 0
+
+	PWD:
+		-
+
+
+[--cached]
+initial
+
+	PWD:
+		-
+Exit status: 0
+
+	PWD:
+		-
+
+
+[--force --cached]
+initial
+
+	PWD:
+		-
+Exit status: 0
+
+	PWD:
+		-
+
+
+-------------DELTA_REP_IND------------
+[no options]
+initial
+
+	PWD:
+		-
+Exit status: 0
+
+	PWD:
+		-
+
+
+[--force]
+initial
+
+	PWD:
+		-
+Exit status: 0
+
+	PWD:
+		-
+
+
+[--cached]
+initial
+
+	PWD:
+		-
+Exit status: 0
+
+	PWD:
+		-
+
+
+[--force --cached]
+initial
+
+	PWD:
+		-
+Exit status: 0
+
+	PWD:
+		-
+
+
+-------------ALL_FOUND------------
+[no options]
+initial
+
+	PWD:
+		a -> f
+Exit status: 0
+
+	PWD:
+		-
+
+
+[--force]
+initial
+
+	PWD:
+		a -> f
+Exit status: 0
+
+	PWD:
+		-
+
+
+[--cached]
+initial
+
+	PWD:
+		a -> f
+Exit status: 0
+
+	PWD:
+		a -> f
+
+
+[--force --cached]
+initial
+
+	PWD:
+		a -> f
+Exit status: 0
+
+	PWD:
+		a -> f
+
+
+-------------DELTA_IND_PWD_DELTA_REP_PWD------------
+[no options]
+initial
+
+	PWD:
+		a -> ff
+tigger-rm: error: 'a' in the repository is different to the working file
+Exit status: 1
+
+	PWD:
+		a -> ff
+
+
+[--force]
+initial
+
+	PWD:
+		a -> ff
+Exit status: 0
+
+	PWD:
+		-
+
+
+[--cached]
+initial
+
+	PWD:
+		a -> ff
+Exit status: 0
+
+	PWD:
+		a -> ff
+
+
+[--force --cached]
+initial
+
+	PWD:
+		a -> ff
+Exit status: 0
+
+	PWD:
+		a -> ff
+
+
+-------------DELTA_REP_IND_DELTA_REP_PWD------------
+[no options]
+initial
+
+	PWD:
+		a -> ff
+tigger-rm: error: 'a' has staged changes in the index
+Exit status: 1
+
+	PWD:
+		a -> ff
+
+
+[--force]
+initial
+
+	PWD:
+		a -> ff
+Exit status: 0
+
+	PWD:
+		-
+
+
+[--cached]
+initial
+
+	PWD:
+		a -> ff
+Exit status: 0
+
+	PWD:
+		a -> ff
+
+
+[--force --cached]
+initial
+
+	PWD:
+		a -> ff
+Exit status: 0
+
+	PWD:
+		a -> ff
+
+
+-------------DELTA_REP_IND_DELTA_IND_PWD------------
+[no options]
+initial
+
+	PWD:
+		a -> f
+tigger-rm: error: 'a' in index is different to both to the working file and the repository
+Exit status: 1
+
+	PWD:
+		a -> f
+
+
+[--force]
+initial
+
+	PWD:
+		a -> f
+Exit status: 0
+
+	PWD:
+		-
+
+
+[--cached]
+initial
+
+	PWD:
+		a -> f
+tigger-rm: error: 'a' in index is different to both to the working file and the repository
+Exit status: 1
+
+	PWD:
+		a -> f
+
+
+[--force --cached]
+initial
+
+	PWD:
+		a -> f
+Exit status: 0
+
+	PWD:
+		a -> f
+
+
+-------------ALL_DIFFERENT------------
+[no options]
+initial
+
+	PWD:
+		a -> fff
+tigger-rm: error: 'a' in index is different to both to the working file and the repository
+Exit status: 1
+
+	PWD:
+		a -> fff
+
+
+[--force]
+initial
+
+	PWD:
+		a -> fff
+Exit status: 0
+
+	PWD:
+		-
+
+
+[--cached]
+initial
+
+	PWD:
+		a -> fff
+tigger-rm: error: 'a' in index is different to both to the working file and the repository
+Exit status: 1
+
+	PWD:
+		a -> fff
+
+
+[--force --cached]
+initial
+
+	PWD:
+		a -> fff
+Exit status: 0
+
+	PWD:
+		a -> fff
+
+
 -------------MULTIPLE_FILES FATAL INDEX------------
 
 	PWD:
@@ -7,5 +534,111 @@ Exit status: 1
 
 	PWD:
 		a -> fff
+
+
+-------------MULTIPLE FILES ERROR ORDER-[no options]------------
+Committed as commit 0
+[no options]
+initial
+
+	PWD:
+		d -> 
+		e -> 
+		f -> x
+		g -> x
+		h -> 
+		i -> xx
+		j -> x
+tigger-rm: error: 'e' has staged changes in the index
+Exit status: 1
+
+	PWD:
+		d -> 
+		e -> 
+		f -> x
+		g -> x
+		h -> 
+		i -> xx
+		j -> x
+
+
+-------------MULTIPLE FILES ERROR ORDER-[--force]------------
+Committed as commit 0
+[no options]
+initial
+
+	PWD:
+		d -> 
+		e -> 
+		f -> x
+		g -> x
+		h -> 
+		i -> xx
+		j -> x
+Exit status: 0
+
+	PWD:
+		-
+
+
+-------------MULTIPLE FILES ERROR ORDER-[--cached]------------
+Committed as commit 0
+[no options]
+initial
+
+	PWD:
+		d -> 
+		e -> 
+		f -> x
+		g -> x
+		h -> 
+		i -> xx
+		j -> x
+tigger-rm: error: 'h' in index is different to both to the working file and the repository
+Exit status: 1
+
+	PWD:
+		d -> 
+		e -> 
+		f -> x
+		g -> x
+		h -> 
+		i -> xx
+		j -> x
+
+
+-------------MULTIPLE FILES SAME ERROR------------
+Committed as commit 0
+Committed as commit 1
+[no options]
+initial
+
+	PWD:
+		e -> 
+		f -> x
+		g -> x
+		h -> 
+		i -> xx
+		j -> x
+		k -> x
+		s -> xx
+		x -> x
+		y -> x
+		z -> 
+tigger-rm: error: 'g' in the repository is different to the working file
+Exit status: 1
+
+	PWD:
+		e -> 
+		f -> x
+		g -> x
+		h -> 
+		i -> xx
+		j -> x
+		k -> x
+		s -> xx
+		x -> x
+		y -> x
+		z -> 
 
 

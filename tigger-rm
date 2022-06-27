@@ -12,32 +12,42 @@ check_repo_exists
 
 CACHED_OPT=$FALSE
 FORCE_OPT=$FALSE
+ERROR_FOUND=$FALSE
+
 
 STAGED_CHANGES_1=$IND_AND_PWD
 STAGED_CHANGES_2=$DELTA_REP_IND_DELTA_REP_PWD
-REPO_DIFF_TO_WRKING_FILE=$DELTA_IND_PWD_DELTA_REP_PWD
-IND_DIFF_WRK_REPO=$DELTA_REP_IND_DELTA_IND_PWD
+REPO_DIFF_WRKING_FILE=$DELTA_IND_PWD_DELTA_REP_PWD
+
+IND_DIFF_WRK_REPO_1=$DELTA_REP_IND_DELTA_IND_PWD
+IND_DIFF_WRK_REPO_2=$DELTA_IND_PWD
+IND_DIFF_WRK_REPO_3=$ALL_DIFFERENT
 
   #################
  #   Functions   #
 #################
 
-#deletes without checking file status's.
-# if --cached option used only deletes from index
-# otherwise files in pwd and index are deleted.
-force_delete()
+
+delete_index_files()
 {
-	CACHED_OPT="$1"
 
 	for file in "$@"
-  	do
-	    if [ $CACHED_OPT -eq $TRUE ] 
-	    then
-	      rm -f "$REPO/index/$file" 2> /dev/null
-	    else
-	      rm -f "$REPO/index/$file" "$PWD/$file" 2> /dev/null
-	    fi
-  	done
+	do
+		rm -f "$REPO/index/$file" 
+
+	done
+
+	return 0
+}
+
+delete_pwd_files()
+{
+	for file in "$@"
+	do
+		rm -f "$PWD/$file" 
+	done
+
+	return 0
 }
 
 
@@ -68,52 +78,64 @@ done
 shift "$(($OPTIND - 1))"
 
 
-#ensure file name given
+#check usage
 [ $# -ne 0 ] || die "usage: $PRGRM [--force] [--cached] <filenames>"
 
 
-#make sure all files exist in the index before proceeding
-for file in "$@"
-do
-  is_file_in_index "$file" || die "$PRGRM: error: '$file' is not in the tigger repository"
-done
+
 
 
 #if forced is active then no error checking 
-if [ $FORCE_OPT -eq $TRUE ]
+if [ $FORCE_OPT -eq $TRUE ] 
 then
 
-  force_delete $CACHED_OPT
+	#make sure all files exist in the index before proceeding
+	for file in "$@"
+	do
+	  is_file_in_index "$file" || die "$PRGRM: error: '$file' is not in the tigger repository"
+	done
 
-elif [ $CACHED_OPT -eq $FALSE ]
-then
+	if [ $CACHED_OPT -eq $FALSE ]
+		then
+			delete_index_files "$@"
+			delete_pwd_files "$@"
+		else
+			delete_index_files "$@"
+		fi
+
+
+else
 
 	for file in "$@"
 	do
 
 		status=$(find_files_state "$file" 'HEAD')
 
-		[ "$status" = "$STAGED_CHANGES_1" ]      && die "$PRGRM: error: '$file' has staged changes in the index"
-		[ "$status" = "$STAGED_CHANGES_2" ]      && die "$PRGRM: error: '$file' has staged changes in the index"
-		[ "$status" = "$REPO_DIFF_WRKING_FILE" ] && die "$PRGRM: error: '$file' in the repository is different to the working file"  
-		[ "$status" = "$IND_DIFF_WRK_REPO" ]     && die "$PRGRM: error: '$file' in index is different to both to the working file and the repository"  
+		is_file_in_index "$file"                   || die "$PRGRM: error: '$file' is not in the tigger repository"
+		[ "$status" = "$IND_DIFF_WRK_REPO_1" ]     && die "$PRGRM: error: '$file' in index is different to both to the working file and the repository"  
+		[ "$status" = "$IND_DIFF_WRK_REPO_2" ]     && die "$PRGRM: error: '$file' in index is different to both to the working file and the repository"
+		[ "$status" = "$IND_DIFF_WRK_REPO_3" ]     && die "$PRGRM: error: '$file' in index is different to both to the working file and the repository" 
+
+		if [ $CACHED_OPT -eq $FALSE ]
+		then
+			[ "$status" = "$STAGED_CHANGES_1" ]      && die "$PRGRM: error: '$file' has staged changes in the index"
+			[ "$status" = "$STAGED_CHANGES_2" ]      && die "$PRGRM: error: '$file' has staged changes in the index"
+			[ "$status" = "$REPO_DIFF_WRKING_FILE" ] && die "$PRGRM: error: '$file' in the repository is different to the working file" 
+		fi
 
 	done
 
+	if [ $CACHED_OPT -eq $FALSE ]
+		then
+			delete_index_files "$@"
+			delete_pwd_files "$@"
+		else
+			delete_index_files "$@"
+		fi
 
 fi
 
-
-
-
-
-
-
-
-
-
-
-
+exit 0
 
 
 
