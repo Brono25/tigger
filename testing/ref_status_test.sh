@@ -28,6 +28,7 @@ echo "-------------UNTRACKED------------"
 ref_open_tigger
 touch a
 2041 tigger-status ;echo "$?"
+
 close_tigger
 
 

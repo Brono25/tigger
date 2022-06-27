@@ -39,6 +39,7 @@ ref_open_tigger
 2041 tigger-rm --force a b          ;echo "Exit status: $?"
 2041 tigger-rm --cached b a         ;echo "Exit status: $?"
 2041 tigger-rm --force --cached a b ;echo "Exit status: $?"
+
 close_tigger
 
 

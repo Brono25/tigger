@@ -3,12 +3,12 @@
 . tigger-utilities
 
 
-# A files state is whether it exists (or is changed ∆) in the repo and/or index and/or pwd.
-# its existence or ∆ in each directory is given a bit position. Each state is
-# then tested and a bit set to 1 if the file is found to exist or be changed in that dir.
-# All the 6 bits at the end produce a unique hex number for that state.
+# A files state is whether it exists, or is changed ∆, in the repo and/or index and/or pwd.
+# its existence or ∆ in each directory is given a bit position, total 6 bits. Each state is
+# then tested and a bit set to 1 if the file is found to exist or be ∆ in that directory.
+# All the 6 bits at the end produce a unique hex number that gives each file a identifiable status.
 
-# These states can be used to inform error messages for other tigger functions.
+# These states are used to inform other tigger funcitons about what error messages to use.
 
 
 
@@ -72,7 +72,7 @@ find_files_state()
   index_file="$REPO/index/$file_name"
 
  
-  state=0x00 #default state is non-existance anywhere
+  state=0x00 #default state 
 
   is_file_in_pwd     "$pwd_file" && state=$((state | PWD_FLAG)); ret_pwd=$?
   is_file_in_repo   "$repo_file" && state=$((state | REP_FLAG)); ret_repo=$?

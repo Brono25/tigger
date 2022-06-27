@@ -17,11 +17,12 @@ trap "rm  -f $list" EXIT INT
  #    Defines    #
 #################
 
-list=$(mktemp "$REPO/"XXX)
+
 COMMIT_DIR="$REPO/commit/$("find_where_head_points")"
 
 #File error for given status
-UNTRACKED=$PWD_ONLY
+UNTRACKED_1=$PWD_ONLY
+UNTRACKED_2=$DELTA_REP_PWD
 SAME_AS_REPO=$ALL_SAME
 FILE_DELETED=$REP_AND_IND
 DELETED=$REP_ONLY
@@ -37,22 +38,16 @@ CHANGES_NOT_STAGED=$DELTA_IND_PWD_DELTA_REP_PWD
  #     Main      #
 #################
 
-#[ $# -eq 0 ] || die "usage??"
 
-# create a list of all files in the repo, index and working directory
-# then check the status of each file in the list.
 
-#(ls -1 "$COMMIT_DIR" 2>/dev/null; ls -1 "$INDEX_DIR"; ls -1 "$PWD")|sort|uniq > "$list"
- 
- #[ $(cat $list | wc -l|xargs) -eq 0 ] && echo "no files error??"
-
-for file in $(basename --multiple "$COMMIT_DIR"/* "$INDEX_DIR"/* "$PWD"/* |sort|uniq|xargs)
+for file in $(basename --multiple "$COMMIT_DIR"/* "$INDEX_DIR"/* "$PWD"/* |sort|uniq|sed '/*/d' |xargs)
 do
-  [ "$file" = "*" ] && continue
   
   status=$(find_files_state "$file" 'HEAD')
+
   
-  [ "$status" = "$UNTRACKED" ]         		       && status_msg="untracked"                                         
+  [ "$status" = "$UNTRACKED_1" ]         		     && status_msg="untracked" 
+  [ "$status" = "$UNTRACKED_2" ]                 && status_msg="untracked"                                           
   [ "$status" = "$SAME_AS_REPO" ]       		     && status_msg="same as repo"                                      
   [ "$status" = "$FILE_DELETED" ]       		     && status_msg="file deleted"                                      
   [ "$status" = "$DELETED" ]            	   	   && status_msg="deleted"                                           
@@ -63,10 +58,9 @@ do
   [ "$status" = "$CHANGES_STAGED" ]     	  	   && status_msg="file changed, changes staged for commit"        
   [ "$status" = "$CHANGES_NOT_STAGED" ] 		     && status_msg="file changed, changes not staged for commit"    
 
-  echo "$file - $status_msg"
+  echo "$file - $status_msg $i"
 
 done
-
 
 exit 0
 

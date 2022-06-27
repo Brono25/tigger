@@ -161,14 +161,14 @@ fi
 
 #to check for changes to the commit a commit dir must first exist. The 'if NULL' prevents
 #errors due to checking a commit directory that doesnt exist
-#set -x
+
 if [ "$parent_commit" = "NULL" ] 
 then
 	is_index_empty  && die "nothing to commit"
 else
 	is_there_any_changes_to_commit || die "nothing to commit"
 fi
-#set +x
+
 
 
 #create new commit

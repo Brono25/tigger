@@ -43,12 +43,12 @@ commit_num="${arg%%:*}"
 filename="${arg#*:}"
 
 
-is_filename_valid "$filename"       || die "$PRGRM: error: invalid filename '$filename'"
+is_filename_valid "$filename"   || die "$PRGRM: error: invalid filename '$filename'"
 
 #if commit number omitted print file in index
 if [  ! -n "$commit_num" ]
 then
-	[ -f "$REPO/index/$filename" ]  || die "$PRGRM: error: '$filename' not found in index"
+	[ -f "$REPO/index/$filename" ] || die "$PRGRM: error: '$filename' not found in index"
 	cat "$REPO/index/$filename"
 	exit 0
 

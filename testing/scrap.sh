@@ -9,77 +9,89 @@ cd delete
 
 
 
+2041 tigger-init
+
+echo hello >a
+2041 tigger-add a
+2041 tigger-commit -m commit-0
+
+2041 tigger-rm a
+2041 tigger-status
+
+2041 tigger-commit -m commit-1
+
+2041 tigger-status
+echo world >a
+2041 tigger-status
+
+2041 tigger-commit -m commit-2
+
+2041 tigger-add a
+2041 tigger-commit -m commit-2
+
+2041 tigger-rm a
+2041 tigger-commit -m commit-3
+
+# 2041 tigger-show :a
+
+# 2041 tigger-show 0:a
+
+# 2041 tigger-show 1:a
+
+# 2041 tigger-show 2:a
+
+# 2041 tigger-show 3:a
+
+
+
+
+
+
+
+
+
+
+echo ''
+
 cd ..
 rm -rf delete
-
-
-echo "-------------MULTIPLE FILES ERROR ORDER-[--cached]------------"
-open_tigger
-touch g 
-tigger-add g 
-tigger-commit -m 'first commit' 1>/dev/null
-
-
-echo x > g
-
-
-
-print_pwd;  
-tigger-rm --cached g  ;echo "Exit status: $?"
-print_pwd;  
-close_tigger
-
-
-
-
-
 
 
 mkdir delete
 cd delete
 
+tigger-init
 
+echo hello >a
+tigger-add a
+tigger-commit -m commit-0
 
-echo "-------------MULTIPLE FILES ERROR ORDER-[--cached]------------"
-ref_open_tigger
-touch g 
-2041 tigger-add g 
-2041 tigger-commit -m 'first commit' 1>/dev/null
+tigger-rm a
+tigger-status
 
+tigger-commit -m commit-1
 
+tigger-status
+echo world >a
+tigger-status
 
+tigger-commit -m commit-2
 
+tigger-add a
+tigger-commit -m commit-2
 
-echo x > g
+tigger-rm a
+tigger-commit -m commit-3
 
+# tigger-show :a
 
+# tigger-show 0:a
 
-print_pwd;  
-2041 tigger-rm --cached g    ;echo "Exit status: $?"
-print_pwd;  
-close_tigger
+# tigger-show 1:a
 
+# tigger-show 2:a
 
-
-
-echo "-------------MULTIPLE FILES ERROR ORDER-[--cached]------------"
-ref_open_tigger
-touch g 
-git add g 
-git commit -m 'first commit' 1>/dev/null
-
-
-
-
-
-echo x > g
-
-
-
-print_pwd;  
-git rm --cached g    ;echo "Exit status: $?"
-print_pwd;  
-close_tigger
+# tigger-show 3:a
 
 
 

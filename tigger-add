@@ -2,9 +2,7 @@
 
 
 . tigger-utilities
-
-
-
+. tigger-file_state
 check_repo_exists
 
 
@@ -19,6 +17,16 @@ check_repo_exists
 #add all files in arguments 
 for file in "$@"
 do
+
+	# 'Adding' a removed file
+	status=$(find_files_state "$file" 'HEAD')
+  if [ "$status" = "$INDEX_ONLY" ]  || [ "$status" =  "$REP_AND_IND" ]      
+  then
+    tigger-rm --cached --force "$file"
+    continue
+  fi
+
+
 
 	[ $(echo "$file" | grep -E "^\.") ] 	&& die "$PRGRM: error: invalid filename '$file'"
 
