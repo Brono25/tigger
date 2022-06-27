@@ -1,2 +1,75 @@
 #!/bin/dash
 
+
+
+. tigger-utilities
+. tigger-file_state
+check_repo_exists
+
+
+
+trap "rm  -f $list" EXIT INT
+
+
+
+
+  #################
+ #    Defines    #
+#################
+
+list=$(mktemp "$REPO/"XXX)
+COMMIT_DIR="$REPO/commit/$("find_where_head_points")"
+
+#File error for given status
+UNTRACKED=$PWD_ONLY
+SAME_AS_REPO=$ALL_SAME
+FILE_DELETED=$REP_AND_IND
+DELETED=$REP_ONLY
+ADDED_TO_INDEX=$IND_AND_PWD
+ADDED_TO_INDEX_FILE_DELETED=$INDEX_ONLY
+ADDED_TO_INDEX_FILE_CHANGED=$DELTA_IND_PWD
+DIFF_CHANGES_STAGED=$ALL_DIFFERENT
+CHANGES_STAGED=$DELTA_REP_IND_DELTA_REP_PWD
+CHANGES_NOT_STAGED=$DELTA_IND_PWD_DELTA_REP_PWD
+
+
+  #################
+ #     Main      #
+#################
+
+#[ $# -eq 0 ] || die "usage??"
+
+# create a list of all files in the repo, index and working directory
+# then check the status of each file in the list.
+
+#(ls -1 "$COMMIT_DIR" 2>/dev/null; ls -1 "$INDEX_DIR"; ls -1 "$PWD")|sort|uniq > "$list"
+ 
+ #[ $(cat $list | wc -l|xargs) -eq 0 ] && echo "no files error??"
+
+for file in $(basename --multiple "$COMMIT_DIR"/* "$INDEX_DIR"/* "$PWD"/* |sort|uniq|xargs)
+do
+  [ "$file" = "*" ] && continue
+  
+  status=$(find_files_state "$file" 'HEAD')
+  
+  [ "$status" = "$UNTRACKED" ]         		       && status_msg="untracked"                                         
+  [ "$status" = "$SAME_AS_REPO" ]       		     && status_msg="same as repo"                                      
+  [ "$status" = "$FILE_DELETED" ]       		     && status_msg="file deleted"                                      
+  [ "$status" = "$DELETED" ]            	   	   && status_msg="deleted"                                           
+  [ "$status" = "$ADDED_TO_INDEX" ]       		   && status_msg="added to index" 
+  [ "$status" = "$ADDED_TO_INDEX_FILE_DELETED" ] && status_msg="added to index, file deleted"
+  [ "$status" = "$ADDED_TO_INDEX_FILE_CHANGED" ] && status_msg="added to index, file changed"                                
+  [ "$status" = "$ALL_DIFFERENT" ]      		     && status_msg="file changed, different changes staged for commit" 
+  [ "$status" = "$CHANGES_STAGED" ]     	  	   && status_msg="file changed, changes staged for commit"        
+  [ "$status" = "$CHANGES_NOT_STAGED" ] 		     && status_msg="file changed, changes not staged for commit"    
+
+  echo "$file - $status_msg"
+
+done
+
+
+exit 0
+
+
+
+

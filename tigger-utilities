@@ -103,6 +103,20 @@ is_file_in_index()
   fi
 }
 
+
+is_file_in_pwd_diff_to_index()
+{
+  directory_file="$1"
+  index_file="$2"
+  is_difference=$(diff -q "$directory_file" "$index_file"|wc -c| tr -d ' ') 2> /dev/null
+  if [ "$is_difference" -ne  0 ]
+  then
+    return $TRUE
+  else
+    return $FALSE
+  fi
+}
+
 is_file_in_repo_diff_to_index()
 {
   commit_file="$1"
@@ -114,13 +128,14 @@ is_file_in_repo_diff_to_index()
   else
     return $FALSE
   fi
+  
 }
 
-is_file_in_pwd_diff_to_index()
+is_file_in_pwd_diff_to_repo()
 {
-  directory_file="$1"
-  index_file="$2"
-  is_difference=$(diff -q "$directory_file" "$index_file" |wc -c| tr -d ' ') 2> /dev/null
+  commit_file="$1"
+  directory_file="$2"
+  is_difference=$(diff -q "$commit_file" "$directory_file"|wc -c| tr -d ' ') 2> /dev/null
   if [ "$is_difference" -ne  0 ]
   then
     return $TRUE

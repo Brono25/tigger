@@ -2,6 +2,7 @@
 
 
 . tigger-utilities
+. tigger-file_state
 check_repo_exists
 
   #################
@@ -12,7 +13,10 @@ check_repo_exists
 CACHED_OPT=$FALSE
 FORCE_OPT=$FALSE
 
-
+STAGED_CHANGES_1=$IND_AND_PWD
+STAGED_CHANGES_2=$DELTA_REP_IND_DELTA_REP_PWD
+REPO_DIFF_TO_WRKING_FILE=$DELTA_IND_PWD_DELTA_REP_PWD
+IND_DIFF_WRK_REPO=$DELTA_REP_IND_DELTA_IND_PWD
 
   #################
  #   Functions   #
@@ -78,9 +82,25 @@ done
 #if forced is active then no error checking 
 if [ $FORCE_OPT -eq $TRUE ]
 then
+
   force_delete $CACHED_OPT
-else
-	echo "TODO: file status checking and throw errors"
+
+elif [ $CACHED_OPT -eq $FALSE ]
+then
+
+	for file in "$@"
+	do
+
+		status=$(find_files_state "$file" 'HEAD')
+
+		[ "$status" = "$STAGED_CHANGES_1" ]      && die "$PRGRM: error: '$file' has staged changes in the index"
+		[ "$status" = "$STAGED_CHANGES_2" ]      && die "$PRGRM: error: '$file' has staged changes in the index"
+		[ "$status" = "$REPO_DIFF_WRKING_FILE" ] && die "$PRGRM: error: '$file' in the repository is different to the working file"  
+		[ "$status" = "$IND_DIFF_WRK_REPO" ]     && die "$PRGRM: error: '$file' in index is different to both to the working file and the repository"  
+
+	done
+
+
 fi
 
 
