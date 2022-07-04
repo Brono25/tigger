@@ -41,3 +41,7 @@
 # rm ax bx
 
 
+./commit_test.sh &> bb
+./ref_commit_test.sh &> aa
+diff aa bb
+rm aa bb

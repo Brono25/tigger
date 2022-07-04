@@ -11,38 +11,29 @@ cd delete
 
 2041 tigger-init
 
-echo hello >a
+echo line 1 > a
+echo hello world > b
+2041 tigger-add a b
+2041 tigger-commit -m "first commit"
+
+echo line 2 >> a
 2041 tigger-add a
-2041 tigger-commit -m commit-0
+2041 tigger-commit -m "second commit"
 
-2041 tigger-rm a
-2041 tigger-status
+2041 tigger-log
 
-2041 tigger-commit -m commit-1
-
-2041 tigger-status
-echo world >a
-2041 tigger-status
-
-2041 tigger-commit -m commit-2
-
+echo line 3 >> a
 2041 tigger-add a
-2041 tigger-commit -m commit-2
+echo line 4 >> a
+2041 tigger-show 0:a
 
-2041 tigger-rm a
-2041 tigger-commit -m commit-3
+2041 tigger-show 1:a
 
-# 2041 tigger-show :a
+2041 tigger-show :a
 
-# 2041 tigger-show 0:a
+2041 tigger-show 0:b
 
-# 2041 tigger-show 1:a
-
-# 2041 tigger-show 2:a
-
-# 2041 tigger-show 3:a
-
-
+2041 tigger-show 1:b
 
 
 
@@ -60,41 +51,34 @@ rm -rf delete
 mkdir delete
 cd delete
 
+
+
+
 tigger-init
 
-echo hello >a
+echo line 1 > a
+echo hello world > b
+tigger-add a b
+tigger-commit -m "first commit"
+
+echo line 2 >> a
 tigger-add a
-tigger-commit -m commit-0
+tigger-commit -m "second commit"
 
-tigger-rm a
-tigger-status
+tigger-log
 
-tigger-commit -m commit-1
-
-tigger-status
-echo world >a
-tigger-status
-
-tigger-commit -m commit-2
-
+echo line 3 >> a
 tigger-add a
-tigger-commit -m commit-2
+echo line 4 >> a
+tigger-show 0:a
 
-tigger-rm a
-tigger-commit -m commit-3
+tigger-show 1:a
 
-# tigger-show :a
+tigger-show :a
 
-# tigger-show 0:a
+tigger-show 0:b
 
-# tigger-show 1:a
-
-# tigger-show 2:a
-
-# tigger-show 3:a
-
-
-
+tigger-show 1:b
 
 
 
