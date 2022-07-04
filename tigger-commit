@@ -2,6 +2,7 @@
 
 
 . tigger-utilities
+. tigger-file_state
 check_repo_exists
 
 
@@ -14,7 +15,18 @@ COMMIT_DIR="$REPO/commit/$("find_where_head_points")" #is the active commit dir
 OPTION_A=$FALSE
 OPTION_M=$FALSE
 
-
+CHANGES_TO_COMMIT_2=$NONE_FOUND                                     
+CHANGES_TO_COMMIT_3=$INDEX_ONLY                  
+CHANGES_TO_COMMIT_4=$IND_AND_PWD                   
+CHANGES_TO_COMMIT_5=$DELTA_IND_PWD              
+CHANGES_TO_COMMIT_6=$REP_ONLY                   
+CHANGES_TO_COMMIT_7=$REP_AND_PWD                 
+CHANGES_TO_COMMIT_8=$DELTA_REP_PWD             
+#CHANGES_TO_COMMIT_9=$REP_AND_IND                  
+CHANGES_TO_COMMIT_10=$DELTA_REP_IND               
+CHANGES_TO_COMMIT_11=$DELTA_REP_IND_DELTA_REP_PWD 
+CHANGES_TO_COMMIT_12=$DELTA_REP_IND_DELTA_IND_PWD
+CHANGES_TO_COMMIT_13=$ALL_DIFFERENT 
 
   #################
  #   Functions   #
@@ -26,21 +38,6 @@ find_commit_number()
 {
 	next_commit=$(ls "$REPO/commit"|wc -l |xargs)
 	echo -n "$next_commit"
-}
-
-
-# Only commit if new files appear or file changes found.
-is_there_any_changes_to_commit()
-{
-	#loop through both directories while ignoring duplicates
-	for file in $(basename --multiple "$COMMIT_DIR"/*  "$INDEX_DIR"/* |sort|uniq|xargs)
-	do 
-		is_file_in_repo "$COMMIT_DIR/$file"  || return $TRUE
-		is_file_in_index "$INDEX_DIR/$file"  || return $TRUE
-		! is_file_in_repo_diff_to_index "$COMMIT_DIR/$file" "$INDEX_DIR/$file" || return $TRUE
-	done
-
-	return $FALSE
 }
 
 
@@ -120,6 +117,36 @@ update_index()
 }
 
 
+is_anything_to_commit()
+{
+
+	[ $# -eq 0 ] && return $FALSE
+
+	for file in $@
+	do
+		file_status="$(find_files_state "$file" 'HEAD')"
+
+		#echo "file = $file_status"
+
+	  [ "$file_status" = "$CHANGES_TO_COMMIT_2" ]  && return $TRUE
+	  [ "$file_status" = "$CHANGES_TO_COMMIT_3" ]  && return $TRUE
+	  [ "$file_status" = "$CHANGES_TO_COMMIT_4" ]  && return $TRUE
+	  [ "$file_status" = "$CHANGES_TO_COMMIT_5" ]  && return $TRUE
+	  [ "$file_status" = "$CHANGES_TO_COMMIT_6" ]  && return $TRUE
+	  [ "$file_status" = "$CHANGES_TO_COMMIT_7" ]  && return $TRUE
+	  [ "$file_status" = "$CHANGES_TO_COMMIT_8" ]  && return $TRUE
+	  #[ "$file_status" = "$CHANGES_TO_COMMIT_9" ]  && return $TRUE
+	  [ "$file_status" = "$CHANGES_TO_COMMIT_10" ] && return $TRUE
+	  [ "$file_status" = "$CHANGES_TO_COMMIT_11" ] && return $TRUE
+	  [ "$file_status" = "$CHANGES_TO_COMMIT_12" ] && return $TRUE
+	  [ "$file_status" = "$CHANGES_TO_COMMIT_13" ] && return $TRUE
+	done
+
+	return $FALSE
+}
+
+
+
 
 
   #################
@@ -144,7 +171,6 @@ do
   esac
 done
 
-
 #if option -m present then check for message
 if [ "$OPTION_M" -eq "$TRUE" ] 
 then
@@ -152,24 +178,18 @@ then
 	message="$@"
 fi
 
-
 #if no message given
 [ -n "$message" ] || die "usage: $PRGRM [-a] -m commit-message"
 
-
+#perform option A
 [ "$OPTION_A" -eq "$TRUE" ] && update_index
 
-#to check for changes to the commit a commit dir must first exist. The 'if NULL' prevents
-#errors due to checking a commit directory that doesnt exist
-
-if [ "$parent_commit" = "NULL" ] 
-then
-	is_index_empty  && die "nothing to commit"
-else
-	is_there_any_changes_to_commit || die "nothing to commit"
-fi
+#check for anything to commit
+file_list="$(basename --multiple "$COMMIT_DIR"/* "$INDEX_DIR"/* "$PWD"/* |sort|uniq|sed '/*/d' |xargs)"
+is_anything_to_commit $file_list || die_stdout "nothing to commit"
 
 
+#do commit
 
 #create new commit
 mkdir "$REPO/commit/$next_commit" || die "$PRGRM: error: unable to create commit directory $next_commit"

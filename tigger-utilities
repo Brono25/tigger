@@ -27,6 +27,14 @@ die()
 	exit 1
 }
 
+die_stdout()
+{
+  err_msg="$1"
+  echo "$err_msg" 
+  exit 0
+}
+
+
 
 check_repo_exists()
 {

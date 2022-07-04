@@ -9,31 +9,51 @@ cd delete
 
 
 
+
+
 2041 tigger-init
 
-echo line 1 > a
-echo hello world > b
-2041 tigger-add a b
+echo 1 >a
+echo 2 >b
+echo 3 >c
+
+2041 tigger-add a b c
 2041 tigger-commit -m "first commit"
 
-echo line 2 >> a
-2041 tigger-add a
-2041 tigger-commit -m "second commit"
+echo 4 >>a
+echo 5 >>b
+echo 6 >>c
+echo 7 >d
+echo 8 >e
+2041 tigger-add b c d
+echo 9 >b
+2041 tigger-rm a
 
-2041 tigger-log
+# 2041 tigger-rm b
 
-echo line 3 >> a
-2041 tigger-add a
-echo line 4 >> a
-2041 tigger-show 0:a
+# 2041 tigger-rm c
 
-2041 tigger-show 1:a
+# 2041 tigger-rm d
 
-2041 tigger-show :a
+# 2041 tigger-rm e
 
-2041 tigger-show 0:b
+# 2041 tigger-rm --cached a
+# 2041 tigger-rm --cached b
 
-2041 tigger-show 1:b
+# 2041 tigger-rm --cached c
+# 2041 tigger-rm --cached d
+# 2041 tigger-rm --cached e
+
+# 2041 tigger-rm --force a
+
+# 2041 tigger-rm --force b
+# 2041 tigger-rm --force c
+
+# 2041 tigger-rm --force d
+
+# 2041 tigger-rm --force e
+
+
 
 
 
@@ -56,29 +76,49 @@ cd delete
 
 tigger-init
 
-echo line 1 > a
-echo hello world > b
-tigger-add a b
+echo 1 >a
+echo 2 >b
+echo 3 >c
+tigger-add a b c
 tigger-commit -m "first commit"
 
-echo line 2 >> a
-tigger-add a
-tigger-commit -m "second commit"
+echo 4 >>a
+echo 5 >>b
+echo 6 >>c
+echo 7 >d
+echo 8 >e
+tigger-add b c d
+echo 9 >b
+tigger-rm a
 
-tigger-log
+# tigger-rm b
 
-echo line 3 >> a
-tigger-add a
-echo line 4 >> a
-tigger-show 0:a
+# tigger-rm c
 
-tigger-show 1:a
+# tigger-rm d
 
-tigger-show :a
+# tigger-rm e
 
-tigger-show 0:b
+# tigger-rm --cached a
+# tigger-rm --cached b
 
-tigger-show 1:b
+# tigger-rm --cached c
+# tigger-rm --cached d
+# tigger-rm --cached e
+
+# tigger-rm --force a
+
+# tigger-rm --force b
+# tigger-rm --force c
+
+# tigger-rm --force d
+
+# tigger-rm --force e
+
+
+
+
+
 
 
 

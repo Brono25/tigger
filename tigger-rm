@@ -111,9 +111,9 @@ else
 		status=$(find_files_state "$file" 'HEAD')
 
 		is_file_in_index "$file"                   || die "$PRGRM: error: '$file' is not in the tigger repository"
-		[ "$status" = "$IND_DIFF_WRK_REPO_1" ]     && die "$PRGRM: error: '$file' in index is different to both to the working file and the repository"  
-		[ "$status" = "$IND_DIFF_WRK_REPO_2" ]     && die "$PRGRM: error: '$file' in index is different to both to the working file and the repository"
-		[ "$status" = "$IND_DIFF_WRK_REPO_3" ]     && die "$PRGRM: error: '$file' in index is different to both to the working file and the repository" 
+		[ "$status" = "$IND_DIFF_WRK_REPO_1" ]     && die "$PRGRM: error: '$file' in index is different to both the working file and the repository"  
+		[ "$status" = "$IND_DIFF_WRK_REPO_2" ]     && die "$PRGRM: error: '$file' in index is different to both the working file and the repository"
+		[ "$status" = "$IND_DIFF_WRK_REPO_3" ]     && die "$PRGRM: error: '$file' in index is different to both the working file and the repository" 
 
 		if [ $CACHED_OPT -eq $FALSE ]
 		then

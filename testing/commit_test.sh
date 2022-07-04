@@ -162,62 +162,62 @@ trap 'rm -f a b' EXIT INT
 # close_tigger
 
 
-echo "-------------REP_AND_PWD------------"
-open_tigger
-echo x > a
-tigger-add a
-tigger-commit -m 'my first commit' 1>/dev/null
-tigger-rm --cached a
-echo "[no option]"
-print_pwd
-tigger-commit -m 'my first commit' ;echo "Exit status: $?"
-print_pwd
-echo "log:"
-tigger-log 2>/dev/null
-close_tigger
+# echo "-------------REP_AND_PWD------------"
+# open_tigger
+# echo x > a
+# tigger-add a
+# tigger-commit -m 'my first commit' 1>/dev/null
+# tigger-rm --cached a
+# echo "[no option]"
+# print_pwd
+# tigger-commit -m 'my first commit' ;echo "Exit status: $?"
+# print_pwd
+# echo "log:"
+# tigger-log 2>/dev/null
+# close_tigger
 
-open_tigger
-echo x > a
-tigger-add a
-tigger-commit -m 'my first commit' 1>/dev/null
-tigger-rm --cached a
-echo "[-a]"
-print_pwd
-tigger-commit -am 'my first commit' ;echo "Exit status: $?"
-print_pwd
-echo "log:"
-tigger-log 2>/dev/null
-close_tigger
+# open_tigger
+# echo x > a
+# tigger-add a
+# tigger-commit -m 'my first commit' 1>/dev/null
+# tigger-rm --cached a
+# echo "[-a]"
+# print_pwd
+# tigger-commit -am 'my first commit' ;echo "Exit status: $?"
+# print_pwd
+# echo "log:"
+# tigger-log 2>/dev/null
+# close_tigger
 
 
-echo "-------------DELTA_REP_PWD------------"
-open_tigger
-echo x > a
-tigger-add a
-tigger-commit -m 'my first commit' 1>/dev/null
-tigger-rm --cached a
-echo xx > a
-echo "[no option]"
-print_pwd
-tigger-commit -m 'my first commit' ;echo "Exit status: $?"
-print_pwd
-echo "log:"
-tigger-log 2>/dev/null
-close_tigger
+# echo "-------------DELTA_REP_PWD------------"
+# open_tigger
+# echo x > a
+# tigger-add a
+# tigger-commit -m 'my first commit' 1>/dev/null
+# tigger-rm --cached a
+# echo xx > a
+# echo "[no option]"
+# print_pwd
+# tigger-commit -m 'my first commit' ;echo "Exit status: $?"
+# print_pwd
+# echo "log:"
+# tigger-log 2>/dev/null
+# close_tigger
 
-open_tigger
-echo x > a
-tigger-add a
-tigger-commit -m 'my first commit' 1>/dev/null
-tigger-rm --cached a
-echo xx > a
-echo "[-a]"
-print_pwd
-tigger-commit -am 'my first commit' ;echo "Exit status: $?"
-print_pwd
-echo "log:"
-tigger-log 2>/dev/null
-close_tigger
+# open_tigger
+# echo x > a
+# tigger-add a
+# tigger-commit -m 'my first commit' 1>/dev/null
+# tigger-rm --cached a
+# echo xx > a
+# echo "[-a]"
+# print_pwd
+# tigger-commit -am 'my first commit' ;echo "Exit status: $?"
+# print_pwd
+# echo "log:"
+# tigger-log 2>/dev/null
+# close_tigger
 
 
 echo "-------------REP_AND_IND------------"
@@ -226,7 +226,9 @@ echo x > a
 tigger-add a
 echo "[no option]"
 print_pwd
-tigger-commit -m 'my first commit' ;echo "Exit status: $?"
+tigger-commit -m 'my first commit' 1>/dev/null
+rm a
+tigger-commit -m 'my first second'
 print_pwd
 echo "log:"
 tigger-log 2>/dev/null
@@ -237,203 +239,206 @@ echo x > a
 tigger-add a
 echo "[no option]"
 print_pwd
-tigger-commit -am 'my first commit' ;echo "Exit status: $?"
+tigger-commit -m 'my first commit' 1>/dev/null
+rm a
+tigger-commit -am 'my first second'
 print_pwd
 echo "log:"
 tigger-log 2>/dev/null
 close_tigger
 
 
-echo "-------------DELTA_REP_IND------------"
-open_tigger
-echo x > a
-tigger-add a
-echo xx > a
-echo "[no option]"
-print_pwd
-tigger-commit -m 'my first commit' ;echo "Exit status: $?"
-print_pwd
-echo "log:"
-tigger-log 2>/dev/null
-close_tigger
 
-open_tigger
-echo x > a
-tigger-add a
-echo xx > a
-echo "[no option]"
-print_pwd
-tigger-commit -am 'my first commit' ;echo "Exit status: $?"
-print_pwd 
-echo "log:"
-tigger-log 2>/dev/null
-close_tigger
+# echo "-------------DELTA_REP_IND------------"
+# open_tigger
+# echo x > a
+# tigger-add a
+# echo xx > a
+# echo "[no option]"
+# print_pwd
+# tigger-commit -m 'my first commit' ;echo "Exit status: $?"
+# print_pwd
+# echo "log:"
+# tigger-log 2>/dev/null
+# close_tigger
 
-
-echo "-------------ALL_SAME------------"
-open_tigger
-echo x > a
-tigger-add a
-tigger-commit -m 'my first commit' 1>/dev/null
-echo "[no option]"
-print_pwd 
-tigger-commit -m 'my second commit' ;echo "Exit status: $?"
-print_pwd 
-echo "log:"
-tigger-log 2>/dev/null
-close_tigger
-
-open_tigger
-echo x > a
-tigger-add a
-tigger-commit -m 'my first commit' 1>/dev/null
-echo "[-a]"
-print_pwd 
-tigger-commit -am 'my second commit' ;echo "Exit status: $?"
-print_pwd 
-echo "log:"
-tigger-log 2>/dev/null
-close_tigger
+# open_tigger
+# echo x > a
+# tigger-add a
+# echo xx > a
+# echo "[no option]"
+# print_pwd
+# tigger-commit -am 'my first commit' ;echo "Exit status: $?"
+# print_pwd 
+# echo "log:"
+# tigger-log 2>/dev/null
+# close_tigger
 
 
-#IND = REP
-echo "-------------DELTA_IND_PWD_DELTA_REP_PWD------------"
-open_tigger
-echo x > a
-tigger-add a
-tigger-commit -m 'my first commit' 1>/dev/null
-echo xx > a
-echo "[no option]"
-print_pwd 0
-tigger-commit -m 'my second commit' ;echo "Exit status: $?"
-print_pwd 1
-echo "log:"
-tigger-log 2>/dev/null
-close_tigger
+# echo "-------------ALL_SAME------------"
+# open_tigger
+# echo x > a
+# tigger-add a
+# tigger-commit -m 'my first commit' 1>/dev/null
+# echo "[no option]"
+# print_pwd 
+# tigger-commit -m 'my second commit' ;echo "Exit status: $?"
+# print_pwd 
+# echo "log:"
+# tigger-log 2>/dev/null
+# close_tigger
 
-open_tigger
-echo x > a
-tigger-add a
-tigger-commit -m 'my first commit' 1>/dev/null
-echo xx > a
-echo "[-a]"
-print_pwd 0
-tigger-commit -am 'my second commit' ;echo "Exit status: $?"
-print_pwd 1
-echo "log:"
-tigger-log 2>/dev/null
-close_tigger
-
-#IND = PWD
-echo "-------------DELTA_REP_IND_DELTA_REP_PWD------------"
-open_tigger
-echo x > a
-tigger-add a
-tigger-commit -m 'my first commit' 1>/dev/null
-echo xx > a
-tigger-add a
-echo "[no option]"
-print_pwd 0
-tigger-commit -m 'my second commit' ;echo "Exit status: $?"
-print_pwd 1
-echo "log:"
-tigger-log 2>/dev/null
-close_tigger
-
-open_tigger
-echo x > a
-tigger-add a
-tigger-commit -m 'my first commit' 1>/dev/null
-echo xx > a
-tigger-add a
-echo "[-a]"
-print_pwd 0
-tigger-commit -am 'my second commit' ;echo "Exit status: $?"
-print_pwd 1
-echo "log:"
-tigger-log 2>/dev/null
-close_tigger
+# open_tigger
+# echo x > a
+# tigger-add a
+# tigger-commit -m 'my first commit' 1>/dev/null
+# echo "[-a]"
+# print_pwd 
+# tigger-commit -am 'my second commit' ;echo "Exit status: $?"
+# print_pwd 
+# echo "log:"
+# tigger-log 2>/dev/null
+# close_tigger
 
 
-#REP = PWD
-echo "-------------DELTA_REP_IND_DELTA_IND_PWD------------"
-open_tigger
-echo x > a
-tigger-add a
-tigger-commit -m 'my first commit' 1>/dev/null
-echo xx > a
-tigger-add a
-echo x > a
-echo "[no option]"
-print_pwd 0
-tigger-commit -m 'my second commit' ;echo "Exit status: $?"
-print_pwd 1
-echo "log:"
-tigger-log 2>/dev/null
-close_tigger
+# #IND = REP
+# echo "-------------DELTA_IND_PWD_DELTA_REP_PWD------------"
+# open_tigger
+# echo x > a
+# tigger-add a
+# tigger-commit -m 'my first commit' 1>/dev/null
+# echo xx > a
+# echo "[no option]"
+# print_pwd 0
+# tigger-commit -m 'my second commit' ;echo "Exit status: $?"
+# print_pwd 1
+# echo "log:"
+# tigger-log 2>/dev/null
+# close_tigger
 
-open_tigger
-echo x > a
-tigger-add a
-tigger-commit -m 'my first commit' 1>/dev/null
-echo xx > a
-tigger-add a
-echo x > a
-echo "[-a]"
-print_pwd 0
-tigger-commit -am 'my second commit' ;echo "Exit status: $?"
-print_pwd 0
-echo "log:"
-tigger-log 2>/dev/null
-close_tigger
+# open_tigger
+# echo x > a
+# tigger-add a
+# tigger-commit -m 'my first commit' 1>/dev/null
+# echo xx > a
+# echo "[-a]"
+# print_pwd 0
+# tigger-commit -am 'my second commit' ;echo "Exit status: $?"
+# print_pwd 1
+# echo "log:"
+# tigger-log 2>/dev/null
+# close_tigger
 
+# #IND = PWD
+# echo "-------------DELTA_REP_IND_DELTA_REP_PWD------------"
+# open_tigger
+# echo x > a
+# tigger-add a
+# tigger-commit -m 'my first commit' 1>/dev/null
+# echo xx > a
+# tigger-add a
+# echo "[no option]"
+# print_pwd 0
+# tigger-commit -m 'my second commit' ;echo "Exit status: $?"
+# print_pwd 1
+# echo "log:"
+# tigger-log 2>/dev/null
+# close_tigger
 
-echo "-------------ALL_DIFFERENT------------"
-open_tigger
-echo x > a
-tigger-add a
-tigger-commit -m 'my first commit' 1>/dev/null
-echo xx > a
-tigger-add a
-echo xxx > a
-echo "[no option]"
-print_pwd 0
-tigger-commit -m 'my second commit' ;echo "Exit status: $?"
-print_pwd 1
-echo "log:"
-tigger-log 2>/dev/null
-close_tigger
-
-open_tigger
-echo x > a
-tigger-add a
-tigger-commit -m 'my first commit' 1>/dev/null
-echo xx > a
-tigger-add a
-echo xxx > a
-echo "[-a]"
-print_pwd 0
-tigger-commit -am 'my second commit' ;echo "Exit status: $?"
-print_pwd 1
-echo "log:"
-tigger-log 2>/dev/null
-close_tigger
+# open_tigger
+# echo x > a
+# tigger-add a
+# tigger-commit -m 'my first commit' 1>/dev/null
+# echo xx > a
+# tigger-add a
+# echo "[-a]"
+# print_pwd 0
+# tigger-commit -am 'my second commit' ;echo "Exit status: $?"
+# print_pwd 1
+# echo "log:"
+# tigger-log 2>/dev/null
+# close_tigger
 
 
-# # echo "-------------EMPTY COMMIT AFTER INITIAL COMMIT------------"
-# # open_tigger
-# # echo x > a
-# # tigger-add a 
-# # tigger-commit -m 'first commit' 1>/dev/null
+# #REP = PWD
+# echo "-------------DELTA_REP_IND_DELTA_IND_PWD------------"
+# open_tigger
+# echo x > a
+# tigger-add a
+# tigger-commit -m 'my first commit' 1>/dev/null
+# echo xx > a
+# tigger-add a
+# echo x > a
+# echo "[no option]"
+# print_pwd 0
+# tigger-commit -m 'my second commit' ;echo "Exit status: $?"
+# print_pwd 1
+# echo "log:"
+# tigger-log 2>/dev/null
+# close_tigger
 
-# # tigger-branch.sh b1 
-# # tigger-checkout.sh b1
+# open_tigger
+# echo x > a
+# tigger-add a
+# tigger-commit -m 'my first commit' 1>/dev/null
+# echo xx > a
+# tigger-add a
+# echo x > a
+# echo "[-a]"
+# print_pwd 0
+# tigger-commit -am 'my second commit' ;echo "Exit status: $?"
+# print_pwd 0
+# echo "log:"
+# tigger-log 2>/dev/null
+# close_tigger
 
-# # tigger-rm a 
-# # tigger-commit -m 'first commit' 1>/dev/null
 
-# # print_pwd
-# # close_tigger
+# echo "-------------ALL_DIFFERENT------------"
+# open_tigger
+# echo x > a
+# tigger-add a
+# tigger-commit -m 'my first commit' 1>/dev/null
+# echo xx > a
+# tigger-add a
+# echo xxx > a
+# echo "[no option]"
+# print_pwd 0
+# tigger-commit -m 'my second commit' ;echo "Exit status: $?"
+# print_pwd 1
+# echo "log:"
+# tigger-log 2>/dev/null
+# close_tigger
+
+# open_tigger
+# echo x > a
+# tigger-add a
+# tigger-commit -m 'my first commit' 1>/dev/null
+# echo xx > a
+# tigger-add a
+# echo xxx > a
+# echo "[-a]"
+# print_pwd 0
+# tigger-commit -am 'my second commit' ;echo "Exit status: $?"
+# print_pwd 1
+# echo "log:"
+# tigger-log 2>/dev/null
+# close_tigger
+
+
+# # # echo "-------------EMPTY COMMIT AFTER INITIAL COMMIT------------"
+# # # open_tigger
+# # # echo x > a
+# # # tigger-add a 
+# # # tigger-commit -m 'first commit' 1>/dev/null
+
+# # # tigger-branch.sh b1 
+# # # tigger-checkout.sh b1
+
+# # # tigger-rm a 
+# # # tigger-commit -m 'first commit' 1>/dev/null
+
+# # # print_pwd
+# # # close_tigger
 
 
 
