@@ -1,0 +1,123 @@
+#!/bin/dash
+
+
+. tigger-utilities
+. tigger-file_state
+check_repo_exists
+
+
+
+
+CREATE_OPT=$FALSE
+DELETE_OPT=$FALSE
+
+
+
+  #################
+ #   Functions   #
+#################
+
+delete_branch()
+{
+
+	branch_to_delete="$1"
+	curr_branch="$2"
+
+	[ "$branch_to_delete" != "master" ]       || die "$PRGRM: error: can not delete branch '$branch_to_delete'" 
+	[ -f "$REPO/heads/$branch_to_delete" ]    || die "$PRGRM: error: branch '$branch_to_delete' doesn't exist" 
+	[ -n "$branch_to_delete" ]				        || die "usage: $PRGRM [-d] <branch>"
+
+
+	rm -f "$REPO/heads/$branch_to_delete"	    || die "$PRGRM: failed to delete branch $branch_to_delete"
+	echo "Deleted branch '$branch_to_delete'"
+	return 0
+}
+
+
+create_branch()
+{
+	branch_name="$1"
+	branch_location="$2"
+
+	[ ! -f "$REPO/heads/$branch_name" ] || die "$PRGRM: error: branch '$branch_name' already exists"
+
+	echo -n "$branch_location" > "$REPO/heads/$branch_name"
+	return 0
+}
+
+
+
+
+  #################
+ #     Main      #
+#################
+
+
+#The new branch is initialised with whatever HEAD points to.
+#If HEAD points to NULL then there are no commits.
+new_branches_initial_commit="$(find_where_head_points)"
+[ "$new_branches_initial_commit" = "NULL" ]  && die "$PRGRM: error: this command can not be run until after the first commit" 
+
+
+#must have 0 - 2 arguments
+[ $# -gt 2 ] && die "usage: $PRGRM [-d] <branch>" 
+
+
+# if no arguments print branches
+if [ $# -eq 0 ]
+then 
+	for branch in "$REPO/heads"/*
+	do
+		branch_name=$(basename "$branch")
+		echo "$branch_name"
+	done | sort
+	exit 0
+fi
+
+
+
+
+
+
+
+
+
+
+# if delete option or invalid options given
+while getopts ":d" opts
+do
+	case $opts in
+		d) DELETE_OPT=$TRUE;;
+		\?) die "usage: $PRGRM [-d] <branch>" ;;
+ 	esac
+done
+shift $((OPTIND - 1))
+
+
+
+
+if [ $DELETE_OPT -eq $TRUE ]
+then
+	curr_head_pos="$(find_head)"
+
+	for branch in "$@"
+	do
+		delete_branch "$branch" "$curr_head_pos"
+	done
+	exit 0
+fi
+
+
+
+
+for new_branch in "$@"
+do
+	create_branch "$new_branch" "$new_branch_location"
+
+done
+exit 0
+
+
+
+
+
