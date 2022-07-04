@@ -53,10 +53,13 @@ create_branch()
 #################
 
 
-#The new branch is initialised with whatever HEAD points to.
+#The new branch is initialised with the commit HEAD points to.
 #If HEAD points to NULL then there are no commits.
 new_branches_initial_commit="$(find_where_head_points)"
+
+
 [ "$new_branches_initial_commit" = "NULL" ]  && die "$PRGRM: error: this command can not be run until after the first commit" 
+
 
 
 #must have 0 - 2 arguments
@@ -76,13 +79,6 @@ fi
 
 
 
-
-
-
-
-
-
-
 # if delete option or invalid options given
 while getopts ":d" opts
 do
@@ -93,29 +89,19 @@ do
 done
 shift $((OPTIND - 1))
 
+branch=$1
 
 
-
+# Delete option
 if [ $DELETE_OPT -eq $TRUE ]
 then
 	curr_head_pos="$(find_head)"
-
-	for branch in "$@"
-	do
-		delete_branch "$branch" "$curr_head_pos"
-	done
+	delete_branch "$branch" "$curr_head_pos"
 	exit 0
 fi
 
-
-
-
-for new_branch in "$@"
-do
-	create_branch "$new_branch" "$new_branch_location"
-
-done
-exit 0
+# Else create branch
+create_branch "$branch" "$new_branches_initial_commit"
 
 
 
