@@ -5,6 +5,12 @@
 . tigger-file_state
 check_repo_exists
 
+  #################
+ #    Defines    #
+#################
+
+CANNOT_OPEN_1=$REP_ONLY
+CANNOT_OPEN_2=$NONE_FOUND
 
   #################
  #     Main      #
@@ -20,20 +26,28 @@ do
 
 	# 'Adding' a removed file
 	status=$(find_files_state "$file" 'HEAD')
-  if [ "$status" = "$INDEX_ONLY" ]  || [ "$status" =  "$REP_AND_IND" ]      
+	
+  if [ "$status" = "$INDEX_ONLY" ]  || [ "$status" =  "$REP_AND_IND" ] || [ "$status" =  "$DELTA_REP_IND" ] 
   then
     tigger-rm --cached --force "$file"
     continue
+
+  else
+
+  	[ $(echo "$file" | grep -E "^\.") ] && die "$PRGRM: error: invalid filename '$file'"
+
+		if [ -e "$file" ] && [ ! -f "$file" ]  
+		then
+			die "$PRGRM: error: '$file' is not a regular file"
+		fi 
+
+		[ "$status" = "$CANNOT_OPEN_1" ] && die "$PRGRM: error: can not open '$file'"
+		[ "$status" = "$CANNOT_OPEN_2" ] && die "$PRGRM: error: can not open '$file'"
+
+
+		cp -a -- "$file" "$REPO/index"   || die "$PRGRM: error: unable to copy $file"
+
   fi
-
-
-
-	[ $(echo "$file" | grep -E "^\.") ] 	&& die "$PRGRM: error: invalid filename '$file'"
-
-	[ -e "$file" ]                        || die "$PRGRM: error: can not open '$file'"
-	[ -f "$file" ]                        || die "$PRGRM: error: '$file' is not a regular file"
-	cp -a -- "$file" "$REPO/index"        || die "$PRGRM: error: unable to copy $file"
- 
 done
 
 

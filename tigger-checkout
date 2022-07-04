@@ -1,0 +1,42 @@
+#!/bin/dash
+
+
+. tigger-utilities
+check_repo_exists
+
+
+
+
+
+  #################
+ #   Functions   #
+#################
+
+
+
+  #################
+ #     Main      #
+#################
+
+current_commit="$(find_where_head_points)"
+
+
+checkout_branch="$1"
+
+[ "$current_commit" = "NULL" ]        && die "$PRGRM: error: this command can not be run until after the first commit" 
+[ $# -ne 1 ] 										      && die "usage: $PRGRM <branch>" 
+[ -f "$REPO/heads/$checkout_branch" ] || die "$PRGRM: error: unknown branch '$checkout_branch'"  
+
+
+
+
+
+
+
+
+
+# update head to branch being checked out
+echo -n "$checkout_branch" > "$REPO/HEAD"
+echo "Switched to branch '$checkout_branch'"
+exit 0
+

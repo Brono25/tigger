@@ -48,3 +48,5 @@
 
 
 ./branch_test.sh &>aa ; ./ref_branch_test.sh &>bb; diff aa bb ;rm aa bb
+
+./add_test.sh &>aa ; ./ref_add_test.sh &>bb; diff aa bb ;rm aa bb
