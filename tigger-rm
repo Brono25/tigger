@@ -123,6 +123,7 @@ else
 		fi
 
 	done
+fi
 
 	if [ $CACHED_OPT -eq $FALSE ]
 		then
@@ -132,7 +133,6 @@ else
 			delete_index_files "$@"
 		fi
 
-fi
 
 exit 0
 

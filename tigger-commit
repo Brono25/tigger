@@ -202,7 +202,7 @@ create_lineage "$parent_commit" "$next_commit"
 
 
 #Copy contents of index to next_commit
-rsync -a "$REPO/index/" "$REPO/commit/$next_commit" 
+cp -aT "$REPO/index" "$REPO/commit/$next_commit" 
 echo "Committed as commit $next_commit"
 
 log_comment "$next_commit" "$@"

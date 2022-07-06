@@ -5,7 +5,6 @@
 #################
 
 
-PWD=$(pwd)
 REPO="$PWD/.tigger"
 INDEX_DIR="$REPO/index"
 PRGRM=$(basename "$0")
@@ -58,6 +57,18 @@ find_where_head_points()
 {
   head=$("find_head")
   commit_num=$(cat "$REPO/heads/$head")
+  echo -n "$commit_num"
+  return 0
+}
+
+
+find_where_branch_points()
+{
+  branch="$1"
+  [ -z "$branch" ] && return 1
+  [ -f "$REPO/heads/$branch" ] || return 1
+
+  commit_num=$(cat "$REPO/heads/$branch")
   echo -n "$commit_num"
   return 0
 }

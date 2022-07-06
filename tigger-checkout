@@ -2,11 +2,32 @@
 
 
 . tigger-utilities
+. tigger-file_state
 check_repo_exists
 
+trap 'rm -f .tmp .tpm_x' EXIT INT
+
+  #################
+ #    Defines    #
+#################
+ERROR_FOUND=1
+
+ERROR_MSG="$PRGRM: error: Your changes to the following files would be overwritten by checkout:"
 
 
 
+DELETED=$REP_ONLY
+CHANGES_NOT_STAGED="$DELTA_IND_PWD_DELTA_REP_PWD"
+DIFF_CHANGES_STAGED_1="$ALL_DIFFERENT"
+DIFF_CHANGES_STAGED_2="$DELTA_REP_IND_DELTA_IND_PWD"
+CHANGES_STAGED=$DELTA_REP_IND_DELTA_REP_PWD
+DELETED_STAGED=$DELTA_REP_IND
+UNTRACKED_1=$PWD_ONLY
+UNTRACKED_2=$DELTA_REP_PWD
+UNTRACKED_3=$REP_AND_PWD
+ADDED_TO_INDEX_FILE_CHANGED=$DELTA_IND_PWD
+ADDED_TO_INDEX=$IND_AND_PWD
+ADDED_TO_INDEX_FILE_DELETED=$INDEX_ONLY
 
   #################
  #   Functions   #
@@ -18,25 +39,95 @@ check_repo_exists
  #     Main      #
 #################
 
+
+
+
+
+
+
+checkout_branch_name="$1"
 current_commit="$(find_where_head_points)"
+COMMIT_DIR="$REPO/commit/$current_commit"
 
-
-checkout_branch="$1"
-
-[ "$current_commit" = "NULL" ]        && die "$PRGRM: error: this command can not be run until after the first commit" 
-[ $# -ne 1 ] 										      && die "usage: $PRGRM <branch>" 
-[ -f "$REPO/heads/$checkout_branch" ] || die "$PRGRM: error: unknown branch '$checkout_branch'"  
-
+[ "$current_commit" = "NULL" ] && die "$PRGRM: error: this command can not be run until after the first commit" 
+[ $# -ne 1 ]                   && die "usage: $PRGRM <branch>" 
+[ -f "$REPO/heads/$checkout_branch_name" ] || die "$PRGRM: error: unknown branch '$checkout_branch_name'" 
 
 
 
+checkout_commit=$(find_where_branch_points "$checkout_branch_name")
 
 
+
+
+
+# If new branch being checked out points to same commit as the one it branched from
+# then no commits have happened yet for this branch 
+# which changes the behaviour of checkout.
+if [ "$checkout_commit" -ne "$current_commit" ]
+then
+ 
+  #before checkout can proceed must check the status of all the 
+  #files in pwd, index and current repo commit. Some status's
+  #will throw an error and prevent checkout.
+
+
+  find  "$COMMIT_DIR"/ "$INDEX_DIR"/ "$PWD"/ -maxdepth 1  -type f  -not -name '.*' |xargs -I@ basename "@"|sort|uniq|
+
+  while IFS='' read -r file
+  do
+    status=$(find_files_state "$file" 'HEAD')
+
+    
+
+
+    [ "$status" = "$DELETED" ]               &&  echo "$file"
+    [ "$status" = "$CHANGES_NOT_STAGED" ]    &&  echo "$file"
+    [ "$status" = "$DIFF_CHANGES_STAGED_1" ] &&  echo "$file"
+    [ "$status" = "$DIFF_CHANGES_STAGED_2" ] &&  echo "$file"
+    [ "$status" = "$CHANGES_STAGED" ]        &&  echo "$file"
+    [ "$status" = "$DELETED_STAGED" ]        &&  echo "$file"
+    [ "$status" = "$UNTRACKED_1" ]           &&  echo -n "$file " >> '.tmp_x'
+    [ "$status" = "$UNTRACKED_2" ]           &&  echo -n "$file " >> '.tmp_x'
+    [ "$status" = "$UNTRACKED_3" ]           &&  echo "$file"
+    #[ "$status" = "$ADDED_TO_INDEX_FILE_CHANGED" ] &&  echo "$file"
+    #[ "$status" = "$ADDED_TO_INDEX" ]              &&  echo "$file"
+    #[ "$status" = "$ADDED_TO_INDEX_FILE_DELETED" ] &&  echo "$file"
+
+
+  done > '.tmp'
+
+
+
+  if [ -s '.tmp' ]
+  then
+    echo "$ERROR_MSG"
+    cat '.tmp'|sort 
+    exit 1
+  fi
+  rm -f '.tmp'
+ 
+  #TODO ignore untracked files
+
+
+  rm "$REPO/index"/*
+  cp "$REPO/commit/$checkout_commit"/* "$REPO/index"
+
+  find "$PWD" -maxdepth 1 -type f -not -name "$(cat '.tmp_x' 2>/dev/null|xargs)" |xargs -I@ rm "@"
+  cp -rT "$REPO/index" "$PWD/"
+
+ # rsync --exclude '.lineage' "$(cat '.tmp_x'|xargs)" -Ia "$REPO/commit/$checkout_commit/" "$REPO/index" --delete-after
+  #rsync --exclude '.tigger'  -Ia "$REPO/index/" "$PWD/" --delete-after 
+
+fi
 
 
 
 # update head to branch being checked out
-echo -n "$checkout_branch" > "$REPO/HEAD"
-echo "Switched to branch '$checkout_branch'"
+echo -n "$checkout_branch_name" > "$REPO/HEAD"
+echo "Switched to branch '$checkout_branch_name'"
 exit 0
+
+
+
 

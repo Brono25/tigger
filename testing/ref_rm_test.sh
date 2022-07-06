@@ -47,12 +47,12 @@ close_tigger
 echo "-------------PWD_ONLY------------"
 ref_open_tigger
 echo f > a
-print_pwd;  
+ref_print_all  
 2041 tigger-rm a                    ;echo "Exit status: $?"
 2041 tigger-rm --force a            ;echo "Exit status: $?"
 2041 tigger-rm --cached a           ;echo "Exit status: $?"
 2041 tigger-rm --force  --cached a  ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 
@@ -64,40 +64,40 @@ echo f > a
 rm -f a
 echo "[no options]"
 echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm a 				
 
-print_pwd;  
+ref_print_all  
 
 echo f > a
 2041 tigger-add a 
 rm -f a
 echo "[--cached]"
 echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm --cached a ;echo "Exit status: $?"
 
-print_pwd;  
+ref_print_all  
 
 echo f > a
 2041 tigger-add a 
 rm -f a
 echo "[--force]"
 echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm --force a;echo "Exit status: $?"
 
-print_pwd;  
+ref_print_all  
 
 echo f > a
 2041 tigger-add a 
 rm -f a
 echo "[--force --cached]"
 echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm --force --cached a ;echo "Exit status: $?"
 
-print_pwd;  
+ref_print_all  
 close_tigger
 
 
@@ -108,36 +108,36 @@ echo f > a
 2041 tigger-add a 
 echo "[no options]"
 echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm a ;echo "Exit status: $?"
 
-print_pwd;  
+ref_print_all  
 
 echo f > a
 2041 tigger-add a 
 echo "[--cached]"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm --cached a ;echo "Exit status: $?"
 
-print_pwd;  
+ref_print_all  
 
 echo f > a
 2041 tigger-add a 
 echo "[--force]"
 echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm --force a ;echo "Exit status: $?"
 
-print_pwd;  
+ref_print_all  
 
 echo f > a
 2041 tigger-add a 
 echo "[--force --cached]"
 echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm --force --cached a ;echo "Exit status: $?"
 
-print_pwd;  
+ref_print_all  
 close_tigger
 
 
@@ -149,33 +149,33 @@ echo f > a
 2041 tigger-add a 
 echo ff > a
 echo "[no options]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm a ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 
 echo f > a
 2041 tigger-add a 
 echo ff > a
 echo "[--cached]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm --cached a ; echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 
 echo f > a
 2041 tigger-add a 
 echo ff > a
 echo "[--force]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm --force a ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 
 echo f > a
 2041 tigger-add a 
 echo ff > a
 echo "[--force --cached]";echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm --force --cached a ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 
@@ -186,12 +186,12 @@ echo f > a
 2041 tigger-commit -m 'a' 1>/dev/null
 2041 tigger-rm --cached a 1>/dev/null
 rm -f a
-print_pwd;  
+ref_print_all  
 2041 tigger-rm a 
 2041 tigger-rm --force a 
 2041 tigger-rm --cached a 
 2041 tigger-rm --force  --cached a
-print_pwd;  
+ref_print_all  
 close_tigger
 
 
@@ -201,12 +201,12 @@ echo f > a
 2041 tigger-add a 
 2041 tigger-commit -m 'a' 1>/dev/null
 2041 tigger-rm --cached a 1>/dev/null
-print_pwd;  
+ref_print_all  
 2041 tigger-rm a 
 2041 tigger-rm --force a 
 2041 tigger-rm --cached a 
 2041 tigger-rm --force  --cached a
-print_pwd;  
+ref_print_all  
 close_tigger
 
 
@@ -217,12 +217,12 @@ echo f > a
 2041 tigger-commit -m 'a' 1>/dev/null
 2041 tigger-rm --cached a 1>/dev/null
 echo ff > a
-print_pwd;  
+ref_print_all  
 2041 tigger-rm a 
 2041 tigger-rm --force a 
 2041 tigger-rm --cached a 
 2041 tigger-rm --force  --cached a
-print_pwd;  
+ref_print_all  
 close_tigger
 
 
@@ -235,9 +235,9 @@ echo f > a
 2041 tigger-commit -m 'a' 1>/dev/null
 rm -f a
 echo "[no options]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm a ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 ref_open_tigger
@@ -246,9 +246,9 @@ echo f > a
 2041 tigger-commit -m 'a' 1>/dev/null
 rm -f a
 echo "[--force]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm --force a ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 ref_open_tigger
@@ -257,9 +257,9 @@ echo f > a
 2041 tigger-commit -m 'a' 1>/dev/null
 rm -f a
 echo "[--cached]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm --cached a ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 ref_open_tigger
@@ -268,9 +268,9 @@ echo f > a
 2041 tigger-commit -m 'a' 1>/dev/null
 rm -f a
 echo "[--force --cached]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm --force --cached a ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 
@@ -283,9 +283,9 @@ echo ff > a
 2041 tigger-add a 
 rm -f a
 echo "[no options]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm a ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 ref_open_tigger
@@ -296,9 +296,9 @@ echo ff > a
 2041 tigger-add a 
 rm -f a
 echo "[--force]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm --force a ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 ref_open_tigger
@@ -309,9 +309,9 @@ echo ff > a
 2041 tigger-add a 
 rm -f a
 echo "[--cached]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm --cached a ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 ref_open_tigger
@@ -322,9 +322,9 @@ echo ff > a
 2041 tigger-add a 
 rm -f a
 echo "[--force --cached]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm --force --cached a ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 
@@ -334,9 +334,9 @@ echo f > a
 2041 tigger-add a 
 2041 tigger-commit -m 'a' 1>/dev/null
 echo "[no options]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm a ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 ref_open_tigger
@@ -344,9 +344,9 @@ echo f > a
 2041 tigger-add a 
 2041 tigger-commit -m 'a' 1>/dev/null
 echo "[--force]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm --force a ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 ref_open_tigger
@@ -354,9 +354,9 @@ echo f > a
 2041 tigger-add a 
 2041 tigger-commit -m 'a' 1>/dev/null
 echo "[--cached]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm --cached a ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 ref_open_tigger
@@ -364,9 +364,9 @@ echo f > a
 2041 tigger-add a 
 2041 tigger-commit -m 'a' 1>/dev/null
 echo "[--force --cached]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm --force --cached a ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 
@@ -378,9 +378,9 @@ echo f > a
 2041 tigger-commit -m 'a' 1>/dev/null
 echo ff > a
 echo "[no options]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm a ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 ref_open_tigger
@@ -389,9 +389,9 @@ echo f > a
 2041 tigger-commit -m 'a' 1>/dev/null
 echo ff > a
 echo "[--force]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm --force a ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 ref_open_tigger
@@ -400,9 +400,9 @@ echo f > a
 2041 tigger-commit -m 'a' 1>/dev/null
 echo ff > a
 echo "[--cached]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm --cached a ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 ref_open_tigger
@@ -411,9 +411,9 @@ echo f > a
 2041 tigger-commit -m 'a' 1>/dev/null
 echo ff > a
 echo "[--force --cached]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm --force --cached a ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 #IND = PWD
@@ -425,9 +425,9 @@ echo f > a
 echo ff > a
 2041 tigger-add a 
 echo "[no options]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm a ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 ref_open_tigger
@@ -437,9 +437,9 @@ echo f > a
 echo ff > a
 2041 tigger-add a 
 echo "[--force]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm --force a ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 ref_open_tigger
@@ -449,9 +449,9 @@ echo f > a
 echo ff > a
 2041 tigger-add a 
 echo "[--cached]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm --cached a ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 ref_open_tigger
@@ -461,9 +461,9 @@ echo f > a
 echo ff > a
 2041 tigger-add a 
 echo "[--force --cached]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm --force --cached a ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 
@@ -477,9 +477,9 @@ echo ff > a
 2041 tigger-add a 
 echo f > a
 echo "[no options]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm a ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 ref_open_tigger
@@ -490,9 +490,9 @@ echo ff > a
 2041 tigger-add a 
 echo f > a
 echo "[--force]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm --force a ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 ref_open_tigger
@@ -503,9 +503,9 @@ echo ff > a
 2041 tigger-add a 
 echo f > a
 echo "[--cached]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm --cached a ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 ref_open_tigger
@@ -516,9 +516,9 @@ echo ff > a
 2041 tigger-add a 
 echo f > a
 echo "[--force --cached]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm --force --cached a ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 
@@ -532,9 +532,9 @@ echo ff > a
 2041 tigger-add a 
 echo fff > a
 echo "[no options]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm a ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 ref_open_tigger
@@ -545,9 +545,9 @@ echo ff > a
 2041 tigger-add a 
 echo fff > a
 echo "[--force]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm --force a ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 ref_open_tigger
@@ -558,9 +558,9 @@ echo ff > a
 2041 tigger-add a 
 echo fff > a
 echo "[--cached]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm --cached a ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 ref_open_tigger
@@ -571,9 +571,9 @@ echo ff > a
 2041 tigger-add a 
 echo fff > a
 echo "[--force --cached]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm --force --cached a ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 
@@ -586,9 +586,9 @@ echo f > a
 echo ff > a
 2041 tigger-add a 
 echo fff > a
-print_pwd;  
+ref_print_all  
 2041 tigger-rm a b ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 
@@ -609,9 +609,9 @@ echo xx > i
 touch h
 
 echo "[no options]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm a b c d e f g h i j ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 echo "-------------MULTIPLE FILES ERROR ORDER-[--force]------------"
@@ -631,9 +631,9 @@ echo xx > i
 touch h
 
 echo "[no options]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm --force g h i c f j d e a b   ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 
@@ -654,9 +654,9 @@ echo xx > i
 touch h
 
 echo "[no options]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm --cached g h i c f j d e a b   ;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 
@@ -681,9 +681,9 @@ touch h z
 2041 tigger-commit -m 'second commit' 
 
 echo "[no options]"; echo "initial"
-print_pwd;  
+ref_print_all  
 2041 tigger-rm  e f x g y h z i s j k;echo "Exit status: $?"
-print_pwd;  
+ref_print_all  
 close_tigger
 
 

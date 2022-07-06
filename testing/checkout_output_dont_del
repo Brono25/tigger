@@ -1,0 +1,870 @@
+-------------WRONG USAGE & NO REPO------------
+tigger-checkout: error: tigger repository directory .tigger not found
+Exit status: 1
+tigger-checkout: error: tigger repository directory .tigger not found
+Exit status: 1
+
+-------------WRONG USAGE NO COMMIT ------------
+tigger-checkout: error: this command can not be run until after the first commit
+Exit status: 1
+tigger-checkout: error: this command can not be run until after the first commit
+Exit status: 1
+
+
+-------------WRONG USAGE WITH COMMIT------------
+Committed as commit 0
+usage: tigger-checkout <branch>
+usage: tigger-checkout <branch>
+
+
+-------------CHECKOUT UNKNOWN BRANCH------------
+Committed as commit 0
+tigger-checkout: error: unknown branch 'b1'
+
+
+-------------CHECKOUT FLOATING COMMIT------------
+Committed as commit 0
+
+
+
+	PWD:
+		a -> 1
+		b -> x
+
+	IND:
+		a -> 1
+		b -> x
+
+	REP:0
+		a -> 1
+		b -> x
+
+	REP:1
+
+
+a - same as repo
+b - same as repo
+
+
+Switched to branch 'b1'
+Switched to branch 'b2'
+Committed as commit 1
+
+
+
+	PWD:
+		a -> 1
+		b -> y
+
+	IND:
+		a -> 1
+		b -> y
+
+	REP:0
+		a -> 1
+		b -> x
+
+	REP:1
+		a -> 1
+		b -> y
+
+
+a - same as repo
+b - same as repo
+
+
+Switched to branch 'b1'
+
+
+
+	PWD:
+		a -> 1
+		b -> x
+
+	IND:
+		a -> 1
+		b -> x
+
+	REP:0
+		a -> 1
+		b -> x
+
+	REP:1
+		a -> 1
+		b -> y
+
+
+a - same as repo
+b - same as repo
+
+
+
+
+-------------PWD_ONLY------------
+Committed as commit 0
+
+
+
+	PWD:
+		a -> 1
+		b -> 2
+
+	IND:
+
+	REP:0
+		c -> 1
+
+
+a - untracked
+b - untracked
+c - deleted
+
+
+Switched to branch 'b1'
+Committed as commit 1
+
+
+
+	PWD:
+		a -> 2
+		b -> 2
+
+	IND:
+
+	REP:0
+		c -> 1
+
+	REP:1
+		c -> 2
+
+
+a - untracked
+b - untracked
+c - deleted
+
+
+tigger-checkout: error: Your changes to the following files would be overwritten by checkout:
+c
+
+
+-------------INDEX_ONLY------------
+Committed as commit 0
+
+
+
+	PWD:
+		$file-
+
+	IND:
+		a -> 1
+		b -> 1
+
+	REP:0
+		c -> 1
+
+
+a - added to index, file deleted
+b - added to index, file deleted
+c - deleted
+
+
+Switched to branch 'b1'
+Committed as commit 1
+
+
+
+	PWD:
+		$file-
+
+	IND:
+		a -> 2
+		b -> 2
+
+	REP:0
+		c -> 1
+
+	REP:1
+		c -> 2
+
+
+a - added to index, file deleted
+b - added to index, file deleted
+c - deleted
+
+
+tigger-checkout: error: Your changes to the following files would be overwritten by checkout:
+c
+
+
+-------------IND_AND_PWD------------
+Committed as commit 0
+
+
+
+	PWD:
+		a -> 1
+		b -> 1
+
+	IND:
+		a -> 1
+		b -> 1
+
+	REP:0
+		c -> 1
+
+
+a - added to index
+b - added to index
+c - deleted
+
+
+Switched to branch 'b1'
+Committed as commit 1
+
+
+
+	PWD:
+		a -> 2
+		b -> 2
+
+	IND:
+		a -> 2
+		b -> 2
+
+	REP:0
+		c -> 1
+
+	REP:1
+		c -> 2
+
+
+a - added to index
+b - added to index
+c - deleted
+
+
+tigger-checkout: error: Your changes to the following files would be overwritten by checkout:
+c
+
+
+-------------DELTA_IND_PWD------------
+Committed as commit 0
+
+
+
+	PWD:
+		a -> 2
+		b -> 2
+
+	IND:
+		a -> 1
+		b -> 1
+
+	REP:0
+		c -> 1
+
+
+a - added to index, file changed
+b - added to index, file changed
+c - deleted
+
+
+Switched to branch 'b1'
+Committed as commit 1
+
+
+
+	PWD:
+		a -> 3
+		b -> 3
+
+	IND:
+		a -> 2
+		b -> 2
+
+	REP:0
+		c -> 1
+
+	REP:1
+		c -> 2
+
+
+a - added to index, file changed
+b - added to index, file changed
+c - deleted
+
+
+tigger-checkout: error: Your changes to the following files would be overwritten by checkout:
+c
+
+
+-------------REP_ONLY------------
+Committed as commit 0
+
+
+
+	PWD:
+		$file-
+
+	IND:
+
+	REP:0
+		a -> 1
+		b -> 1
+
+
+a - deleted
+b - deleted
+
+
+Switched to branch 'b1'
+Committed as commit 1
+
+
+
+	PWD:
+		$file-
+
+	IND:
+
+	REP:0
+		a -> 1
+		b -> 1
+
+	REP:1
+		a -> 2
+		b -> 2
+
+
+a - deleted
+b - deleted
+
+
+tigger-checkout: error: Your changes to the following files would be overwritten by checkout:
+a
+b
+
+
+-------------REP_AND_PWD------------
+Committed as commit 0
+
+
+
+	PWD:
+		a -> 1
+		b -> 1
+
+	IND:
+
+	REP:0
+		a -> 1
+		b -> 1
+
+
+a - untracked
+b - untracked
+
+
+Switched to branch 'b1'
+Committed as commit 1
+
+
+
+	PWD:
+		a -> 2
+		b -> 2
+
+	IND:
+
+	REP:0
+		a -> 1
+		b -> 1
+
+	REP:1
+		a -> 2
+		b -> 2
+
+
+a - untracked
+b - untracked
+
+
+tigger-checkout: error: Your changes to the following files would be overwritten by checkout:
+a
+b
+
+
+-------------DELTA_REP_PWD------------
+Committed as commit 0
+
+
+
+	PWD:
+		a -> 1
+		b -> 1
+
+	IND:
+
+	REP:0
+		a -> 1
+		b -> 1
+
+
+a - untracked
+b - untracked
+
+
+Switched to branch 'b1'
+Committed as commit 1
+
+
+
+	PWD:
+		a -> 2
+		b -> 2
+
+	IND:
+
+	REP:0
+		a -> 1
+		b -> 1
+
+	REP:1
+		a -> 2
+		b -> 2
+
+
+a - untracked
+b - untracked
+
+
+tigger-checkout: error: Your changes to the following files would be overwritten by checkout:
+a
+b
+
+
+-------------REP_AND_IND------------
+Committed as commit 0
+
+
+
+	PWD:
+		$file-
+
+	IND:
+		a -> 1
+		b -> 1
+
+	REP:0
+		a -> 1
+		b -> 1
+
+
+a - file deleted
+b - file deleted
+
+
+Switched to branch 'b1'
+Committed as commit 1
+
+
+
+	PWD:
+		$file-
+
+	IND:
+		a -> 2
+		b -> 2
+
+	REP:0
+		a -> 1
+		b -> 1
+
+	REP:1
+		a -> 2
+		b -> 2
+
+
+a - file deleted
+b - file deleted
+
+
+Switched to branch 'master'
+
+
+
+	PWD:
+		a -> 1
+		b -> 1
+
+	IND:
+		a -> 1
+		b -> 1
+
+	REP:0
+		a -> 1
+		b -> 1
+
+	REP:1
+		a -> 2
+		b -> 2
+
+
+a - same as repo
+b - same as repo
+
+
+
+
+-------------DELTA_REP_IND------------
+Committed as commit 0
+
+
+
+	PWD:
+		$file-
+
+	IND:
+		a -> 2
+		b -> 2
+
+	REP:0
+		a -> 1
+		b -> 1
+
+
+a - file deleted, different changes staged for commit
+b - file deleted, different changes staged for commit
+
+
+Switched to branch 'b1'
+Committed as commit 1
+
+
+
+	PWD:
+		$file-
+
+	IND:
+		a -> 3
+		b -> 3
+
+	REP:0
+		a -> 1
+		b -> 1
+
+	REP:1
+		a -> 2
+		b -> 2
+
+
+a - file deleted, different changes staged for commit
+b - file deleted, different changes staged for commit
+
+
+tigger-checkout: error: Your changes to the following files would be overwritten by checkout:
+a
+b
+
+
+-------------ALL_SAME------------
+Committed as commit 0
+
+
+
+	PWD:
+		a -> 1
+		b -> 1
+
+	IND:
+		a -> 1
+		b -> 1
+
+	REP:0
+		a -> 1
+		b -> 1
+
+
+a - same as repo
+b - same as repo
+
+
+Switched to branch 'b1'
+Committed as commit 1
+
+
+
+	PWD:
+		a -> 2
+		b -> 2
+
+	IND:
+		a -> 2
+		b -> 2
+
+	REP:0
+		a -> 1
+		b -> 1
+
+	REP:1
+		a -> 2
+		b -> 2
+
+
+a - same as repo
+b - same as repo
+
+
+Switched to branch 'master'
+
+
+
+	PWD:
+		a -> 1
+		b -> 1
+
+	IND:
+		a -> 1
+		b -> 1
+
+	REP:0
+		a -> 1
+		b -> 1
+
+	REP:1
+		a -> 2
+		b -> 2
+
+
+a - same as repo
+b - same as repo
+
+
+
+
+-------------DELTA_IND_PWD_DELTA_REP_PWD------------
+Committed as commit 0
+
+
+
+	PWD:
+		a -> 1
+		b_file -> 1
+
+	IND:
+		a -> 1
+
+	REP:0
+		a -> 1
+
+
+a - same as repo
+b_file - same as repo
+
+
+Switched to branch 'b1'
+
+
+
+	PWD:
+		a -> 2
+		b_file -> 2
+
+	IND:
+		a -> 1
+
+	REP:0
+		a -> 1
+
+
+a - file changed, changes not staged for commit
+b_file - file changed, changes not staged for commit
+
+
+Switched to branch 'master'
+Committed as commit 1
+tigger-checkout: error: Your changes to the following files would be overwritten by checkout:
+a
+b_file
+
+
+
+	PWD:
+		a -> 3
+		b_file -> 3
+
+	IND:
+		a -> 2
+
+	REP:0
+		a -> 1
+
+	REP:1
+		a -> 2
+
+
+a - file changed, changes not staged for commit
+b_file - file changed, changes not staged for commit
+
+
+
+
+-------------DELTA_REP_IND_DELTA_REP_PWD------------
+Committed as commit 0
+
+
+
+	PWD:
+		a -> 2
+		b -> 2
+
+	IND:
+		a -> 2
+		b -> 2
+
+	REP:0
+		a -> 1
+		b -> 1
+
+
+a - file changed, changes staged for commit
+b - file changed, changes staged for commit
+
+
+Switched to branch 'b1'
+Committed as commit 1
+
+
+
+	PWD:
+		a -> 3
+		b -> 3
+
+	IND:
+		a -> 3
+		b -> 3
+
+	REP:0
+		a -> 1
+		b -> 1
+
+	REP:1
+		a -> 2
+		b -> 2
+
+
+a - file changed, changes staged for commit
+b - file changed, changes staged for commit
+
+
+tigger-checkout: error: Your changes to the following files would be overwritten by checkout:
+a
+b
+
+
+-------------DELTA_REP_IND_DELTA_IND_PWD------------
+Committed as commit 0
+
+
+
+	PWD:
+		a -> 1
+		b -> 1
+
+	IND:
+		a -> 2
+		b -> 2
+
+	REP:0
+		a -> 1
+		b -> 1
+
+
+a - file changed, different changes staged for commit
+b - file changed, different changes staged for commit
+
+
+Switched to branch 'b1'
+Committed as commit 1
+
+
+
+	PWD:
+		a -> 2
+		b -> 2
+
+	IND:
+		a -> 3
+		b -> 3
+
+	REP:0
+		a -> 1
+		b -> 1
+
+	REP:1
+		a -> 2
+		b -> 2
+
+
+a - file changed, different changes staged for commit
+b - file changed, different changes staged for commit
+
+
+tigger-checkout: error: Your changes to the following files would be overwritten by checkout:
+a
+b
+
+
+-------------ALL_DIFFERENT------------
+Committed as commit 0
+
+
+
+	PWD:
+		a -> 3
+		b -> 3
+
+	IND:
+		a -> 2
+		b -> 2
+
+	REP:0
+		a -> 1
+		b -> 1
+
+
+a - file changed, different changes staged for commit
+b - file changed, different changes staged for commit
+
+
+Switched to branch 'b1'
+Committed as commit 1
+
+
+
+	PWD:
+		a -> 4
+		b -> 4
+
+	IND:
+		a -> 3
+		b -> 3
+
+	REP:0
+		a -> 1
+		b -> 1
+
+	REP:1
+		a -> 2
+		b -> 2
+
+
+a - file changed, different changes staged for commit
+b - file changed, different changes staged for commit
+
+
+tigger-checkout: error: Your changes to the following files would be overwritten by checkout:
+a
+b
+
+

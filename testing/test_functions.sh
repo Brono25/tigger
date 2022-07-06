@@ -37,7 +37,7 @@ print_pwd()
 		tmp=$(basename "$file")
 		if [ "$tmp" = '*' ] 
 		then
-			echo '		-'
+			echo '		$file-'
 			continue
 		fi
 		echo -n "		$file -> "
@@ -45,4 +45,99 @@ print_pwd()
 		echo $content
 	done
 }
+
+
+ref_print_ind()
+{
+	echo "\n	IND:"
+	for file in $@
+	do
+		2041 tigger-show :$file   1> /dev/null 2> /dev/null|| continue
+		
+		echo "		$file -> $(2041 tigger-show :$file)"
+
+	done
+	
+}
+
+ref_print_repo()
+{
+	repo="$1"
+	shift 1
+
+	echo "\n	REP:$repo"
+	for file in $@
+	do
+		2041 tigger-show "$repo:$file"   1> /dev/null 2> /dev/null|| continue
+		echo "		$file -> $(2041 tigger-show $repo:$file)"
+		
+	done
+
+}
+
+
+
+ref_print_all()
+{
+	repo=$1
+	echo '\n'
+	print_pwd
+	ref_print_ind a b c 
+
+	for rep in $@
+	do
+		ref_print_repo "$rep" a b c d e f g 
+	done
+	echo '\n'
+	2041 tigger-status
+	echo '\n'
+}
+
+
+print_ind()
+{
+	echo "\n	IND:"
+	for file in $@
+	do
+		tigger-show :$file   1> /dev/null 2> /dev/null|| continue
+		
+		echo "		$file -> $(tigger-show :$file)"
+
+	done
+	
+}
+
+print_repo()
+{
+	repo="$1"
+	shift 1
+
+	echo "\n	REP:$repo"
+	for file in $@
+	do
+		tigger-show "$repo:$file"   1> /dev/null 2> /dev/null|| continue
+		echo "		$file -> $(tigger-show $repo:$file)"
+		
+	done
+
+}
+
+
+
+print_all()
+{
+	repo=$1
+	echo '\n'
+	print_pwd
+	print_ind a b c 
+
+	for rep in $@
+	do
+		print_repo "$rep" a b c d e f g 
+	done
+	echo '\n'
+	tigger-status
+	echo '\n'
+}
+
 
