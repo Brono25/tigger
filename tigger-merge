@@ -13,8 +13,39 @@ check_repo_exists
 OPTION_M=$FALSE
 COMMIT_GIVEN=$FALSE
 
+remove_files_from_pwd_excluding_untracked()
+{
+  for file in "$PWD"/*
+  do
+    [ "$file" = '*' ] && return 0
+
+    file=$(basename "$file")
+    status=$(find_files_state "$file" 'HEAD')
+
+    if [ ! "$status" = "$PWD_ONLY" ] && [ ! "$status" = "$DELTA_REP_PWD" ]
+    then
+       rm -f "$PWD/$file"
+    fi
+  done
+  return 0
+}
 
 
+update_pwd_from_index()
+{
+  remove_files_from_pwd_excluding_untracked
+  cp -rT "$REPO/index" "$PWD/"
+
+}
+
+update_index_from_commit()
+{
+
+  commit="$1"
+  rm "$REPO/index"/*
+  cp "$REPO/commit/$commit"/* "$REPO/index"
+  
+}
 
 
 
@@ -55,19 +86,6 @@ find_common_ancestor_commit()
   done
   return 1
 }
-
-
-# a merge is fast-forward when the commits
-# of the merging branches appear in eachothers lineage.
-# for the two brances below 
-
-# master: 3->2->1->NULL
-#    b1:  2->1->NULL
-
-#if merging b1 to master b1 is pointed to commit 3 (fast-forward merge)
-#if merging master to b1, since master commit 3 > b1 commit 2 error message 'already up to date'
-# do nothing.
-
 
 
 
@@ -149,24 +167,62 @@ then
   curr_branch="$(find_head)"
   branch_to_merge_with="$merge_to"
 
+#-------------------- IF COMMIT GIVEN ---------------------
+else
 
-  [ "$curr_commit" -eq "$merge_commit" ] && die "Already up to date"
-
-
-  if [ "$curr_commit" -lt "$merge_commit" ]
-  then
-    is_commit_on_branch "$curr_commit"  "$branch_to_merge_with" && echo "Fast-forward: no commit created"
-    echo "$merge_commit" > "$REPO/heads/$curr_branch" #update branch to point to the same commit
-    tigger-checkout "$branch_to_merge_with"
-    exit 0
-
-  else
-    is_commit_on_branch "$merge_commit" "$curr_branch"  && die "Already up to date"
-
-  fi
-
-
+  curr_commit=$(find_where_head_points)
+  merge_commit="$merge_to"
+  common_commit=$(find_common_ancestor_commit "$curr_commit" "$merge_commit")
+  curr_branch="$(find_head)"
 fi
+
+
+
+
+[ "$curr_commit" -eq "$merge_commit" ] && die "Already up to date"
+
+
+
+
+#-------------------- FAST-FORWARD CONDITION ---------------------
+#fast forward happens when two branch names lie in the same branch.
+#if this is the case and the 'merge to' branch is a more recent commit then
+#the 'merge from' branch is pointed to this new location without making a commit.
+#if vice versa then throw already up to date error.
+is_commit_on_branch "$curr_commit"  "$branch_to_merge_with"
+if [ $? -eq  "$TRUE" ]
+then
+  if [ "$curr_commit" -lt "$merge_commit" ]
+    then
+      echo "Fast-forward: no commit created"
+      update_index_from_commit "$merge_commit"
+      remove_files_from_pwd_excluding_untracked
+      update_pwd_from_index
+      echo "$merge_commit" > "$REPO/heads/$curr_branch" #update branch to point to the same commit
+      exit 0
+    else
+      is_commit_on_branch "$merge_commit" "$curr_branch"  && die "Already up to date"
+  fi
+fi
+
+
+#-------------------- DO MERGE ---------------------
+  
+  dir1="$REPO/commit/$curr_commit"
+  dir2="$REPO/commit/$merge_commit"
+  dir3="$REPO/commit/$common_commit"
+
+  find  "$dir1" "$dir2" "$dir3" -maxdepth 1  -type f  -not -name '.*' | sort|
+  while read -r file
+  do
+    
+    echo "$file"
+
+  done
+  
+
+
+
 
 
 

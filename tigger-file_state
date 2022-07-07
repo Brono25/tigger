@@ -72,7 +72,7 @@ find_files_state()
   index_file="$REPO/index/$file_name"
 
  
-  state=0x00 #default state 
+  state="$NONE_FOUND" #default state 
 
   is_file_in_pwd     "$pwd_file" && state=$((state | PWD_FLAG)); ret_pwd=$?
   is_file_in_repo   "$repo_file" && state=$((state | REP_FLAG)); ret_repo=$?

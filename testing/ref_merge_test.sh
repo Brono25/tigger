@@ -175,10 +175,59 @@ trap 'rm -f a b' EXIT INT
 # close_tigger
 
 
-echo "-------------FAST FORWARD MASTER TO B1------------"
+# echo "-------------FAST FORWARD MASTER TO B1------------"
+# ref_open_tigger
+# touch a 
+# 2041 tigger-add a
+# 2041 tigger-commit -m commit-0
+
+# 2041 tigger-branch b2
+# 2041 tigger-branch b1
+# 2041 tigger-checkout b1
+
+
+# touch b
+# 2041 tigger-add b
+# 2041 tigger-commit -m commit-1cd ..
+
+# touch c
+# rm a b
+# 2041 tigger-add a b c
+# 2041 tigger-commit -m commit-2
+
+
+# touch d
+# 2041 tigger-add d
+# 2041 tigger-commit -m commit-3
+
+# 2041 tigger-checkout b2
+
+
+
+
+# touch e
+# 2041 tigger-add e
+# 2041 tigger-commit -m commit-4
+
+# touch f
+# 2041 tigger-add f
+# 2041 tigger-commit -m commit-5
+
+
+# #ref_print_all 0 1 2 3 4 5
+
+
+# 2041 tigger-checkout master
+# 2041 tigger-merge b1 -m m2
+
+# ref_print_all 0 1 2 3 4 5
+# close_tigger
+
+
+echo "-------------MERGE MASTER B1 TO B2 NO CONFLICT------------"
 ref_open_tigger
 touch a 
-2041 tigger-add a
+2041 tigger-add a 
 2041 tigger-commit -m commit-0
 
 2041 tigger-branch b2
@@ -207,6 +256,7 @@ touch d
 
 touch e
 2041 tigger-add e
+2041 tigger-rm a
 2041 tigger-commit -m commit-4
 
 touch f
@@ -217,55 +267,11 @@ touch f
 #ref_print_all 0 1 2 3 4 5
 
 
-2041 tigger-checkout master
-2041 tigger-merge b1 -m m2
+2041 tigger-checkout b1
+2041 tigger-merge b2 -m m2
 
-ref_print_all 0 1 2 3 4 5
+ref_print_all 0 1 2 3 4 5 6
 close_tigger
-
-# echo "-------------MERGE------------"
-# ref_open_tigger
-# touch a 
-# 2041 tigger-add a
-# 2041 tigger-commit -m commit-0
-
-# 2041 tigger-branch b1
-# 2041 tigger-checkout b1
-
-# 2041 tigger-merge master -m m1
-
-
-# touch b  
-# 2041 tigger-add b
-# 2041 tigger-commit -m commit-1
-
-
-# 2041 tigger-branch b2
-# 2041 tigger-checkout b2
-# touch c
-# rm a b
-# 2041 tigger-add a b c
-# 2041 tigger-commit -m commit-2
-
-
-# 2041 tigger-checkout b1
-
-
-# touch d
-# touch  b
-# 2041 tigger-add a b d
-# 2041 tigger-commit -m commit-3
-# ref_print_all 0 1 2 3
-
-# 2041 tigger-checkout b2
-# 2041 tigger-merge b1 -m m1
-
-# ref_print_all 0 1 2 3 4
-
-
-
-
-# close_tigger
 
 
 

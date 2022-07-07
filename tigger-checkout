@@ -49,7 +49,6 @@ remove_files_from_pwd_excluding_untracked()
   return 0
 }
 
-
 update_pwd_from_index()
 {
   remove_files_from_pwd_excluding_untracked
@@ -69,10 +68,6 @@ update_index_from_commit()
   #################
  #     Main      #
 #################
-
-
-
-
 
 
 
