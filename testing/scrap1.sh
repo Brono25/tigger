@@ -14,56 +14,31 @@ open_tigger
 # #-----------------------------------
 
 
-touch a b c
+
+
+echo hello >a
 tigger-add a
 tigger-commit -m commit-A
 
-tigger-branch b1
-tigger-checkout b1
+tigger-branch branch1
+tigger-checkout branch1
 
-touch d e
-tigger-rm a b
-
-tigger-commit -m commit-B
-
-print_all 0 1 2 
+echo world >b
+tigger-add b
+tigger-commit -a -m commit-B
 
 tigger-checkout master
 
+tigger-branch -d branch1
 
+tigger-merge branch1 -m merge-message
 
-tigger-branch b2
-tigger-checkout b2
-
-
-
-touch f g
-tigger-rm b c
-
-
-
-tigger-add f g
-tigger-commit -m commit-C
-
-
+# tigger-branch -d branch1
 
 tigger-branch
 
-tigger-checkout b1
 
 print_all 0 1 2 3 4
-
-# tigger-checkout master
-
-# tigger-checkout b2
-
-# tigger-checkout b1
-
-# tigger-checkout master
-
-# tigger-checkout b2
-
-# tigger-checkout b1
 
 
 
@@ -72,10 +47,10 @@ print_all 0 1 2 3 4
 
 
 # #-----------------------------------
-# close_tigger
-# echo ''
-# cd ..
-# rm -rf delete
+close_tigger
+echo ''
+cd ..
+rm -rf delete
 
 
 

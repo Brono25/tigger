@@ -14,58 +14,28 @@ ref_open_tigger
 
 
 
-touch a b c
+echo hello >a
 2041 tigger-add a
 2041 tigger-commit -m commit-A
 
-2041 tigger-branch b1
-2041 tigger-checkout b1
+2041 tigger-branch branch1
+2041 tigger-checkout branch1
 
-touch d e
-2041 tigger-rm a b
+echo world >b
+2041 tigger-add b
+2041 tigger-commit -a -m commit-B
 
-2041 tigger-commit -m commit-B
-ref_print_all 0 1 2 
 2041 tigger-checkout master
 
+2041 tigger-branch -d branch1
 
+2041 tigger-merge branch1 -m merge-message
 
-2041 tigger-branch b2
-2041 tigger-checkout b2
-
-
-
-touch f g
-2041 tigger-rm b c
-
-
-
-2041 tigger-add f g
-2041 tigger-commit -m commit-C
-
-
-
-
+2041 tigger-branch -d branch1
 
 2041 tigger-branch
 
-2041 tigger-checkout b1
-
 ref_print_all 0 1 2 3 4
-
-# 2041 tigger-checkout master
-
-# 2041 tigger-checkout b2
-
-# 2041 tigger-checkout b1
-
-# 2041 tigger-checkout master
-
-# 2041 tigger-checkout b2
-
-# 2041 tigger-checkout b1
-
-
 
 
 

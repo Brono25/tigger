@@ -216,7 +216,104 @@ trap 'rm -f a b' EXIT INT
 # close_tigger
 
 
-echo "-------------MERGE MASTER B1 TO B2 NO CONFLICT------------"
+# echo "-------------MERGE MASTER B1 TO B2 NO CONFLICT------------"
+# open_tigger
+# touch a 
+# tigger-add a 
+# tigger-commit -m commit-0
+
+# tigger-branch b2
+# tigger-branch b1
+# tigger-checkout b1
+
+
+# touch b
+# tigger-add b
+# tigger-commit -m commit-1
+
+# touch c
+# rm a b
+# tigger-add a b c
+# tigger-commit -m commit-2
+
+
+# touch d
+# tigger-add d
+# tigger-commit -m commit-3
+
+# tigger-checkout b2
+
+# touch e
+# tigger-add e
+# tigger-rm a
+# tigger-commit -m commit-4
+
+# touch f
+# tigger-add f
+# tigger-commit -m commit-5
+
+
+# #print_all 0 1 2 3 4 5
+
+
+# tigger-checkout b1
+# tigger-merge b2 -m m2
+
+# print_all 0 1 2 3 4 5 6
+# close_tigger
+
+# echo "-------------DELTA_D1_D3------------"
+# open_tigger
+# touch a 
+# tigger-add a 
+# tigger-commit -m commit-0
+
+# tigger-branch b2
+# tigger-branch b1
+# tigger-checkout b1
+
+
+# touch b
+# tigger-add b
+# tigger-commit -m commit-1
+
+# touch c
+# echo x > a
+# rm  b
+# tigger-add a b c
+# tigger-commit -m commit-2
+
+
+# touch d
+# tigger-add d
+# tigger-commit -m commit-3
+
+# tigger-checkout b2
+
+
+
+
+# touch e
+# tigger-add e
+# tigger-rm a
+# tigger-commit -m commit-4
+
+# touch f
+# tigger-add f
+# tigger-commit -m commit-5
+
+
+# #ref_print_all 0 1 2 3 4 5
+
+
+# tigger-checkout b1
+# tigger-merge b2 -m m2
+
+# print_all 0 1 2 3 4 5 6
+# close_tigger
+
+
+echo "-------------DELTA_D2_D3------------"
 open_tigger
 touch a 
 tigger-add a 
@@ -232,7 +329,8 @@ tigger-add b
 tigger-commit -m commit-1
 
 touch c
-rm a b
+echo x > a
+rm  b
 tigger-add a b c
 tigger-commit -m commit-2
 
@@ -242,6 +340,9 @@ tigger-add d
 tigger-commit -m commit-3
 
 tigger-checkout b2
+
+
+
 
 touch e
 tigger-add e
@@ -253,15 +354,14 @@ tigger-add f
 tigger-commit -m commit-5
 
 
-#print_all 0 1 2 3 4 5
+#ref_print_all 0 1 2 3 4 5
 
 
-tigger-checkout b1
-tigger-merge b2 -m m2
+tigger-checkout b2
+tigger-merge b1 -m m2
 
 print_all 0 1 2 3 4 5 6
 close_tigger
-
 
 
 # echo "-------------INDEX_ONLY------------"
