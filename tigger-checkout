@@ -10,24 +10,25 @@ trap 'rm -f .tmp' EXIT INT
   #################
  #    Defines    #
 #################
-ERROR_FOUND=1
 
+COMMIT_DIR="$REPO/commit/$("find_where_head_points")" 
+ERROR_FOUND=1
 ERROR_MSG="$PRGRM: error: Your changes to the following files would be overwritten by checkout:"
 
 
 
-DELETED=$REP_ONLY
-CHANGES_NOT_STAGED="$DELTA_IND_PWD_DELTA_REP_PWD"
+DELETED="$D1_ONLY"  
+CHANGES_NOT_STAGED="$DELTA_D2_D3_DELTA_D1_D3" 
 DIFF_CHANGES_STAGED_1="$ALL_DIFFERENT"
-DIFF_CHANGES_STAGED_2="$DELTA_REP_IND_DELTA_IND_PWD"
-CHANGES_STAGED=$DELTA_REP_IND_DELTA_REP_PWD
-DELETED_STAGED=$DELTA_REP_IND
-UNTRACKED_1=$PWD_ONLY
-UNTRACKED_2=$DELTA_REP_PWD
-UNTRACKED_3=$REP_AND_PWD
-ADDED_TO_INDEX_FILE_CHANGED=$DELTA_IND_PWD
-ADDED_TO_INDEX=$IND_AND_PWD
-ADDED_TO_INDEX_FILE_DELETED=$INDEX_ONLY
+DIFF_CHANGES_STAGED_2="$DELTA_D1_D2_DELTA_D2_D3"
+CHANGES_STAGED="$DELTA_D1_D2_DELTA_D1_D3"
+DELETED_STAGED="$DELTA_D1_D2" 
+UNTRACKED_1="$D3_ONLY"
+UNTRACKED_2="$DELTA_D1_D3"
+UNTRACKED_3="$D1_AND_D3" 
+ADDED_TO_INDEX_FILE_CHANGED="$DELTA_D2_D3"
+ADDED_TO_INDEX="$D2_AND_D3"
+ADDED_TO_INDEX_FILE_DELETED="$D2_ONLY" 
 
   #################
  #   Functions   #
@@ -40,7 +41,7 @@ remove_files_from_pwd_excluding_untracked()
     [ "$file" = '*' ] && return 0
 
     file=$(basename "$file")
-    status=$(find_files_state "$file" 'HEAD')
+    status=$(find_files_state "$file" "$COMMIT_DIR" "$INDEX_DIR" "$PWD")
     if [ ! "$status" = "$UNTRACKED_1" ] && [ ! "$status" = "$UNTRACKED_2" ]
     then
        rm -f "$PWD/$file"
@@ -102,11 +103,9 @@ then
 
   while IFS='' read -r file
   do
-    status=$(find_files_state "$file" 'HEAD')
+    status=$(find_files_state "$file" "$COMMIT_DIR" "$INDEX_DIR" "$PWD")
 
     
-
-
     [ "$status" = "$DELETED" ]               &&  echo "$file"
     [ "$status" = "$CHANGES_NOT_STAGED" ]    &&  echo "$file"
     [ "$status" = "$DIFF_CHANGES_STAGED_1" ] &&  echo "$file"

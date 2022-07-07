@@ -9,18 +9,19 @@ check_repo_exists
  #    Defines    #
 #################
 
+COMMIT_DIR="$REPO/commit/$("find_where_head_points")"
 
 CACHED_OPT=$FALSE
 FORCE_OPT=$FALSE
 
 
 # Mapping file states to tigger-rm error messages
-STAGED_CHANGES_1=$IND_AND_PWD
-STAGED_CHANGES_2=$DELTA_REP_IND_DELTA_REP_PWD
-REPO_DIFF_WRKING_FILE=$DELTA_IND_PWD_DELTA_REP_PWD
-IND_DIFF_WRK_REPO_1=$DELTA_REP_IND_DELTA_IND_PWD
-IND_DIFF_WRK_REPO_2=$DELTA_IND_PWD
-IND_DIFF_WRK_REPO_3=$ALL_DIFFERENT
+STAGED_CHANGES_1="$D2_AND_D3"
+STAGED_CHANGES_2="$DELTA_D1_D2_DELTA_D1_D3"
+REPO_DIFF_WRKING_FILE="$DELTA_D2_D3_DELTA_D1_D3" 
+IND_DIFF_WRK_REPO_1="$DELTA_D1_D2_DELTA_D2_D3"
+IND_DIFF_WRK_REPO_2="$DELTA_D2_D3"
+IND_DIFF_WRK_REPO_3="$ALL_DIFFERENT"
 
   #################
  #   Functions   #
@@ -91,7 +92,7 @@ then
 	#make sure all files exist in the index before proceeding
 	for file in "$@"
 	do
-	  is_file_in_index "$file" || die "$PRGRM: error: '$file' is not in the tigger repository"
+	  is_file_in_direcotry "$file" "$INDEX_DIR" || die "$PRGRM: error: '$file' is not in the tigger repository"
 	done
 
 	if [ $CACHED_OPT -eq $FALSE ]
@@ -108,9 +109,9 @@ else
 	for file in "$@"
 	do
 
-		status=$(find_files_state "$file" 'HEAD')
+		status=$(find_files_state "$file"  "$COMMIT_DIR" "$INDEX_DIR" "$PWD")
 
-		is_file_in_index "$file"                   || die "$PRGRM: error: '$file' is not in the tigger repository"
+		is_file_in_direcotry "$file" "$INDEX_DIR"  || die "$PRGRM: error: '$file' is not in the tigger repository"
 		[ "$status" = "$IND_DIFF_WRK_REPO_1" ]     && die "$PRGRM: error: '$file' in index is different to both the working file and the repository"  
 		[ "$status" = "$IND_DIFF_WRK_REPO_2" ]     && die "$PRGRM: error: '$file' in index is different to both the working file and the repository"
 		[ "$status" = "$IND_DIFF_WRK_REPO_3" ]     && die "$PRGRM: error: '$file' in index is different to both the working file and the repository" 

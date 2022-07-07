@@ -9,8 +9,8 @@ check_repo_exists
  #    Defines    #
 #################
 
-CANNOT_OPEN_1=$REP_ONLY
-CANNOT_OPEN_2=$NONE_FOUND
+CANNOT_OPEN_1="$D1_ONLY"  
+CANNOT_OPEN_2="$NONE_FOUND"
 
 INDEX_ONLY="$D2_ONLY"  
 REP_AND_IND="$D1_AND_D2" 

@@ -13,6 +13,19 @@ check_repo_exists
 OPTION_M=$FALSE
 COMMIT_GIVEN=$FALSE
 
+COMMIT_DIR="$REPO/commit/$("find_where_head_points")"
+
+
+PWD_ONLY="$D3_ONLY"
+DELTA_REP_PWD="$DELTA_D1_D3" 
+
+  #################
+ #   Functions   #
+#################
+
+
+
+
 remove_files_from_pwd_excluding_untracked()
 {
   for file in "$PWD"/*
@@ -20,7 +33,7 @@ remove_files_from_pwd_excluding_untracked()
     [ "$file" = '*' ] && return 0
 
     file=$(basename "$file")
-    status=$(find_files_state "$file" 'HEAD')
+    status=$(find_files_state "$file" "$COMMIT_DIR" "$INDEX_DIR" "$PWD")
 
     if [ ! "$status" = "$PWD_ONLY" ] && [ ! "$status" = "$DELTA_REP_PWD" ]
     then
@@ -49,9 +62,6 @@ update_index_from_commit()
 
 
 
-  #################
- #   Functions   #
-#################
 
 find_common_ancestor_commit()
 {

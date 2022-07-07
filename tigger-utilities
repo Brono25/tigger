@@ -37,7 +37,6 @@ die_stdout()
 }
 
 
-
 check_repo_exists()
 {
   [ -d  "$REPO" ] || die "$PRGRM: error: tigger repository directory .tigger not found"
@@ -107,7 +106,7 @@ is_file_in_dir1_diff_to_dir2()
   file="$1"
   dir1_file="$2/$file"
   dir2_file="$3/$file"
-  
+
   is_difference=$(diff -q "$dir1_file" "$dir2_file"|wc -c| tr -d ' ') 2> /dev/null
   if [ "$is_difference" -ne  0 ]
   then
@@ -120,96 +119,6 @@ is_file_in_dir1_diff_to_dir2()
 
 
 
-
-
-
-is_index_empty()
-{
-  index_contents=$(ls -A1 "$REPO/index"|wc -l|xargs)
-  if [ "$index_contents" -eq 0 ] 
-  then
-    return $TRUE
-  else
-    return $FALSE
-  fi
-}
-
-is_file_in_pwd()
-{ 
-  directory_file="$1"
-  if [ -f "$directory_file" ] 
-  then
-    return $TRUE
-  else
-    return $FALSE
-  fi
-}
-
-is_file_in_repo()
-{
-  commit_file="$1"
-
-  if [ -f "$commit_file" ] 
-  then
-    return $TRUE
-  else
-    return $FALSE
-  fi
-}
-
-is_file_in_index()
-{
-  index_file="$1"
-  file_name=$(basename "$index_file")
-  index_file="$REPO/index/$file_name"
-  if [ -f "$index_file" ] 
-  then
-    return $TRUE
-  else
-    return $FALSE
-  fi
-}
-
-
-is_file_in_pwd_diff_to_index()
-{
-  directory_file="$1"
-  index_file="$2"
-  is_difference=$(diff -q "$directory_file" "$index_file"|wc -c| tr -d ' ') 2> /dev/null
-  if [ "$is_difference" -ne  0 ]
-  then
-    return $TRUE
-  else
-    return $FALSE
-  fi
-}
-
-is_file_in_repo_diff_to_index()
-{
-  commit_file="$1"
-  index_file="$2"
-  is_difference=$(diff -q "$commit_file" "$index_file"|wc -c| tr -d ' ') 2> /dev/null
-  if [ "$is_difference" -ne  0 ]
-  then
-    return $TRUE
-  else
-    return $FALSE
-  fi
-  
-}
-
-is_file_in_pwd_diff_to_repo()
-{
-  commit_file="$1"
-  directory_file="$2"
-  is_difference=$(diff -q "$commit_file" "$directory_file"|wc -c| tr -d ' ') 2> /dev/null
-  if [ "$is_difference" -ne  0 ]
-  then
-    return $TRUE
-  else
-    return $FALSE
-  fi
-}
 
 
 

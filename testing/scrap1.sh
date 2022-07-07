@@ -13,43 +13,57 @@ cd delete
 open_tigger
 # #-----------------------------------
 
-touch a b z
-tigger-add a b
-tigger-commit -m commit-0
 
-touch k l 
-tigger-add k l
-tigger-commit -m commit-00
-
+touch a b c
+tigger-add a
+tigger-commit -m commit-A
 
 tigger-branch b1
 tigger-checkout b1
-touch c d
-tigger-add c d
-tigger-rm a b 
-tigger-commit -m commit-1
 
-touch e f
-tigger-add e f
-tigger-commit -m commit-3
+touch d e
+tigger-rm a b
+
+tigger-commit -m commit-B
+
+print_all 0 1 2 
+
+tigger-checkout master
+
+
+
+tigger-branch b2
+tigger-checkout b2
+
 
 
 touch f g
+tigger-rm b c
+
+
+
 tigger-add f g
-tigger-commit -m commit-4
-
-
-tigger-checkout master
-print_all 0 1
-
-touch v g
-tigger-add v g
-tigger-commit -m commit-4
+tigger-commit -m commit-C
 
 
 
-tigger-merge b1 -m m1
+tigger-branch
 
+tigger-checkout b1
+
+print_all 0 1 2 3 4
+
+# tigger-checkout master
+
+# tigger-checkout b2
+
+# tigger-checkout b1
+
+# tigger-checkout master
+
+# tigger-checkout b2
+
+# tigger-checkout b1
 
 
 

@@ -4,3 +4,6 @@ give.sh
 auto-test.sh
 add_ssh.sh
 ._*
+test.sh
+clean.sh
+ref.txt

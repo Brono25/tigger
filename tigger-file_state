@@ -50,41 +50,34 @@ ALL_DIFFERENT=0x3F            #| 1 | 1 | 1 |     1    |     1     |    1     |
  #   Function    #
 #################
 
-#Checks the state of only one file given.
-#Usage: find_files_state <filename> <(branch name | HEAD)>
+#Finds the status of a file with respect to 3 directories
+#Usage: find_files_state <file> <dir1> <dir2> <dir3>
 find_files_state()
 {
-
-
   file="$1"
   dir1="$2"
   dir2="$3"
   dir3="$4"
 
- 
   state="$NONE_FOUND" #default state 
 
-  is_file_in_direcotry "$file" "$dir1"   && state=$((state | D1_FLAG)); ret_d1=$?
-  is_file_in_direcotry "$file" "$dir2"   && state=$((state | D2_FLAG)); ret_d2=$?
-  is_file_in_direcotry "$file" "$dir3"   && state=$((state | D3_FLAG)); ret_d3=$?
+  is_file_in_direcotry "$file" "$dir1" && state=$((state | D1_FLAG)); ret_d1=$?
+  is_file_in_direcotry "$file" "$dir2" && state=$((state | D2_FLAG)); ret_d2=$?
+  is_file_in_direcotry "$file" "$dir3" && state=$((state | D3_FLAG)); ret_d3=$?
   
-
   if [ $ret_d3 = $TRUE ] && [ $ret_d2 = $TRUE ]
   then
     is_file_in_dir1_diff_to_dir2 "$file" "$dir2" "$dir3" && state=$((state | DELTA_D2_D3_FLAG))  
   fi
-
   if [ $ret_d1 = $TRUE ] && [ $ret_d2 = $TRUE ]
   then
     is_file_in_dir1_diff_to_dir2 "$file" "$dir1" "$dir2" && state=$((state | DELTA_D1_D2_FLAG))
   fi
-
   if [ $ret_d1 = $TRUE ] && [ $ret_d3 = $TRUE ]
   then
     is_file_in_dir1_diff_to_dir2 "$file" "$dir1" "$dir3" && state=$((state | DELTA_D1_D3_FLAG))
   fi
-
-  printf "0x%02X" $state
+  printf "0x%02X" "$state"
   return 0  
 }
 
