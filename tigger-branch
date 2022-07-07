@@ -6,7 +6,7 @@
 check_repo_exists
 
 
-
+# COMMIT_DIR="$REPO/commit/$("find_where_head_points")" 
 
 CREATE_OPT=$FALSE
 DELETE_OPT=$FALSE
@@ -95,6 +95,24 @@ branch=$1
 # Delete option
 if [ $DELETE_OPT -eq $TRUE ]
 then
+
+  find  "$COMMIT_DIR"/ "$INDEX_DIR"/ "$PWD"/ -maxdepth 1  -type f  -not -name '.*' |xargs -I@ basename "@"|sort|uniq|
+
+  while read -r file
+  do
+    status=$(find_files_state "$file" "$COMMIT_DIR" "$INDEX_DIR" "$PWD")
+    echo "To DEL: $file"
+
+  done
+
+
+
+
+
+
+
+
+
 	curr_head_pos="$(find_head)"
 	delete_branch "$branch" "$curr_head_pos"
 	exit 0

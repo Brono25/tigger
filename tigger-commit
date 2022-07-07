@@ -31,19 +31,6 @@ CHANGES_TO_COMMIT_14="$DELTA_D1_D2_DELTA_D1_D3"
 
 
 
-# CHANGES_TO_COMMIT_2=$NONE_FOUND                                     
-# CHANGES_TO_COMMIT_3=$INDEX_ONLY                  
-# CHANGES_TO_COMMIT_4=$IND_AND_PWD                   
-# CHANGES_TO_COMMIT_5=$DELTA_IND_PWD              
-# CHANGES_TO_COMMIT_6=$REP_ONLY                   
-# CHANGES_TO_COMMIT_7=$REP_AND_PWD                 
-# CHANGES_TO_COMMIT_8=$DELTA_REP_PWD             
-# #CHANGES_TO_COMMIT_9=$REP_AND_IND                  
-# CHANGES_TO_COMMIT_10=$DELTA_REP_IND               
-# CHANGES_TO_COMMIT_11=$DELTA_REP_IND_DELTA_REP_PWD 
-# CHANGES_TO_COMMIT_12=$DELTA_REP_IND_DELTA_IND_PWD
-# CHANGES_TO_COMMIT_13=$ALL_DIFFERENT 
-
   #################
  #   Functions   #
 #################

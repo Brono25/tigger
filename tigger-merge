@@ -12,12 +12,17 @@ check_repo_exists
 #################
 OPTION_M=$FALSE
 COMMIT_GIVEN=$FALSE
+ERROR_FOUND=$FALSE
+
 
 COMMIT_DIR="$REPO/commit/$("find_where_head_points")"
 
 
 PWD_ONLY="$D3_ONLY"
 DELTA_REP_PWD="$DELTA_D1_D3" 
+
+
+
 
   #################
  #   Functions   #
@@ -71,7 +76,6 @@ find_common_ancestor_commit()
   lineage_1=$(cat "$REPO/commit/$commit_1/.lineage")
   lineage_2=$(cat "$REPO/commit/$commit_2/.lineage")
 
-
   l1="$lineage_1"
   while [ "$l1" != 'NULL' ]
   do
@@ -79,7 +83,6 @@ find_common_ancestor_commit()
     l2="$lineage_2"
     while [ "$l2" != 'NULL' ]
     do
-
       c2=${l2%%->*}
 
       if [ "$c1" -eq "$c2" ]
@@ -87,11 +90,8 @@ find_common_ancestor_commit()
         echo "$c1"
         return 0
       fi
-
       l2=$(echo "$l2" | sed -E 's/^[0-9]+->(.*)/\1/')
     done
-
-
     l1=$(echo "$l1" | sed -E 's/^[0-9]+->(.*)/\1/')
   done
   return 1
@@ -115,13 +115,41 @@ is_commit_on_branch()
       then
         return "$TRUE"
       fi
-
       b=$(echo "$b" | sed -E 's/^[0-9]+->(.*)/\1/')
   done
 
   return "$FALSE"
 }
 
+remove_files_from_pwd_excluding_untracked()
+{
+  for file in "$PWD"/*
+  do
+    [ "$file" = '*' ] && return 0
+
+    file=$(basename "$file")
+    status=$(find_files_state "$file" "$COMMIT_DIR" "$INDEX_DIR" "$PWD")
+    if [ ! "$status" = "$UNTRACKED_1" ] && [ ! "$status" = "$UNTRACKED_2" ]
+    then
+       rm -f "$PWD/$file"
+    fi
+  done
+  return 0
+}
+
+update_pwd_from_index()
+{
+  remove_files_from_pwd_excluding_untracked
+  cp -rT "$REPO/index" "$PWD/"
+
+}
+
+update_index_from_commit()
+{
+  commit="$1"
+  rm "$REPO/index"/*
+  cp "$REPO/commit/$commit"/* "$REPO/index"
+}
 
 
 
@@ -155,6 +183,7 @@ fi
 
 #if no message given
 [ -n "$message" ] || die "$PRGRM: error: empty commit message"
+[ -n "$REPO/heads/$" ] || die "$PRGRM: error: empty commit message"
 
 
 #  ------  checking branch conditions
@@ -171,7 +200,7 @@ then
 
   #find the commit numbers of current branch and merge branch and the 
   #most recent commit they share in common.
-  curr_commit=$(find_where_head_points)
+  curr_commit="$(find_where_head_points)"
   merge_commit=$(find_where_branch_points "$merge_to")
   common_commit=$(find_common_ancestor_commit "$curr_commit" "$merge_commit")
   curr_branch="$(find_head)"
@@ -217,21 +246,81 @@ fi
 
 
 #-------------------- DO MERGE ---------------------
-  
+
+  next_commit=$(find "$REPO/commit/" -maxdepth 1|wc -l)
+  next_commit=$((next_commit - 1))
+
   dir1="$REPO/commit/$curr_commit"
   dir2="$REPO/commit/$merge_commit"
   dir3="$REPO/commit/$common_commit"
 
+  mkdir -- "$REPO/commit/$next_commit"
+  
   find  "$dir1" "$dir2" "$dir3" -maxdepth 1  -type f  -not -name '.*' | sort|
   while read -r file
   do
+    status=$(find_files_state "$(basename $file)" "$dir1" "$dir2" "$dir3")
+
+    [ "$status" = "$D3_ONLY" ]    && continue
+    [ "$status" = "$D2_AND_D3" ]  && continue
+    [ "$status" = "$D1_AND_D3" ]  && continue
+
+    [ "$status" = "$D1_AND_D2" ]     && echo "$(basename $file)"
+    [ "$status" = "$DELTA_D1_D3" ] && echo "$(basename $file)"
+    [ "$status" = "$DELTA_D2_D3" ]   && echo "$(basename $file)"
+    [ "$status" = "$DELTA_D1_D3" ]   && echo "$(basename $file)"
+    [ "$status" = "$DELTA_D1_D2" ]   && echo "$(basename $file)"
+    [ "$status" = "$DELTA_D1_D2" ]   && echo "$(basename $file)"
+    [ "$status" = "$ALL_DIFFERENT" ] && echo "$(basename $file)"
+
+
+    [ "$status" = "$D2_ONLY" ]    && cp "$file" "$REPO/commit/$next_commit"
+    [ "$status" = "$D1_ONLY" ]    && cp "$file" "$REPO/commit/$next_commit"
+    [ "$status" = "$D1_AND_D2" ]  && cp "$file" "$REPO/commit/$next_commit"
+    [ "$status" = "$ALL_SAME" ]   && cp "$file" "$REPO/commit/$next_commit"
+
+    if [ "$status" = "$DELTA_D2_D3_DELTA_D1_D3" ]
+    then
+      cp "$dir1"/"$(basename $file)" "$REPO/commit/$next_commit"
+
+    elif [ "$status" = "$DELTA_D1_D2_DELTA_D1_D3" ]
+    then
+      cp "$dir1"/"$(basename $file)" "$REPO/commit/$next_commit"
+
+    elif [ "$status" = "$DELTA_D1_D2_DELTA_D2_D3" ]
+    then
+      cp "$dir2"/"$(basename $file)" "$REPO/commit/$next_commit"
+    fi 
+
+  done > '.tigger/.tpm2'
+ 
+
+
+  #if this file has a size then an error happened
+  if [ -s '.tigger/.tpm2' ] 
+  then
+    echo "$PRGRM: error: These files can not be merged:"
+    cat '.tigger/.tpm2' |sort|uniq
+    rm -rf "$REPO/commit/$next_commit" 
+
+
+  else
+    echo "Committed as commit $next_commit"
+    update_index_from_commit "$next_commit"
+    remove_files_from_pwd_excluding_untracked
+    update_pwd_from_index
+
+    # update branch pointer
+    echo -n "$next_commit" > "$REPO/heads/$curr_branch"
+    exit 0
     
-    echo "$file"
-
-  done
+  fi 
   
+  rm -f '.tigger/.tpm2'
 
 
+
+  
 
 
 
