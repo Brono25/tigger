@@ -77,6 +77,51 @@ find_where_branch_points()
 }
 
 
+is_direcotry_empty()
+{
+  dir="$1"
+  dir_contents=$(find "$dir" -maxdepth 1 -type f |wc -l)
+  if [ "$index_contents" -eq 0 ] 
+  then
+    return "$TRUE"
+  else
+    return "$FALSE"
+  fi
+}
+
+is_file_in_direcotry()
+{
+  file="$1"
+  dir="$2"
+  if [ -f "$dir/$file" ] 
+  then
+    return "$TRUE"
+  else
+    return "$FALSE"
+  fi
+}
+
+
+is_file_in_dir1_diff_to_dir2()
+{
+  file="$1"
+  dir1_file="$2/$file"
+  dir2_file="$3/$file"
+  
+  is_difference=$(diff -q "$dir1_file" "$dir2_file"|wc -c| tr -d ' ') 2> /dev/null
+  if [ "$is_difference" -ne  0 ]
+  then
+    return "$TRUE"
+  else
+    return "$FALSE"
+  fi
+}
+
+
+
+
+
+
 
 is_index_empty()
 {

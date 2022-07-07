@@ -12,6 +12,10 @@ check_repo_exists
 CANNOT_OPEN_1=$REP_ONLY
 CANNOT_OPEN_2=$NONE_FOUND
 
+INDEX_ONLY="$D2_ONLY"  
+REP_AND_IND="$D1_AND_D2" 
+DELTA_REP_IND="$DELTA_D1_D2"
+
   #################
  #     Main      #
 #################
@@ -19,13 +23,17 @@ CANNOT_OPEN_2=$NONE_FOUND
 # should never have 0 arguments
 [ "$#" -ne 0 ]  || die "$PRGRM: usage: $PRGRM <filename>" 
 
+INDEX="$REPO/index"
+COMMIT="$REPO/commit/$("find_where_head_points")"
+
+
 
 #add all files in arguments 
 for file in "$@"
 do
 
 	# 'Adding' a removed file
-	status=$(find_files_state "$file" 'HEAD')
+	status=$(find_files_state "$file" "$COMMIT" "$INDEX"  "$PWD")
 	
   if [ "$status" = "$INDEX_ONLY" ]  || [ "$status" =  "$REP_AND_IND" ] || [ "$status" =  "$DELTA_REP_IND" ] 
   then

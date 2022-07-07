@@ -17,33 +17,33 @@
 #################
 
 # FLAG bit positions
-PWD_FLAG=0x08
-IND_FLAG=0x10
-REP_FLAG=0x20
-DELTA_REP_IND_FLAG=0x04
-DELTA_IND_PWD_FLAG=0x02
-DELTA_REP_PWD_FLAG=0x01
+D3_FLAG=0x08
+D2_FLAG=0x10
+D1_FLAG=0x20
+DELTA_D1_D2_FLAG=0x04
+DELTA_D2_D3_FLAG=0x02
+DELTA_D1_D3_FLAG=0x01
 
 #The table below is a mapping of all possible file states to their hex number
 
-#                                  |__exists___|_________is different____________|   
-#     Files states hex value       |REP|IND|PWD|∆(REP-IND)|∆(IND-PWD) |∆(REP-PWD)|  
-#----------------------------------|---|---|---|----------|-----------|----------|
-NONE_FOUND=0x00                   #| 0 | 0 | 0 |     0    |     0     |    0     | 
-PWD_ONLY=0x08                     #| 0 | 0 | 1 |     0    |     0     |    0     |  
-INDEX_ONLY=0x10                   #| 0 | 1 | 0 |     0    |     0     |    0     |  
-IND_AND_PWD=0x18                  #| 0 | 1 | 1 |     0    |     0     |    0     |  
-DELTA_IND_PWD=0x1A                #| 0 | 1 | 1 |     0    |     1     |    0     |  
-REP_ONLY=0x20                     #| 1 | 0 | 0 |     0    |     0     |    0     |  
-REP_AND_PWD=0x28                  #| 1 | 0 | 1 |     0    |     0     |    0     | 
-DELTA_REP_PWD=0x29                #| 1 | 0 | 1 |     0    |     0     |    1     |  
-REP_AND_IND=0x30                  #| 1 | 1 | 0 |     0    |     0     |    0     |  
-DELTA_REP_IND=0x34                #| 1 | 1 | 0 |     1    |     0     |    0     |  
-ALL_SAME=0x38                     #| 1 | 1 | 1 |     0    |     0     |    0     |  
-DELTA_IND_PWD_DELTA_REP_PWD=0x3B  #| 1 | 1 | 1 |     0    |     1     |    1     |  
-DELTA_REP_IND_DELTA_REP_PWD=0x3D  #| 1 | 1 | 1 |     1    |     0     |    1     |  
-DELTA_REP_IND_DELTA_IND_PWD=0x3E  #| 1 | 1 | 1 |     1    |     1     |    0     |  
-ALL_DIFFERENT=0x3F                #| 1 | 1 | 1 |     1    |     1     |    1     | 
+#                              |__exists___|_________is different____________|   
+#     Files states hex value   |D1 | D2| D3| ∆(D1-D2) | ∆(D2-D3)  | ∆(D1-D3) |  
+#------------------------------|---|---|---|----------|-----------|----------|
+NONE_FOUND=0x00               #| 0 | 0 | 0 |     0    |     0     |    0     | 
+D3_ONLY=0x08                  #| 0 | 0 | 1 |     0    |     0     |    0     |  
+D2_ONLY=0x10                  #| 0 | 1 | 0 |     0    |     0     |    0     |  
+D2_AND_D3=0x18                #| 0 | 1 | 1 |     0    |     0     |    0     |  
+DELTA_D2_D3=0x1A              #| 0 | 1 | 1 |     0    |     1     |    0     |  
+D1_ONLY=0x20                  #| 1 | 0 | 0 |     0    |     0     |    0     |  
+D1_AND_D3=0x28                #| 1 | 0 | 1 |     0    |     0     |    0     | 
+DELTA_D1_D3=0x29              #| 1 | 0 | 1 |     0    |     0     |    1     |  
+D1_AND_D2=0x30                #| 1 | 1 | 0 |     0    |     0     |    0     |  
+DELTA_D1_D2=0x34              #| 1 | 1 | 0 |     1    |     0     |    0     |  
+ALL_SAME=0x38                 #| 1 | 1 | 1 |     0    |     0     |    0     |  
+DELTA_D2_D3_DELTA_D1_D3=0x3B  #| 1 | 1 | 1 |     0    |     1     |    1     |  
+DELTA_D1_D2_DELTA_D1_D3=0x3D  #| 1 | 1 | 1 |     1    |     0     |    1     |  
+DELTA_D1_D2_DELTA_D2_D3=0x3E  #| 1 | 1 | 1 |     1    |     1     |    0     |  
+ALL_DIFFERENT=0x3F            #| 1 | 1 | 1 |     1    |     1     |    1     | 
 
 
   #################
@@ -55,45 +55,49 @@ ALL_DIFFERENT=0x3F                #| 1 | 1 | 1 |     1    |     1     |    1    
 find_files_state()
 {
 
-  file_name="$1"
-  branch="$2"
 
-  #The status of a file can be checked in current branch HEAD or any given branch
-  if [ "$branch" = "HEAD" ] 
-  then 
-  	repo=$("find_where_head_points")
-  else
-  	repo=$(find_where_branch_points "$branch")
-  fi
-  
-  #paths to each directory to use for determining the files state
-  repo_file="$REPO/commit/$repo/$file_name"
-  pwd_file="$REPO/../$file_name"
-  index_file="$REPO/index/$file_name"
+  file="$1"
+  dir1="$2"
+  dir2="$3"
+  dir3="$4"
 
  
   state="$NONE_FOUND" #default state 
 
-  is_file_in_pwd     "$pwd_file" && state=$((state | PWD_FLAG)); ret_pwd=$?
-  is_file_in_repo   "$repo_file" && state=$((state | REP_FLAG)); ret_repo=$?
-  is_file_in_index "$index_file" && state=$((state | IND_FLAG)); ret_index=$?
+  is_file_in_direcotry "$file" "$dir1"   && state=$((state | D1_FLAG)); ret_d1=$?
+  is_file_in_direcotry "$file" "$dir2"   && state=$((state | D2_FLAG)); ret_d2=$?
+  is_file_in_direcotry "$file" "$dir3"   && state=$((state | D3_FLAG)); ret_d3=$?
+  
 
-  if [ $ret_pwd = $TRUE ] && [ $ret_index = $TRUE ]
+  if [ $ret_d3 = $TRUE ] && [ $ret_d2 = $TRUE ]
   then
-    is_file_in_pwd_diff_to_index  "$pwd_file"  "$index_file" && state=$((state | DELTA_IND_PWD_FLAG))
+    is_file_in_dir1_diff_to_dir2 "$file" "$dir2" "$dir3" && state=$((state | DELTA_D2_D3_FLAG))  
   fi
 
-  if [ $ret_repo = $TRUE ] && [ $ret_index = $TRUE ]
+  if [ $ret_d1 = $TRUE ] && [ $ret_d2 = $TRUE ]
   then
-    is_file_in_repo_diff_to_index "$repo_file" "$index_file" && state=$((state | DELTA_REP_IND_FLAG))
+    is_file_in_dir1_diff_to_dir2 "$file" "$dir1" "$dir2" && state=$((state | DELTA_D1_D2_FLAG))
   fi
 
-  if [ $ret_repo = $TRUE ] && [ $ret_pwd = $TRUE ]
+  if [ $ret_d1 = $TRUE ] && [ $ret_d3 = $TRUE ]
   then
-    is_file_in_pwd_diff_to_repo   "$repo_file" "$pwd_file"   && state=$((state | DELTA_REP_PWD_FLAG))
+    is_file_in_dir1_diff_to_dir2 "$file" "$dir1" "$dir3" && state=$((state | DELTA_D1_D3_FLAG))
   fi
 
   printf "0x%02X" $state
   return 0  
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 

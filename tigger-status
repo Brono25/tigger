@@ -20,22 +20,36 @@ trap "rm  -f $list" EXIT INT
 
 COMMIT_DIR="$REPO/commit/$("find_where_head_points")"
 
-#File error for given status
-UNTRACKED_1=$PWD_ONLY
-UNTRACKED_2=$DELTA_REP_PWD
-UNTRACKED_3=$REP_AND_PWD
-SAME_AS_REPO=$ALL_SAME
-FILE_DELETED=$REP_AND_IND
-DELETED=$REP_ONLY
-ADDED_TO_INDEX=$IND_AND_PWD
-ADDED_TO_INDEX_FILE_DELETED=$INDEX_ONLY
-ADDED_TO_INDEX_FILE_CHANGED=$DELTA_IND_PWD
-DIFF_CHANGES_STAGED_1=$ALL_DIFFERENT
-DIFF_CHANGES_STAGED_2=$DELTA_REP_IND_DELTA_IND_PWD
-CHANGES_STAGED=$DELTA_REP_IND_DELTA_REP_PWD
-CHANGES_NOT_STAGED=$DELTA_IND_PWD_DELTA_REP_PWD
-DELETED_STAGED=$DELTA_REP_IND
+# #File error for given status
+# UNTRACKED_1=$PWD_ONLY
+# UNTRACKED_2=$DELTA_REP_PWD
+# UNTRACKED_3=$REP_AND_PWD
+# SAME_AS_REPO=$ALL_SAME
+# FILE_DELETED=$REP_AND_IND
+# DELETED=$REP_ONLY
+# ADDED_TO_INDEX=$IND_AND_PWD
+# ADDED_TO_INDEX_FILE_DELETED=$INDEX_ONLY
+# ADDED_TO_INDEX_FILE_CHANGED=$DELTA_IND_PWD
+# DIFF_CHANGES_STAGED_1=$ALL_DIFFERENT
+# DIFF_CHANGES_STAGED_2=$DELTA_REP_IND_DELTA_IND_PWD
+# CHANGES_STAGED=$DELTA_REP_IND_DELTA_REP_PWD
+# CHANGES_NOT_STAGED=$DELTA_IND_PWD_DELTA_REP_PWD
+# DELETED_STAGED=$DELTA_REP_IND
 
+
+#File error for given status
+PWD_ONLY="$D3_ONLY"
+INDEX_ONLY="$D2_ONLY"  
+IND_AND_PWD="$D2_AND_D3"
+DELTA_IND_PWD="$DELTA_D2_D3"
+REP_ONLY="$D1_ONLY"   
+REP_AND_PWD="$D1_AND_D3"  
+DELTA_REP_PWD="$DELTA_D1_D3"   
+REP_AND_IND="$D1_AND_D2" 
+DELTA_REP_IND="$DELTA_D1_D2" 
+DELTA_IND_PWD_DELTA_REP_PWD="$DELTA_D2_D3_DELTA_D1_D3" 
+DELTA_REP_IND_DELTA_REP_PWD="$DELTA_D1_D2_DELTA_D1_D3"
+DELTA_REP_IND_DELTA_IND_PWD="$DELTA_D1_D2_DELTA_D2_D3"
 
 
   #################
@@ -43,27 +57,26 @@ DELETED_STAGED=$DELTA_REP_IND
 #################
 
 
-
 for file in $(basename --multiple "$COMMIT_DIR"/* "$INDEX_DIR"/* "$PWD"/* |sort|uniq|sed '/*/d' |xargs)
 do
   
-  status=$(find_files_state "$file" 'HEAD')
+  status=$(find_files_state "$file"  "$COMMIT_DIR" "$INDEX_DIR" "$PWD")
 
   
-  [ "$status" = "$UNTRACKED_1" ]         		     && status_msg="untracked" 
-  [ "$status" = "$UNTRACKED_2" ]                 && status_msg="untracked"      
-  [ "$status" = "$UNTRACKED_3" ]                 && status_msg="untracked"                                       
-  [ "$status" = "$SAME_AS_REPO" ]       		     && status_msg="same as repo"                                      
-  [ "$status" = "$FILE_DELETED" ]       		     && status_msg="file deleted"                                      
-  [ "$status" = "$DELETED" ]            	   	   && status_msg="deleted"                                           
-  [ "$status" = "$ADDED_TO_INDEX" ]       		   && status_msg="added to index" 
-  [ "$status" = "$ADDED_TO_INDEX_FILE_DELETED" ] && status_msg="added to index, file deleted"
-  [ "$status" = "$ADDED_TO_INDEX_FILE_CHANGED" ] && status_msg="added to index, file changed"                                
-  [ "$status" = "$DIFF_CHANGES_STAGED_1" ]       && status_msg="file changed, different changes staged for commit"
-  [ "$status" = "$DIFF_CHANGES_STAGED_2" ]       && status_msg="file changed, different changes staged for commit" 
-  [ "$status" = "$CHANGES_STAGED" ]     	  	   && status_msg="file changed, changes staged for commit"        
-  [ "$status" = "$CHANGES_NOT_STAGED" ] 		     && status_msg="file changed, changes not staged for commit"    
-  [ "$status" = "$DELETED_STAGED" ]              && status_msg="file deleted, different changes staged for commit" 
+  [ "$status" = "$PWD_ONLY" ]         		       && status_msg="untracked" 
+  [ "$status" = "$DELTA_REP_PWD" ]               && status_msg="untracked"      
+  [ "$status" = "$REP_AND_PWD" ]                 && status_msg="untracked"                                       
+  [ "$status" = "$ALL_SAME" ]       		         && status_msg="same as repo"                                      
+  [ "$status" = "$REP_AND_IND" ]       		       && status_msg="file deleted"                                      
+  [ "$status" = "$REP_ONLY" ]            	   	   && status_msg="deleted"                                           
+  [ "$status" = "$IND_AND_PWD" ]       		       && status_msg="added to index" 
+  [ "$status" = "$INDEX_ONLY" ]                  && status_msg="added to index, file deleted"
+  [ "$status" = "$DELTA_IND_PWD" ]               && status_msg="added to index, file changed"                                
+  [ "$status" = "$ALL_DIFFERENT" ]               && status_msg="file changed, different changes staged for commit"
+  [ "$status" = "$DELTA_REP_IND_DELTA_IND_PWD" ] && status_msg="file changed, different changes staged for commit" 
+  [ "$status" = "$DELTA_REP_IND_DELTA_REP_PWD" ] && status_msg="file changed, changes staged for commit"        
+  [ "$status" = "$DELTA_IND_PWD_DELTA_REP_PWD" ] && status_msg="file changed, changes not staged for commit"    
+  [ "$status" = "$DELTA_REP_IND" ]               && status_msg="file deleted, different changes staged for commit" 
 
   echo "$file - $status_msg"
 

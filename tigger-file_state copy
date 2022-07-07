@@ -1,0 +1,113 @@
+#!/bin/dash
+
+. tigger-utilities
+
+
+# A files state is whether it exists, or is changed ∆, in the repo and/or index and/or pwd.
+# its existence or ∆ in each directory is given a bit position, total 6 bits. Each state is
+# then tested and a bit set to 1 if the file is found to exist or be ∆ in that directory.
+# All the 6 bits at the end produce a unique hex number that gives each file a identifiable status.
+
+# These states are used to inform other tigger funcitons about what error messages to use.
+
+
+
+  #################
+ #    Defines    #
+#################
+
+# FLAG bit positions
+PWD_FLAG=0x08
+IND_FLAG=0x10
+REP_FLAG=0x20
+DELTA_REP_IND_FLAG=0x04
+DELTA_IND_PWD_FLAG=0x02
+DELTA_REP_PWD_FLAG=0x01
+
+#The table below is a mapping of all possible file states to their hex number
+
+#                                  |__exists___|_________is different____________|   
+#     Files states hex value       |REP|IND|PWD|∆(REP-IND)|∆(IND-PWD) |∆(REP-PWD)|  
+#----------------------------------|---|---|---|----------|-----------|----------|
+NONE_FOUND=0x00                   #| 0 | 0 | 0 |     0    |     0     |    0     | 
+PWD_ONLY=0x08                     #| 0 | 0 | 1 |     0    |     0     |    0     |  
+INDEX_ONLY=0x10                   #| 0 | 1 | 0 |     0    |     0     |    0     |  
+IND_AND_PWD=0x18                  #| 0 | 1 | 1 |     0    |     0     |    0     |  
+DELTA_IND_PWD=0x1A                #| 0 | 1 | 1 |     0    |     1     |    0     |  
+REP_ONLY=0x20                     #| 1 | 0 | 0 |     0    |     0     |    0     |  
+REP_AND_PWD=0x28                  #| 1 | 0 | 1 |     0    |     0     |    0     | 
+DELTA_REP_PWD=0x29                #| 1 | 0 | 1 |     0    |     0     |    1     |  
+REP_AND_IND=0x30                  #| 1 | 1 | 0 |     0    |     0     |    0     |  
+DELTA_REP_IND=0x34                #| 1 | 1 | 0 |     1    |     0     |    0     |  
+ALL_SAME=0x38                     #| 1 | 1 | 1 |     0    |     0     |    0     |  
+DELTA_IND_PWD_DELTA_REP_PWD=0x3B  #| 1 | 1 | 1 |     0    |     1     |    1     |  
+DELTA_REP_IND_DELTA_REP_PWD=0x3D  #| 1 | 1 | 1 |     1    |     0     |    1     |  
+DELTA_REP_IND_DELTA_IND_PWD=0x3E  #| 1 | 1 | 1 |     1    |     1     |    0     |  
+ALL_DIFFERENT=0x3F                #| 1 | 1 | 1 |     1    |     1     |    1     | 
+
+
+  #################
+ #   Function    #
+#################
+
+#Checks the state of only one file given.
+#Usage: find_files_state <filename> <(branch name | HEAD)>
+find_files_state()
+{
+
+
+  file="$1"
+  branch="$2"
+
+  #The status of a file can be checked in current branch HEAD or any given branch
+  if [ "$branch" = "HEAD" ] 
+  then 
+  	repo=$("find_where_head_points")
+  else
+  	repo=$(find_where_branch_points "$branch")
+  fi
+  
+  #paths to each directory to use for determining the files state
+  COMMIT="$REPO/commit/$repo"
+  INDEX="$REPO/index/"
+
+ 
+  state="$NONE_FOUND" #default state 
+
+  is_file_in_direcotry "$file" "$PWD"    && state=$((state | PWD_FLAG)); ret_pwd=$?
+  is_file_in_direcotry "$file" "$COMMIT" && state=$((state | REP_FLAG)); ret_repo=$?
+  is_file_in_direcotry "$file" "$INDEX"  && state=$((state | IND_FLAG)); ret_index=$?
+
+
+  if [ $ret_pwd = $TRUE ] && [ $ret_index = $TRUE ]
+  then
+    is_file_in_dir1_diff_to_dir2 "$file" "$PWD" "$INDEX" && state=$((state | DELTA_IND_PWD_FLAG))  
+  fi
+
+  if [ $ret_repo = $TRUE ] && [ $ret_index = $TRUE ]
+  then
+    is_file_in_dir1_diff_to_dir2 "$file" "$COMMIT" "$INDEX" && state=$((state | DELTA_REP_IND_FLAG))
+  fi
+
+  if [ $ret_repo = $TRUE ] && [ $ret_pwd = $TRUE ]
+  then
+    is_file_in_dir1_diff_to_dir2 "$file" "$PWD" "$COMMIT" && state=$((state | DELTA_REP_PWD_FLAG))
+  fi
+
+  printf "0x%02X" $state
+  return 0  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
