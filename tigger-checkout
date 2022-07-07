@@ -5,7 +5,7 @@
 . tigger-file_state
 check_repo_exists
 
-trap 'rm -f .tmp .tpm_x' EXIT INT
+trap 'rm -f .tmp' EXIT INT
 
   #################
  #    Defines    #
@@ -33,6 +33,21 @@ ADDED_TO_INDEX_FILE_DELETED=$INDEX_ONLY
  #   Functions   #
 #################
 
+remove_files_from_pwd_excluding_untracked()
+{
+  for file in "$PWD"/*
+  do
+    [ "$file" = '*' ] && return 0
+
+    file=$(basename "$file")
+    status=$(find_files_state "$file" 'HEAD')
+    if [ ! "$status" = "$UNTRACKED_1" ] && [ ! "$status" = "$UNTRACKED_2" ]
+    then
+       rm -f "$PWD/$file"
+    fi
+  done
+  return 0
+}
 
 
   #################
@@ -87,37 +102,38 @@ then
     [ "$status" = "$DIFF_CHANGES_STAGED_2" ] &&  echo "$file"
     [ "$status" = "$CHANGES_STAGED" ]        &&  echo "$file"
     [ "$status" = "$DELETED_STAGED" ]        &&  echo "$file"
-    [ "$status" = "$UNTRACKED_1" ]           &&  echo -n "$file " >> '.tmp_x'
-    [ "$status" = "$UNTRACKED_2" ]           &&  echo -n "$file " >> '.tmp_x'
+    # [ "$status" = "$UNTRACKED_1" ]           &&  echo -n "$file " 
+    # [ "$status" = "$UNTRACKED_2" ]           &&  echo -n "$file " 
     [ "$status" = "$UNTRACKED_3" ]           &&  echo "$file"
     #[ "$status" = "$ADDED_TO_INDEX_FILE_CHANGED" ] &&  echo "$file"
     #[ "$status" = "$ADDED_TO_INDEX" ]              &&  echo "$file"
     #[ "$status" = "$ADDED_TO_INDEX_FILE_DELETED" ] &&  echo "$file"
 
 
-  done > '.tmp'
+  done > '.tigger/.tmp'
 
 
 
-  if [ -s '.tmp' ]
+  if [ -s '.tigger/.tmp' ]
   then
     echo "$ERROR_MSG"
-    cat '.tmp'|sort 
+    cat '.tigger/.tmp'|sort 
     exit 1
   fi
-  rm -f '.tmp'
+  
  
   #TODO ignore untracked files
 
 
   rm "$REPO/index"/*
   cp "$REPO/commit/$checkout_commit"/* "$REPO/index"
+  remove_files_from_pwd_excluding_untracked
+  
 
-  find "$PWD" -maxdepth 1 -type f -not -name "$(cat '.tmp_x' 2>/dev/null|xargs)" |xargs -I@ rm "@"
+  
   cp -rT "$REPO/index" "$PWD/"
 
- # rsync --exclude '.lineage' "$(cat '.tmp_x'|xargs)" -Ia "$REPO/commit/$checkout_commit/" "$REPO/index" --delete-after
-  #rsync --exclude '.tigger'  -Ia "$REPO/index/" "$PWD/" --delete-after 
+
 
 fi
 
