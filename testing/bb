@@ -1,77 +1,22 @@
+-------------WRONG USAGE & NO REPO------------
+tigger-merge: error: tigger repository directory .tigger not found
+Exit status: 1
+tigger-merge: error: tigger repository directory .tigger not found
+Exit status: 1
+
+-------------WRONG USAGE ------------
 Committed as commit 0
-Switched to branch 'b1'
-tigger-rm: error: 'b' is not in the tigger repository
-nothing to commit
-Switched to branch 'master'
-Switched to branch 'b2'
-tigger-rm: error: 'b' is not in the tigger repository
-Committed as commit 1
+usage: tigger-merge <branch|commit> -m message
+tigger-merge: error: empty commit message
+usage: tigger-merge <branch|commit> -m message
+usage: tigger-merge <branch|commit> -m message
+usage: tigger-merge <branch|commit> -m message
+usage: tigger-merge <branch|commit> -m message
+usage: tigger-merge <branch|commit> -m message
 
 
-
-	PWD:
-		a -> 
-		b -> 
-		c -> 
-		d -> 
-		e -> 
-		f -> 
-		g -> 
-
-	IND:
-		a -> 
-
-	REP:0
-		a -> 
-
-	REP:1
-		a -> 
-		f -> 
-		g -> 
-
-
-a - same as repo
-b - untracked
-c - untracked
-d - untracked
-e - untracked
-f - same as repo
-g - same as repo
-
-
-b1
-b2
-master
-Switched to branch 'b1'
-Switched to branch 'master'
-Switched to branch 'b2'
-Switched to branch 'b1'
-Switched to branch 'master'
-Switched to branch 'b2'
-Switched to branch 'b1'
-
-
-
-	PWD:
-		a -> 
-
-	IND:
-		a -> 
-
-	REP:0
-		a -> 
-
-	REP:1
-		a -> 
-		f -> 
-		g -> 
-
-	REP:2
-
-
-a - same as repo
-
-
-
+-------------UNKOWN BRANCH------------
+Committed as commit 0
+usage: tigger-merge <branch|commit> -m message
 
 

@@ -82,11 +82,11 @@ ref_print_all()
 	repo=$1
 	echo '\n'
 	print_pwd
-	ref_print_ind a b c 
+	ref_print_ind a b c d e f g h i j k
 
 	for rep in $@
 	do
-		ref_print_repo "$rep" a b c d e f g 
+		ref_print_repo "$rep" a b c d e f g h i j k
 	done
 	echo '\n'
 	2041 tigger-status
@@ -129,11 +129,11 @@ print_all()
 	repo=$1
 	echo '\n'
 	print_pwd
-	print_ind a b c 
+	print_ind a b c d e f g h i j k
 
 	for rep in $@
 	do
-		print_repo "$rep" a b c d e f g 
+		print_repo "$rep" a b c d e f g h i j k 
 	done
 	echo '\n'
 	tigger-status

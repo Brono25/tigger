@@ -1,0 +1,93 @@
+-------------FAST FORWARD MASTER TO B1------------
+Committed as commit 0
+Switched to branch 'b1'
+Committed as commit 1
+Committed as commit 2
+Committed as commit 3
+Switched to branch 'b2'
+Committed as commit 4
+Committed as commit 5
+
+
+
+	PWD:
+		a -> 
+		e -> 
+		f -> 
+
+	IND:
+		a -> 
+		e -> 
+		f -> 
+
+	REP:0
+		a -> 
+
+	REP:1
+		a -> 
+		b -> 
+
+	REP:2
+		c -> 
+
+	REP:3
+		c -> 
+		d -> 
+
+	REP:4
+		a -> 
+		e -> 
+
+	REP:5
+		a -> 
+		e -> 
+		f -> 
+
+
+a - same as repo
+e - same as repo
+f - same as repo
+
+
+Switched to branch 'master'
+Fast-forward: no commit created
+
+
+
+	PWD:
+		a -> 
+
+	IND:
+		a -> 
+
+	REP:0
+		a -> 
+
+	REP:1
+		a -> 
+		b -> 
+
+	REP:2
+		c -> 
+
+	REP:3
+		c -> 
+		d -> 
+
+	REP:4
+		a -> 
+		e -> 
+
+	REP:5
+		a -> 
+		e -> 
+		f -> 
+
+
+a - added to index
+c - deleted
+d - deleted
+
+
+
+
