@@ -6,33 +6,62 @@
 mkdir x
 cd x
 
-COMMIT_DIR="/import/cage/3/z5146619/tigger/x/a/"
-INDEX="/import/cage/3/z5146619/tigger/x/b/"
-PWD="/import/cage/3/z5146619/tigger/x/c/"
 
-mkdir a 
-mkdir b
-mkdir c
-echo x > a/"bsome file"
-echo y > b/"csome other  file   "
-echo x > a/"asome file again"
-echo y > b/"dsome other  file another    " 
-echo y > a/"dsome other  file another    " 
-echo y > c/".file" 
-echo y > c/"file copy" 
+2041 tigger-init
+touch a 
+2041 tigger-add a
+2041 tigger-commit -m commit-1
 
-
-find "$COMMIT_DIR" "$INDEX" "$PWD" -type f  -not -path '*/.*' -exec printf '%s\n' '{}' + |xargs -I@ basename @|sort|uniq |
+2041 tigger-merge b1 -m 
 
 
 
-while IFS='' read -r line #change IFS for this loop to prevent read from tri
-do
-	echo "F = $line"
-	
+# 2041 tigger-init
+# # Initialized empty 2041 tigger repository in .2041 tigger
+# seq 1 7 >7.txt
+# 2041 tigger-add 7.txt
+# 2041 tigger-commit -m commit-1
+# # Committed as commit 0
+# 2041 tigger-branch b1
+# 2041 tigger-checkout b1
+# # Switched to branch 'b1'
+# perl -pi -e 's/2/42/' 7.txt
+# cat 7.txt
+# # 1
+# # 42
+# # 3
+# # 4
+# # 5
+# # 6
+# # 7
+# 2041 tigger-commit -a -m commit-2
+# # Committed as commit 1
+# 2041 tigger-checkout master
+# # Switched to branch 'master'
+# cat 7.txt
+# # 1
+# # 2
+# # 3
+# # 4
+# # 5
+# # 6
+# # 7
+# 2041 tigger-merge b1 -m merge-message
+# # Fast-forward: no commit created
+# cat 7.txt
+# # 1
+# # 42
+# # 3
+# # 4
+# # 5
+# # 6
+# # 7
 
-done
+
+
+
+
 
 
 cd ..
-rm -rd x
+rm -rdf x

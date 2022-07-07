@@ -1,5 +1,8 @@
 #!/bin/dash
 
+
+
+
   #################
  #    Defines    #
 #################
@@ -162,6 +165,48 @@ is_file_in_pwd_diff_to_repo()
     return $FALSE
   fi
 }
+
+# remove_files_from_pwd_excluding_untracked()
+# {
+#   for file in "$PWD"/*
+#   do
+#     [ "$file" = '*' ] && return 0
+
+#     file=$(basename "$file")
+#     status=$(find_files_state "$file" 'HEAD')
+#     if [ ! "$status" = "$PWD_ONLY" ] && [ ! "$status" = "$DELTA_REP_PWD" ]
+#     then
+#        rm -f "$PWD/$file"
+#     fi
+#   done
+#   return 0
+# }
+
+
+# update_pwd_from_index()
+# {
+#   remove_files_from_pwd_excluding_untracked
+#   cp -rT "$REPO/index" "$PWD/"
+
+# }
+
+# update_index_from_commit()
+# {
+#   commit="$1"
+#   rm "$REPO/index"/*
+#   cp "$REPO/commit/$commit"/* "$REPO/index"
+# }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

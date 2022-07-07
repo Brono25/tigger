@@ -50,6 +50,22 @@ remove_files_from_pwd_excluding_untracked()
 }
 
 
+update_pwd_from_index()
+{
+  remove_files_from_pwd_excluding_untracked
+  cp -rT "$REPO/index" "$PWD/"
+
+}
+
+update_index_from_commit()
+{
+  commit="$1"
+  rm "$REPO/index"/*
+  cp "$REPO/commit/$commit"/* "$REPO/index"
+}
+
+
+
   #################
  #     Main      #
 #################
@@ -122,17 +138,9 @@ then
   fi
   
  
-  #TODO ignore untracked files
-
-
-  rm "$REPO/index"/*
-  cp "$REPO/commit/$checkout_commit"/* "$REPO/index"
+  update_index_from_commit "$checkout_commit"
   remove_files_from_pwd_excluding_untracked
-  
-
-  
-  cp -rT "$REPO/index" "$PWD/"
-
+  update_pwd_from_index
 
 
 fi

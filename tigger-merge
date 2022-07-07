@@ -1,0 +1,197 @@
+#!/bin/dash
+
+
+. tigger-utilities
+. tigger-file_state
+check_repo_exists
+
+
+
+  #################
+ #    Defines    #
+#################
+OPTION_M=$FALSE
+COMMIT_GIVEN=$FALSE
+
+
+
+
+
+
+  #################
+ #   Functions   #
+#################
+
+find_common_ancestor_commit()
+{
+  commit_1="$1"
+  commit_2="$2"
+
+  lineage_1=$(cat "$REPO/commit/$commit_1/.lineage")
+  lineage_2=$(cat "$REPO/commit/$commit_2/.lineage")
+
+
+  l1="$lineage_1"
+  while [ "$l1" != 'NULL' ]
+  do
+    c1=${l1%%->*}
+    l2="$lineage_2"
+    while [ "$l2" != 'NULL' ]
+    do
+
+      c2=${l2%%->*}
+
+      if [ "$c1" -eq "$c2" ]
+      then
+        echo "$c1"
+        return 0
+      fi
+
+      l2=$(echo "$l2" | sed -E 's/^[0-9]+->(.*)/\1/')
+    done
+
+
+    l1=$(echo "$l1" | sed -E 's/^[0-9]+->(.*)/\1/')
+  done
+  return 1
+}
+
+
+# a merge is fast-forward when the commits
+# of the merging branches appear in eachothers lineage.
+# for the two brances below 
+
+# master: 3->2->1->NULL
+#    b1:  2->1->NULL
+
+#if merging b1 to master b1 is pointed to commit 3 (fast-forward merge)
+#if merging master to b1, since master commit 3 > b1 commit 2 error message 'already up to date'
+# do nothing.
+
+
+
+
+is_commit_on_branch()
+{
+  commit="$1"
+  branch_name="$2"
+  FOUND="$FALSE"
+
+  branch_lineage=$(cat "$REPO/commit/$(find_where_branch_points "$branch_name")/.lineage")
+
+  branches_head_commit="${branch_lineage%%->*}"
+  b="$branch_lineage"
+  while [ "$b" != 'NULL' ]
+  do
+      if [ "${b%%->*}" -eq "$commit" ]
+      then
+        return "$TRUE"
+      fi
+
+      b=$(echo "$b" | sed -E 's/^[0-9]+->(.*)/\1/')
+  done
+
+  return "$FALSE"
+}
+
+
+
+
+  #################
+ #     Main      #
+#################
+
+#  ------  usage checking
+[ $# -eq 1 ] && die "$PRGRM: error: empty commit message"
+[ $# -eq 3 ] || die "usage: $PRGRM <branch|commit> -m message"
+
+merge_to="$1"
+
+shift 1
+
+# -m option needs a message
+while getopts ':m' opt
+do
+  case "$opt" in 
+    m) OPTION_M=$TRUE;; 
+    \?)die "usage: $PRGRM <branch|commit> -m message";;
+  esac
+done
+
+#if option -m present then check for message
+if [ "$OPTION_M" -eq "$TRUE" ] 
+then
+  shift "$(($OPTIND - 1))"
+  message="$@"
+fi
+
+#if no message given
+[ -n "$message" ] || die "$PRGRM: error: empty commit message"
+
+
+#  ------  checking branch conditions
+
+#determine if branch vs commit num is given
+[ "$merge_to" -eq  "$merge_to" ] 2>/dev/null && COMMIT_GIVEN=$TRUE
+
+
+
+
+#-------------------- IF BRANCH GIVEN ---------------------
+if [ $COMMIT_GIVEN -eq $FALSE ]
+then
+
+  #find the commit numbers of current branch and merge branch and the 
+  #most recent commit they share in common.
+  curr_commit=$(find_where_head_points)
+  merge_commit=$(find_where_branch_points "$merge_to")
+  common_commit=$(find_common_ancestor_commit "$curr_commit" "$merge_commit")
+  curr_branch="$(find_head)"
+  branch_to_merge_with="$merge_to"
+
+
+  [ "$curr_commit" -eq "$merge_commit" ] && die "Already up to date"
+
+
+  if [ "$curr_commit" -lt "$merge_commit" ]
+  then
+    is_commit_on_branch "$curr_commit"  "$branch_to_merge_with" && echo "Fast-forward: no commit created"
+    echo "$merge_commit" > "$REPO/heads/$curr_branch" #update branch to point to the same commit
+    tigger-checkout "$branch_to_merge_with"
+    exit 0
+
+  else
+    is_commit_on_branch "$merge_commit" "$curr_branch"  && die "Already up to date"
+
+  fi
+
+
+fi
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
