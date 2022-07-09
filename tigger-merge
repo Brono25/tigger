@@ -299,21 +299,22 @@ fi
     [ "$status1" = "$DELTA_D2_D3" ]   && echo "$file_name">>"$REPO/.error_files"
     [ "$status1" = "$DELTA_D1_D3" ]   && echo "$file_name">>"$REPO/.error_files"
     [ "$status1" = "$DELTA_D1_D2" ]   && echo "$file_name">>"$REPO/.error_files"
-    [ "$status1" = "$DELTA_D1_D2" ]   && echo "$file_name">>"$REPO/.error_files"
+  
     [ "$status1" = "$ALL_DIFFERENT" ] && echo "$file_name">>"$REPO/.error_files"
 
-    [ "$status1" = "$D1_AND_D2" ]  && echo "$file" >>"$REPO/.cp_files"
+    [ "$status1" = "$D1_AND_D2" ]  && echo "$dir2/$file_name" >>"$REPO/.cp_files"
     [ "$status1" = "$D2_ONLY" ]    && echo "$dir2/$file_name" >>"$REPO/.cp_files"
     [ "$status1" = "$D1_ONLY" ]    && echo "$dir1/$file_name" >>"$REPO/.cp_files"
-    [ "$status1" = "$ALL_SAME" ]   && echo "$file" >>"$REPO/.cp_files"
+    [ "$status1" = "$ALL_SAME" ]   && echo "$dir2/$file_name" >>"$REPO/.cp_files"
 
     [ "$status1" = "$DELTA_D2_D3_DELTA_D1_D3" ] && echo "$dir1/$file_name" >>"$REPO/.cp_files"
     [ "$status1" = "$DELTA_D1_D2_DELTA_D1_D3" ] && echo "$dir1/$file_name" >>"$REPO/.cp_files"
     [ "$status1" = "$DELTA_D1_D2_DELTA_D2_D3" ] && echo "$dir2/$file_name" >>"$REPO/.cp_files"
 
-    #echo "$status1  $status2"
+    # echo "$file $status1  $status2" >/dev/tty
   done < "$REPO/.list"
- 
+
+
 
   #if this file has a size then an error happened
   if [ -s "$REPO/.error_files" ] 
@@ -323,14 +324,17 @@ fi
 
 
   else
+
+
     echo "Committed as commit $next_commit"
     mkdir -- "$REPO/commit/$next_commit"
-
+   
     while read file 
     do
       cp "$file" "$REPO/commit/$next_commit"
 
     done <"$REPO/.cp_files"
+    
 
     update_index_from_commit "$next_commit"
     remove_files_from_pwd_excluding_untracked
@@ -340,7 +344,7 @@ fi
     echo -n "$next_commit" > "$REPO/heads/$curr_branch"
 
     #merge log
-    branch="$(find head)"
+    branch="$(find_head)"
     log_comment "$next_commit" "$branch" "$message"
 
 
