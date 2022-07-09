@@ -8,4 +8,7 @@ check_repo_exists
 
 [ $# -eq 0 ] || die "usage: $PRGRM"
 
-cat "$REPO/.log"
+
+branch="$(find_head)"
+
+cat "$REPO/logs/$branch"

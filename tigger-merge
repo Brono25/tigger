@@ -6,30 +6,20 @@
 check_repo_exists
 
 
+trap 'rm -f $REPO/.error_files $REPO/.cp_files $REPO/.list' EXIT INT
 
   #################
  #    Defines    #
 #################
+
 OPTION_M=$FALSE
 COMMIT_GIVEN=$FALSE
-ERROR_FOUND=$FALSE
-
-
 COMMIT_DIR="$REPO/commit/$("find_where_head_points")"
-
-
-PWD_ONLY="$D3_ONLY"
-DELTA_REP_PWD="$DELTA_D1_D3" 
-
-
 
 
   #################
  #   Functions   #
 #################
-
-
-
 
 remove_files_from_pwd_excluding_untracked()
 {
@@ -48,7 +38,6 @@ remove_files_from_pwd_excluding_untracked()
   return 0
 }
 
-
 update_pwd_from_index()
 {
   remove_files_from_pwd_excluding_untracked
@@ -65,14 +54,12 @@ update_index_from_commit()
   
 }
 
-
-
-
 find_common_ancestor_commit()
 {
   commit_1="$1"
   commit_2="$2"
 
+  return 1
   lineage_1=$(cat "$REPO/commit/$commit_1/.lineage")
   lineage_2=$(cat "$REPO/commit/$commit_2/.lineage")
 
@@ -151,7 +138,24 @@ update_index_from_commit()
   cp "$REPO/commit/$commit"/* "$REPO/index"
 }
 
+log_comment()
+{
+  
+  commit="$1"
+  branch="$2"
+  comment="$3"
 
+  LOG_PATH="$REPO/logs"
+
+  if [ ! -s "$LOG_PATH/$branch" ]
+  then
+    echo "$1 $3" > "$LOG_PATH/$branch"
+  else 
+    tmp=$(cat -- "$LOG_PATH/$branch")
+    echo  "$1 $3" > "$LOG_PATH/$branch"
+    echo "$tmp" >> "$LOG_PATH/$branch"
+  fi
+}
 
   #################
  #     Main      #
@@ -181,23 +185,28 @@ then
   message="$@"
 fi
 
+#test if branch is a number or string and if the branches exist.
+if [ "$merge_to" -eq "$merge_to" ] 2>/dev/null
+then
+  COMMIT_GIVEN=$TRUE
+  [ -f "$REPO/heads/$merge_to" ] || die "$PRGRM: error: unknown branch '$merge_to'"
+else
+  [ -f "$REPO/heads/$merge_to" ] || die "$PRGRM: error: unknown branch '$merge_to'"
+fi
+
+
 #if no message given
 [ -n "$message" ] || die "$PRGRM: error: empty commit message"
 [ -n "$REPO/heads/$" ] || die "$PRGRM: error: empty commit message"
 
 
-#  ------  checking branch conditions
-
-#determine if branch vs commit num is given
-[ "$merge_to" -eq  "$merge_to" ] 2>/dev/null && COMMIT_GIVEN=$TRUE
-
 
 
 
 #-------------------- IF BRANCH GIVEN ---------------------
-if [ $COMMIT_GIVEN -eq $FALSE ]
+if [ "$COMMIT_GIVEN" -eq "$FALSE" ]
 then
-
+	
   #find the commit numbers of current branch and merge branch and the 
   #most recent commit they share in common.
   curr_commit="$(find_where_head_points)"
@@ -205,6 +214,8 @@ then
   common_commit=$(find_common_ancestor_commit "$curr_commit" "$merge_commit")
   curr_branch="$(find_head)"
   branch_to_merge_with="$merge_to"
+
+
 
 #-------------------- IF COMMIT GIVEN ---------------------
 else
@@ -214,8 +225,6 @@ else
   common_commit=$(find_common_ancestor_commit "$curr_commit" "$merge_commit")
   curr_branch="$(find_head)"
 fi
-
-
 
 
 [ "$curr_commit" -eq "$merge_commit" ] && die "Already up to date"
@@ -228,6 +237,7 @@ fi
 #if this is the case and the 'merge to' branch is a more recent commit then
 #the 'merge from' branch is pointed to this new location without making a commit.
 #if vice versa then throw already up to date error.
+
 is_commit_on_branch "$curr_commit"  "$branch_to_merge_with"
 if [ $? -eq  "$TRUE" ]
 then
@@ -238,6 +248,8 @@ then
       remove_files_from_pwd_excluding_untracked
       update_pwd_from_index
       echo "$merge_commit" > "$REPO/heads/$curr_branch" #update branch to point to the same commit
+      #update log
+      cp -a "$REPO/logs/$branch_to_merge_with" "$REPO/logs/$curr_branch" 
       exit 0
     else
       is_commit_on_branch "$merge_commit" "$curr_branch"  && die "Already up to date"
@@ -254,69 +266,88 @@ fi
   dir2="$REPO/commit/$merge_commit"
   dir3="$REPO/commit/$common_commit"
 
-  mkdir -- "$REPO/commit/$next_commit"
   
-  find  "$dir1" "$dir2" "$dir3" -maxdepth 1  -type f  -not -name '.*' | sort|
-  while read -r file
+
+
+  find  "$dir1" "$dir2" "$dir3" -maxdepth 1  -type f  -not -name '.*' | sort > "$REPO/.list" 
+  while read -r file 
   do
-    status=$(find_files_state "$(basename $file)" "$dir1" "$dir2" "$dir3")
 
-    [ "$status" = "$D3_ONLY" ]    && continue
-    [ "$status" = "$D2_AND_D3" ]  && continue
-    [ "$status" = "$D1_AND_D3" ]  && continue
+    status2=$(find_files_state "$(basename $file)" "$COMMIT_DIR" "$INDEX_DIR" "$PWD")
+    error_msg="$PRGRM: error: can not merge: local changes to files"
+   
+    [ "$status2" = "$INDEX_ONLY" ]                  && die "$error_msg"
+    [ "$status2" = "$IND_AND_PWD" ]                 && die "$error_msg"
+    [ "$status2" = "$DELTA_IND_PWD" ]               && die "$error_msg"
+    [ "$status2" = "$REP_ONLY" ]                    && die "$error_msg"
+    [ "$status2" = "$REP_AND_PWD" ]                 && die "$error_msg"
+    [ "$status2" = "$DELTA_REP_PWD" ]               && die "$error_msg"
+    [ "$status2" = "$DELTA_REP_IND" ]               && die "$error_msg"
+    [ "$status2" = "$DELTA_REP_IND_DELTA_REP_PWD" ] && die "$error_msg"
+    [ "$status2" = "$DELTA_REP_IND_DELTA_IND_PWD" ] && die "$error_msg"
+    [ "$status2" = "$ALL_DIFFERENT" ]               && die "$error_msg"
 
-    [ "$status" = "$D1_AND_D2" ]     && echo "$(basename $file)"
-    [ "$status" = "$DELTA_D1_D3" ] && echo "$(basename $file)"
-    [ "$status" = "$DELTA_D2_D3" ]   && echo "$(basename $file)"
-    [ "$status" = "$DELTA_D1_D3" ]   && echo "$(basename $file)"
-    [ "$status" = "$DELTA_D1_D2" ]   && echo "$(basename $file)"
-    [ "$status" = "$DELTA_D1_D2" ]   && echo "$(basename $file)"
-    [ "$status" = "$ALL_DIFFERENT" ] && echo "$(basename $file)"
+    # [ "$status2" = "$DELTA_IND_PWD_DELTA_REP_PWD" ] && echo "$file $status2"
+    status1=$(find_files_state "$(basename $file)" "$dir1" "$dir2" "$dir3")
 
+    #[ "$status1" = "$D3_ONLY" ]    && continue
+    #[ "$status1" = "$D2_AND_D3" ]  && continue
+    #[ "$status1" = "$D1_AND_D3" ]  && continue
 
-    [ "$status" = "$D2_ONLY" ]    && cp "$file" "$REPO/commit/$next_commit"
-    [ "$status" = "$D1_ONLY" ]    && cp "$file" "$REPO/commit/$next_commit"
-    [ "$status" = "$D1_AND_D2" ]  && cp "$file" "$REPO/commit/$next_commit"
-    [ "$status" = "$ALL_SAME" ]   && cp "$file" "$REPO/commit/$next_commit"
+    file_name="$(basename $file)"
+    [ "$status1" = "$DELTA_D1_D3" ]   && echo "$file_name">>"$REPO/.error_files"
+    [ "$status1" = "$DELTA_D2_D3" ]   && echo "$file_name">>"$REPO/.error_files"
+    [ "$status1" = "$DELTA_D1_D3" ]   && echo "$file_name">>"$REPO/.error_files"
+    [ "$status1" = "$DELTA_D1_D2" ]   && echo "$file_name">>"$REPO/.error_files"
+    [ "$status1" = "$DELTA_D1_D2" ]   && echo "$file_name">>"$REPO/.error_files"
+    [ "$status1" = "$ALL_DIFFERENT" ] && echo "$file_name">>"$REPO/.error_files"
 
-    if [ "$status" = "$DELTA_D2_D3_DELTA_D1_D3" ]
-    then
-      cp "$dir1"/"$(basename $file)" "$REPO/commit/$next_commit"
+    [ "$status1" = "$D1_AND_D2" ]  && echo "$file" >>"$REPO/.cp_files"
+    [ "$status1" = "$D2_ONLY" ]    && echo "$dir2/$file_name" >>"$REPO/.cp_files"
+    [ "$status1" = "$D1_ONLY" ]    && echo "$dir1/$file_name" >>"$REPO/.cp_files"
+    [ "$status1" = "$ALL_SAME" ]   && echo "$file" >>"$REPO/.cp_files"
 
-    elif [ "$status" = "$DELTA_D1_D2_DELTA_D1_D3" ]
-    then
-      cp "$dir1"/"$(basename $file)" "$REPO/commit/$next_commit"
+    [ "$status1" = "$DELTA_D2_D3_DELTA_D1_D3" ] && echo "$dir1/$file_name" >>"$REPO/.cp_files"
+    [ "$status1" = "$DELTA_D1_D2_DELTA_D1_D3" ] && echo "$dir1/$file_name" >>"$REPO/.cp_files"
+    [ "$status1" = "$DELTA_D1_D2_DELTA_D2_D3" ] && echo "$dir2/$file_name" >>"$REPO/.cp_files"
 
-    elif [ "$status" = "$DELTA_D1_D2_DELTA_D2_D3" ]
-    then
-      cp "$dir2"/"$(basename $file)" "$REPO/commit/$next_commit"
-    fi 
-
-  done > '.tigger/.tpm2'
+    #echo "$status1  $status2"
+  done < "$REPO/.list"
  
 
-
   #if this file has a size then an error happened
-  if [ -s '.tigger/.tpm2' ] 
+  if [ -s "$REPO/.error_files" ] 
   then
     echo "$PRGRM: error: These files can not be merged:"
-    cat '.tigger/.tpm2' |sort|uniq
-    rm -rf "$REPO/commit/$next_commit" 
+    cat "$REPO/.error_files" |sort|uniq
 
 
   else
     echo "Committed as commit $next_commit"
+    mkdir -- "$REPO/commit/$next_commit"
+
+    while read file 
+    do
+      cp "$file" "$REPO/commit/$next_commit"
+
+    done <"$REPO/.cp_files"
+
     update_index_from_commit "$next_commit"
     remove_files_from_pwd_excluding_untracked
     update_pwd_from_index
 
     # update branch pointer
     echo -n "$next_commit" > "$REPO/heads/$curr_branch"
+
+    #merge log
+    branch="$(find head)"
+    log_comment "$next_commit" "$branch" "$message"
+
+
     exit 0
     
   fi 
-  
-  rm -f '.tigger/.tpm2'
+
 
 
 

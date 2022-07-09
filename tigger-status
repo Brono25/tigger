@@ -44,18 +44,17 @@ DELTA_REP_IND_DELTA_IND_PWD="$DELTA_D1_D2_DELTA_D2_D3"
 for file in $(basename --multiple "$COMMIT_DIR"/* "$INDEX_DIR"/* "$PWD"/* |sort|uniq|sed '/*/d' |xargs)
 do
   
-  status=$(find_files_state "$file"  "$COMMIT_DIR" "$INDEX_DIR" "$PWD")
+  status=$(find_files_state "$file" "$COMMIT_DIR" "$INDEX_DIR" "$PWD")
 
-  
-  [ "$status" = "$PWD_ONLY" ]         		       && status_msg="untracked" 
-  [ "$status" = "$DELTA_REP_PWD" ]               && status_msg="untracked"      
-  [ "$status" = "$REP_AND_PWD" ]                 && status_msg="untracked"                                       
-  [ "$status" = "$ALL_SAME" ]       		         && status_msg="same as repo"                                      
-  [ "$status" = "$REP_AND_IND" ]       		       && status_msg="file deleted"                                      
-  [ "$status" = "$REP_ONLY" ]            	   	   && status_msg="deleted"                                           
-  [ "$status" = "$IND_AND_PWD" ]       		       && status_msg="added to index" 
-  [ "$status" = "$INDEX_ONLY" ]                  && status_msg="added to index, file deleted"
-  [ "$status" = "$DELTA_IND_PWD" ]               && status_msg="added to index, file changed"                                
+  [ "$status" = "$PWD_ONLY" ]       && status_msg="untracked" 
+  [ "$status" = "$DELTA_REP_PWD" ]  && status_msg="untracked"      
+  [ "$status" = "$REP_AND_PWD" ]    && status_msg="untracked"                                       
+  [ "$status" = "$ALL_SAME" ]       && status_msg="same as repo"                                      
+  [ "$status" = "$REP_AND_IND" ]    && status_msg="file deleted"                                      
+  [ "$status" = "$REP_ONLY" ]       && status_msg="deleted"                                           
+  [ "$status" = "$IND_AND_PWD" ]    && status_msg="added to index" 
+  [ "$status" = "$INDEX_ONLY" ]     && status_msg="added to index, file deleted"
+  [ "$status" = "$DELTA_IND_PWD" ]  && status_msg="added to index, file changed"                                
   [ "$status" = "$ALL_DIFFERENT" ]               && status_msg="file changed, different changes staged for commit"
   [ "$status" = "$DELTA_REP_IND_DELTA_IND_PWD" ] && status_msg="file changed, different changes staged for commit" 
   [ "$status" = "$DELTA_REP_IND_DELTA_REP_PWD" ] && status_msg="file changed, changes staged for commit"        

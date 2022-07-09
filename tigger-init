@@ -24,7 +24,7 @@ then
 	mkdir -- "$REPO/heads"                || die "$PRGRM: error: unable to create heads"
 	echo -n "NULL" > "$REPO/heads/master" || die "$PRGRM: error: unable to create master branch"
 	echo -n "master" > "$REPO/HEAD"       || die "$PRGRM: error: unable to create HEAD"
-	touch  "$REPO/.log"                   || die "$PRGRM: error: unable to create .log"
+	mkdir  "$REPO/logs"                   || die "$PRGRM: error: unable to create logs"
 
 	
 	echo "Initialized empty tigger repository in .tigger"

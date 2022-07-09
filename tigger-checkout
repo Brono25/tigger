@@ -5,7 +5,7 @@
 . tigger-file_state
 check_repo_exists
 
-trap 'rm -f .tmp' EXIT INT
+trap 'rm -f .tigger/.tmp' EXIT INT
 
   #################
  #    Defines    #
@@ -17,18 +17,18 @@ ERROR_MSG="$PRGRM: error: Your changes to the following files would be overwritt
 
 
 
-DELETED="$D1_ONLY"  
-CHANGES_NOT_STAGED="$DELTA_D2_D3_DELTA_D1_D3" 
-DIFF_CHANGES_STAGED_1="$ALL_DIFFERENT"
-DIFF_CHANGES_STAGED_2="$DELTA_D1_D2_DELTA_D2_D3"
-CHANGES_STAGED="$DELTA_D1_D2_DELTA_D1_D3"
-DELETED_STAGED="$DELTA_D1_D2" 
-UNTRACKED_1="$D3_ONLY"
-UNTRACKED_2="$DELTA_D1_D3"
-UNTRACKED_3="$D1_AND_D3" 
-ADDED_TO_INDEX_FILE_CHANGED="$DELTA_D2_D3"
-ADDED_TO_INDEX="$D2_AND_D3"
-ADDED_TO_INDEX_FILE_DELETED="$D2_ONLY" 
+# DELETED="$D1_ONLY"  
+# CHANGES_NOT_STAGED="$DELTA_D2_D3_DELTA_D1_D3" 
+# DIFF_CHANGES_STAGED_1="$ALL_DIFFERENT"
+# DIFF_CHANGES_STAGED_2="$DELTA_D1_D2_DELTA_D2_D3"
+# CHANGES_STAGED="$DELTA_D1_D2_DELTA_D1_D3"
+# DELETED_STAGED="$DELTA_D1_D2" 
+# UNTRACKED_1="$D3_ONLY"
+# UNTRACKED_2="$DELTA_D1_D3"
+# UNTRACKED_3="$D1_AND_D3" 
+# ADDED_TO_INDEX_FILE_CHANGED="$DELTA_D2_D3"
+# ADDED_TO_INDEX="$D2_AND_D3"
+# ADDED_TO_INDEX_FILE_DELETED="$D2_ONLY" 
 
   #################
  #   Functions   #
@@ -41,8 +41,8 @@ remove_files_from_pwd_excluding_untracked()
     [ "$file" = '*' ] && return 0
 
     file=$(basename "$file")
-    status=$(find_files_state "$file" "$COMMIT_DIR" "$INDEX_DIR" "$PWD")
-    if [ ! "$status" = "$UNTRACKED_1" ] && [ ! "$status" = "$UNTRACKED_2" ]
+    status1=$(find_files_state "$file" "$COMMIT_DIR" "$INDEX_DIR" "$PWD")
+    if [ ! "$status1" = "$DELTA_REP_PWD" ] && [ ! "$status1" = "$PWD_ONLY" ]
     then
        rm -f "$PWD/$file"
     fi
@@ -80,10 +80,11 @@ COMMIT_DIR="$REPO/commit/$current_commit"
 [ $# -ne 1 ]                   && die "usage: $PRGRM <branch>" 
 [ -f "$REPO/heads/$checkout_branch_name" ] || die "$PRGRM: error: unknown branch '$checkout_branch_name'" 
 
+current_branch="$(find_head)"
+[ "$checkout_branch_name" =  "$current_branch" ] && die "Already on '$current_branch'" 
 
 
 checkout_commit=$(find_where_branch_points "$checkout_branch_name")
-
 
 
 
@@ -94,33 +95,35 @@ checkout_commit=$(find_where_branch_points "$checkout_branch_name")
 if [ "$checkout_commit" -ne "$current_commit" ]
 then
  
-  #before checkout can proceed must check the status of all the 
-  #files in pwd, index and current repo commit. Some status's
+  #before checkout can proceed must check the status1 of all the 
+  #files in pwd, index and current repo commit. Some status1's
   #will throw an error and prevent checkout.
 
 
   find  "$COMMIT_DIR"/ "$INDEX_DIR"/ "$PWD"/ -maxdepth 1  -type f  -not -name '.*' |xargs -I@ basename "@"|sort|uniq|
 
-  while IFS='' read -r file
+  while read -r file
   do
-    status=$(find_files_state "$file" "$COMMIT_DIR" "$INDEX_DIR" "$PWD")
+    status1=$(find_files_state "$file" "$COMMIT_DIR" "$INDEX_DIR" "$PWD")
+    status2=$(find_files_state "$file" "$REPO/commit/$checkout_commit" "$INDEX_DIR" "$PWD")
 
+    # echo "$file $status1 $status2"
+	
+
+    [ "$status1" = "$REP_ONLY" ]                    &&  echo "$file" >> '.tigger/.tmp'
+    [ "$status1" = "$DELTA_IND_PWD_DELTA_REP_PWD" ] &&  echo "$file" >> '.tigger/.tmp'
+    [ "$status1" = "$ALL_DIFFERENT" ]               &&  echo "$file" >> '.tigger/.tmp'
+    [ "$status1" = "$DELTA_REP_IND_DELTA_IND_PWD" ] &&  echo "$file" >> '.tigger/.tmp'
+    [ "$status1" = "$DELTA_REP_IND_DELTA_REP_PWD" ] &&  echo "$file" >> '.tigger/.tmp'
+    [ "$status1" = "$DELTA_REP_IND" ]               &&  echo "$file" >> '.tigger/.tmp'
+    [ "$status1" = "$REP_AND_PWD" ]                 &&  echo "$file" >> '.tigger/.tmp'
+
+    [ "$status2" = "$DELTA_REP_PWD" ]               &&  echo "$file" >> '.tigger/.tmp'
+    [ "$status2" = "$ALL_DIFFERENT" ]               &&  echo "$file" >> '.tigger/.tmp'
+    # [ "$status2" = "$DELTA_REP_IND_DELTA_REP_PWD" ] &&  echo "$file" >> '.tigger/.tmp'
     
-    [ "$status" = "$DELETED" ]               &&  echo "$file"
-    [ "$status" = "$CHANGES_NOT_STAGED" ]    &&  echo "$file"
-    [ "$status" = "$DIFF_CHANGES_STAGED_1" ] &&  echo "$file"
-    [ "$status" = "$DIFF_CHANGES_STAGED_2" ] &&  echo "$file"
-    [ "$status" = "$CHANGES_STAGED" ]        &&  echo "$file"
-    [ "$status" = "$DELETED_STAGED" ]        &&  echo "$file"
-    # [ "$status" = "$UNTRACKED_1" ]           &&  echo -n "$file " 
-    # [ "$status" = "$UNTRACKED_2" ]           &&  echo -n "$file " 
-    [ "$status" = "$UNTRACKED_3" ]           &&  echo "$file"
-    #[ "$status" = "$ADDED_TO_INDEX_FILE_CHANGED" ] &&  echo "$file"
-    #[ "$status" = "$ADDED_TO_INDEX" ]              &&  echo "$file"
-    #[ "$status" = "$ADDED_TO_INDEX_FILE_DELETED" ] &&  echo "$file"
 
-
-  done > '.tigger/.tmp'
+  done 
 
 
 

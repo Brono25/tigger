@@ -46,6 +46,21 @@ DELTA_D1_D2_DELTA_D2_D3=0x3E  #| 1 | 1 | 1 |     1    |     1     |    0     |
 ALL_DIFFERENT=0x3F            #| 1 | 1 | 1 |     1    |     1     |    1     | 
 
 
+PWD_ONLY="$D3_ONLY"
+INDEX_ONLY="$D2_ONLY"  
+IND_AND_PWD="$D2_AND_D3"
+DELTA_IND_PWD="$DELTA_D2_D3"
+REP_ONLY="$D1_ONLY"   
+REP_AND_PWD="$D1_AND_D3"  
+DELTA_REP_PWD="$DELTA_D1_D3"   
+REP_AND_IND="$D1_AND_D2" 
+DELTA_REP_IND="$DELTA_D1_D2" 
+DELTA_IND_PWD_DELTA_REP_PWD="$DELTA_D2_D3_DELTA_D1_D3" 
+DELTA_REP_IND_DELTA_REP_PWD="$DELTA_D1_D2_DELTA_D1_D3"
+DELTA_REP_IND_DELTA_IND_PWD="$DELTA_D1_D2_DELTA_D2_D3"
+
+
+
   #################
  #   Function    #
 #################

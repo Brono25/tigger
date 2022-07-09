@@ -36,12 +36,18 @@ delete_branch()
 
 create_branch()
 {
-	branch_name="$1"
-	branch_location="$2"
+	new_branch="$1"
+	new_branch_location="$2"
+	curr_branch="$(find_head)"
 
-	[ ! -f "$REPO/heads/$branch_name" ] || die "$PRGRM: error: branch '$branch_name' already exists"
+	[ ! -f "$REPO/heads/$new_branch" ] || die "$PRGRM: error: branch '$new_branch' already exists"
 
-	echo -n "$branch_location" > "$REPO/heads/$branch_name"
+	echo -n "$new_branch_location" > "$REPO/heads/$new_branch"
+
+	#create branches log file. Each new branch inherrit
+	
+	cp -a "$REPO/logs/$curr_branch" "$REPO/logs/$new_branch"
+
 	return 0
 }
 
@@ -101,16 +107,9 @@ then
   while read -r file
   do
     status=$(find_files_state "$file" "$COMMIT_DIR" "$INDEX_DIR" "$PWD")
-    echo "To DEL: $file"
+   # echo "To DEL: $file"
 
   done
-
-
-
-
-
-
-
 
 
 	curr_head_pos="$(find_head)"

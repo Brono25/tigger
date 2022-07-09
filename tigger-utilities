@@ -65,15 +65,13 @@ find_where_head_points()
 
 
 find_where_branch_points()
-{
-  
+{  
   branch="$1"
   [ -z "$branch" ] && return 1
   [ -f "$REPO/heads/$branch" ] || return 1
 
   commit_num=$(cat "$REPO/heads/$branch")
   echo -n "$commit_num"
-  
   return 0
 }
 

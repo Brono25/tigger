@@ -50,15 +50,18 @@ log_comment()
 {
 	
 	commit="$1"
-	comment="$2"
+	branch="$2"
+	comment="$3"
 
-	if [ ! -s "$REPO/.log" ]
+	LOG_PATH="$REPO/logs"
+
+	if [ ! -s "$LOG_PATH/$branch" ]
 	then
-		echo "$1 $2" > "$REPO/.log"
+		echo "$1 $3" > "$LOG_PATH/$branch"
 	else 
-		tmp=$(cat -- "$REPO/.log")
-		echo  "$1 $2" > "$REPO/.log"
-		echo "$tmp" >> "$REPO/.log"
+		tmp=$(cat -- "$LOG_PATH/$branch")
+		echo  "$1 $3" > "$LOG_PATH/$branch"
+		echo "$tmp" >> "$LOG_PATH/$branch"
 	fi
 
 }
@@ -208,7 +211,7 @@ create_lineage "$parent_commit" "$next_commit"
 cp -aT "$REPO/index" "$REPO/commit/$next_commit" 
 echo "Committed as commit $next_commit"
 
-log_comment "$next_commit" "$@"
+log_comment "$next_commit" "$curr_branch" "$@"
 
 
 

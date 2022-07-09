@@ -10,445 +10,973 @@ trap 'rm -f a b' EXIT INT
 
 
 
-# echo "-------------WRONG USAGE & NO REPO------------"
-# tigger-merge a b c ;echo "Exit status: $?"
-# tigger-merge     ;echo "Exit status: $?"
-# echo ''
 
-
-# echo "-------------WRONG USAGE ------------"
+# echo "-------------D1_ONLY & D2_ONLY & D3_ONLY------------"
 # open_tigger
-# touch a 
-# tigger-add a
-# tigger-commit -m commit-1
 
-# tigger-merge 
-# tigger-merge b1
-# tigger-merge b1 -m 
-# tigger-merge b1 -ma m2 
-# tigger-merge -m m3
-# tigger-merge b1 -m m4 m5
-# tigger-merge b1 b2 -m m4 m5
+# 	echo x>a
+# 	tigger-add a
+# 	tigger-commit -m 'commit 0'
+	
+# 	rm a
+# 	tigger-add a
+# 	tigger-branch b1
+# 	tigger-checkout b1
+# 	echo y>b
+# 	tigger-add b
+# 	tigger-commit -m 'commit 1'
+	
+# 	tigger-checkout master
+# 	tigger-branch b2
+# 	tigger-checkout b2
+# 	echo z>c
+# 	rm a
+# 	tigger-add a c
+# 	tigger-commit -m 'commit 2'
+# 	print_all 0 1 2 3
 
-# close_tigger
-
-# echo "-------------UNKOWN BRANCH------------"
-# open_tigger
-# touch a 
-# tigger-add a
-# tigger-commit -m commit-1
-
-# tigger-merge b1 -a m1
-
-# close_tigger
-
-
-# echo "-------------MERGE BRANCH WITH ITSELF------------"
-# open_tigger
-# touch a 
-# tigger-add a
-# tigger-commit -m commit-1
-
-# tigger-merge master -m m1
-
-# tigger-branch b1
-# tigger-checkout b1
-
-# tigger-merge b1 -m m1
-# tigger-merge master -m m1
-
-
-
-# touch b
-# tigger-add b
-# tigger-commit -m commit-2
-# print_all 0 1
-# tigger-merge b1 -m m1
-# tigger-merge master -m m1
+# 	tigger-merge b1 -m 'commit 3'
+	
+# 	print_all 0 1 2 3
 
 # close_tigger
 
 
 
-# echo "-------------INDEX_ONLY------------"
+# echo "-------------file a: D1_AND_D3------------"
 # open_tigger
-# touch a 
-# tigger-add a
-# tigger-commit -m commit-0
 
-# tigger-branch b1
-# tigger-checkout b1
+# 	echo x>a
+# 	tigger-add a
+# 	tigger-commit -m 'commit 0'
+	
+# 	rm a
+# 	tigger-add a
+# 	tigger-branch b1
+# 	tigger-checkout b1
+# 	echo y>b
+# 	tigger-add b
+# 	tigger-commit -m 'commit 1'
+	
+# 	tigger-checkout master
+# 	tigger-branch b2
+# 	tigger-checkout b2
+# 	echo z>c
+	
+# 	tigger-add c
+# 	tigger-commit -m 'commit 2'
+# 	print_all 0 1 2 3
 
-# tigger-merge master -m m1
-
-
-# # touch b
-# # tigger-add b
-# # tigger-commit -m commit-1
-
-# # print_all 0 1
+# 	tigger-merge b1 -m 'commit 3'
+	
+# 	print_all 0 1 2 3
 
 # close_tigger
 
 
 
-# echo "-------------MERGE BRANCH NO COMMITS------------"
+# echo "-------------file a: D2_AND_D3------------"
 # open_tigger
-# touch a 
-# tigger-add a
-# tigger-commit -m commit-1
 
-# tigger-merge master -m m1
+# 	echo x>a
+# 	tigger-add a
+# 	tigger-commit -m 'commit 0'
+	
+	
+# 	tigger-branch b1
+# 	tigger-checkout b1
+# 	echo y>b
+# 	tigger-add b
+# 	tigger-commit -m 'commit 1'
+	
+# 	tigger-checkout master
+# 	tigger-branch b2
+# 	tigger-checkout b2
+# 	echo z>c
+	
+# 	rm a
+# 	tigger-add a c
+# 	tigger-commit -m 'commit 2'
+# 	print_all 0 1 2 3
+# 	tigger-merge b1 -m 'commit 3'
+	
+# 	print_all 0 1 2 3
 
-# tigger-branch b1
-# tigger-checkout b1
+# close_tigger
 
-# tigger-merge b1 -m m1
 
-# tigger-merge master -m m1
+# echo "-------------file a: DELTA_D2_D3------------"
+# open_tigger
+
+# 	echo x>a
+# 	tigger-add a
+# 	tigger-commit -m 'commit 0'
+	
+	
+# 	tigger-branch b1
+# 	tigger-checkout b1
+# 	echo y>b
+# 	echo xx>a
+# 	tigger-add a b
+# 	tigger-commit -m 'commit 1'
+	
+# 	tigger-checkout master
+# 	tigger-branch b2
+# 	tigger-checkout b2
+# 	echo z>c
+	
+# 	rm a
+# 	tigger-add a c
+# 	tigger-commit -m 'commit 2'
+# 	print_all 0 1 2 3
+
+# 	tigger-merge b1 -m 'commit 3'
+	
+# 	print_all 0 1 2 3
+
+# close_tigger
+
+
+
+# echo "-------------file a: DELTA_D1_D3------------"
+# open_tigger
+
+# 	echo x>a
+# 	tigger-add a
+# 	tigger-commit -m 'commit 0'
+	
+# 	rm a
+# 	tigger-add a
+# 	tigger-branch b1
+# 	tigger-checkout b1
+# 	echo y>b
+# 	tigger-add b
+# 	tigger-commit -m 'commit 1'
+	
+# 	tigger-checkout master
+# 	tigger-branch b2
+# 	tigger-checkout b2
+# 	echo z>c
+# 	echo xx>a
+# 	tigger-add a c
+# 	tigger-commit -m 'commit 2'
+# 	print_all 0 1 2 3
+
+# 	tigger-merge b1 -m 'commit 3'
+	
+# 	print_all 0 1 2 3
+
+# close_tigger
+
+
+
+# echo "-------------file a: D1_AND_D2------------"
+# open_tigger
+
+# 	echo y>b
+# 	tigger-add b
+# 	tigger-commit -m 'commit 0'
+	
+# 	rm b
+# 	tigger-add b
+# 	tigger-branch b1
+# 	tigger-checkout b1
+# 	echo x>a
+# 	tigger-add a
+# 	tigger-commit -m 'commit 1'
+	
+# 	tigger-checkout master
+# 	tigger-branch b2
+# 	tigger-checkout b2
+# 	echo x>a
+	
+# 	tigger-add a
+# 	tigger-commit -m 'commit 2'
+# 	print_all 0 1 2 3
+
+# 	tigger-merge b1 -m 'commit 3'
+	
+# 	print_all 0 1 2 3
+
+# close_tigger
+
+
+# echo "-------------file a: DELTA_D1_D2------------"
+# open_tigger
+
+# 	echo y>b
+# 	tigger-add b
+# 	tigger-commit -m 'commit 0'
+	
+# 	rm b
+# 	tigger-add b
+# 	tigger-branch b1
+# 	tigger-checkout b1
+# 	echo x>a
+# 	tigger-add a
+# 	tigger-commit -m 'commit 1'
+	
+# 	tigger-checkout master
+# 	tigger-branch b2
+# 	tigger-checkout b2
+# 	echo xx>a
+	
+# 	tigger-add a
+# 	tigger-commit -m 'commit 2'
+# 	print_all 0 1 2 3
+
+# 	tigger-merge b1 -m 'commit 3'
+	
+# 	print_all 0 1 2 3
 
 # close_tigger
 
 
 
 
-# echo "-------------FAST FORWARD B1 TO MASTER------------"
+
+# echo "-------------file a: ALL_SAME------------"
 # open_tigger
-# touch a 
-# tigger-add a
-# tigger-commit -m commit-0
 
-# tigger-branch b2
-# tigger-branch b1
-# tigger-checkout b1
-
-
-# touch b
-# tigger-add b
-# tigger-commit -m commit-1
-
-# touch c
-# rm a b
-# tigger-add a b c
-# tigger-commit -m commit-2
+# 	echo x>a	
+# 	echo y>b
+# 	tigger-add a b
+# 	tigger-commit -m 'commit 0'
+	
+# 	rm b
+# 	tigger-add b
+# 	tigger-branch b1
+# 	tigger-checkout b1
+# 	echo x>a
+# 	echo z>c
+# 	tigger-add a c
+# 	tigger-commit -m 'commit 1'
 
 
-# touch d
-# tigger-add d
-# tigger-commit -m commit-3
+	
+# 	tigger-checkout master
+# 	tigger-branch b2
+# 	tigger-checkout b2
+# 	echo x>a
+# 	rm b 
+# 	tigger-add a b 
+# 	tigger-commit -m 'commit 2'
+# 	print_all 0 1 2 3
+	
 
-# tigger-checkout b2
-
-
-
-
-# touch e
-# tigger-add e
-# tigger-commit -m commit-4
-
-# touch f
-# tigger-add f
-# tigger-commit -m commit-5
-
-
-# print_all 0 1 2 3 4 5
-
-
-# tigger-checkout b1
-# tigger-merge master -m m2
-# tigger-checkout master
-# print_all 0 1 2 3 4 5
-
-# # tigger-merge b1 -m m1
+# 	tigger-merge b1 -m 'commit 3'
+# 	print_all 0 1 2 3
+	
+	
 
 # close_tigger
 
 
-# echo "-------------FAST FORWARD MASTER TO B1------------"
+
+
+# #D2=D1
+# echo "-------------file a: DELTA_D2_D3_DELTA_D1_D3------------"
 # open_tigger
-# touch a 
-# tigger-add a
-# tigger-commit -m commit-0
 
-# tigger-branch b2
-# tigger-branch b1
-# tigger-checkout b1
+# 	echo x>a	
+# 	tigger-add a 
+# 	tigger-commit -m 'commit 0'
+	
+	
+# 	tigger-branch b1
+# 	tigger-checkout b1
+# 	echo xx>a
 
+# 	tigger-add a 
+# 	tigger-commit -m 'commit 1'
 
-# touch b
-# tigger-add b
-# tigger-commit -m commit-1
+# 	tigger-checkout master
+# 	tigger-branch b2
+# 	tigger-checkout b2
+# 	echo xx>a
+	
+# 	tigger-add a  
+# 	tigger-commit -m 'commit 2'
 
-# touch c
-# rm a b
-# tigger-add a b c
-# tigger-commit -m commit-2
+# 	tigger-merge b1 -m 'commit 3'
+# 	print_all 0 1 2 3
+	
 
-
-# touch d
-# tigger-add d
-# tigger-commit -m commit-3
-
-# tigger-checkout b2
-
-
-
-
-# touch e
-# tigger-add e
-# tigger-commit -m commit-4
-
-# touch f
-# tigger-add f
-# tigger-commit -m commit-5
-
-
-
-
-
-# tigger-checkout master
-
-
-
-
-# tigger-merge b1 -m m2
-# print_all 0 1 2 3 4 5
 # close_tigger
 
 
-# echo "-------------MERGE MASTER B1 TO B2 NO CONFLICT------------"
+
+
+
+# #D2=D3
+# echo "-------------file a: DELTA_D1_D2_DELTA_D1_D3------------"
 # open_tigger
-# touch a 
-# tigger-add a 
-# tigger-commit -m commit-0
 
-# tigger-branch b2
-# tigger-branch b1
-# tigger-checkout b1
+# 	echo x>a	
+# 	tigger-add a 
+# 	tigger-commit -m 'commit 0'
+	
+	
+# 	tigger-branch b1
+# 	tigger-checkout b1
+# 	echo x>a
+# 	echo y>b
+# 	tigger-add a b
+# 	tigger-commit -m 'commit 1'
+	
+# 	tigger-checkout master
+# 	tigger-branch b2
+# 	tigger-checkout b2
+# 	echo xx>a
+	
+# 	tigger-add a 
+# 	tigger-commit -m 'commit 2'
 
+# 	tigger-merge b1 -m 'commit 3'
+# 	print_all 0 1 2 3
+	
 
-# touch b
-# tigger-add b
-# tigger-commit -m commit-1
-
-# touch c
-# rm a b
-# tigger-add a b c
-# tigger-commit -m commit-2
-
-
-# touch d
-# tigger-add d
-# tigger-commit -m commit-3
-
-# tigger-checkout b2
-
-# touch e
-# tigger-add e
-# tigger-rm a
-# tigger-commit -m commit-4
-
-# touch f
-# tigger-add f
-# tigger-commit -m commit-5
-
-
-# #print_all 0 1 2 3 4 5
-
-
-# tigger-checkout b1
-# tigger-merge b2 -m m2
-
-# print_all 0 1 2 3 4 5 6
-# close_tigger
-
-# echo "-------------DELTA_D1_D3------------"
-# open_tigger
-# touch a 
-# tigger-add a 
-# tigger-commit -m commit-0
-
-# tigger-branch b2
-# tigger-branch b1
-# tigger-checkout b1
-
-
-# touch b
-# tigger-add b
-# tigger-commit -m commit-1
-
-# touch c
-# echo x > a
-# rm  b
-# tigger-add a b c
-# tigger-commit -m commit-2
-
-
-# touch d
-# tigger-add d
-# tigger-commit -m commit-3
-
-# tigger-checkout b2
-
-
-
-
-# touch e
-# tigger-add e
-# tigger-rm a
-# tigger-commit -m commit-4
-
-# touch f
-# tigger-add f
-# tigger-commit -m commit-5
-
-
-# #ref_print_all 0 1 2 3 4 5
-
-
-# tigger-checkout b1
-# tigger-merge b2 -m m2
-
-# print_all 0 1 2 3 4 5 6
 # close_tigger
 
 
-echo "-------------DELTA_D2_D3------------"
+
+
+
+# #D1=D3
+# echo "-------------file a: DELTA_D1_D2_DELTA_D2_D3------------"
+# open_tigger
+
+# 	echo x>a	
+# 	tigger-add a 
+# 	tigger-commit -m 'commit 0'
+	
+	
+# 	tigger-branch b1
+# 	tigger-checkout b1
+# 	echo xx>a
+	
+# 	tigger-add a 
+# 	tigger-commit -m 'commit 1'
+	
+# 	tigger-checkout master
+# 	tigger-branch b2
+# 	tigger-checkout b2
+# 	echo x>a
+# 	echo y>b
+# 	tigger-add a b
+# 	tigger-commit -m 'commit 2'
+
+# 	tigger-merge b1 -m 'commit 3'
+# 	print_all 0 1 2 3
+	
+
+# close_tigger
+
+
+
+# echo "-------------file a: ALL_DIFFERENT------------"
+# open_tigger
+
+# 	echo x>a	
+# 	tigger-add a 
+# 	tigger-commit -m 'commit 0'
+	
+	
+# 	tigger-branch b1
+# 	tigger-checkout b1
+# 	echo xx>a
+	
+# 	tigger-add a 
+# 	tigger-commit -m 'commit 1'
+	
+# 	tigger-checkout master
+# 	tigger-branch b2
+# 	tigger-checkout b2
+# 	echo xxx>a
+# 	tigger-add a 
+# 	tigger-commit -m 'commit 2'
+
+# 	tigger-merge b1 -m 'commit 3'
+# 	print_all 0 1 2 3
+	
+
+# close_tigger
+
+
+
+# echo "-------------file a: NON_FOUND------------"
+# open_tigger
+
+# 	echo x>a
+# 	echo y>b	
+# 	tigger-add a b 
+# 	tigger-commit -m 'commit 0'
+# 	rm a
+	
+# 	tigger-branch b1
+# 	tigger-checkout b1
+# 	echo yy>b
+	
+# 	tigger-add a b 
+# 	tigger-commit -m 'commit 1'
+	
+# 	tigger-checkout master
+# 	rm a
+# 	tigger-branch b2
+# 	tigger-checkout b2
+# 	echo yyy>b
+# 	tigger-add a b 
+# 	tigger-commit -m 'commit 2'
+
+# 	tigger-merge b1 -m 'commit 3'
+# 	print_all 0 1 2 3
+
+# close_tigger
+
+
+#  # CHECK AGAIN
+# echo "-------------file a: NON_FOUND------------"
+# open_tigger
+
+# 	echo x>a
+# 	echo y>b	
+# 	tigger-add a b 
+# 	tigger-commit -m 'commit 0'
+# 	rm a
+	
+# 	tigger-branch b1
+# 	tigger-checkout b1
+# 	echo yy>b
+	
+# 	tigger-add a b 
+# 	tigger-commit -m 'commit 1'
+	
+# 	tigger-checkout master
+# 	rm a
+# 	tigger-branch b2
+# 	tigger-checkout b2
+# 	echo yyy>b
+# 	tigger-add a b 
+# 	tigger-commit -m 'commit 2'
+# 	print_all 0 1 2 3
+
+# 	tigger-merge b1 -m 'commit 3'
+# 	print_all 0 1 2 3
+
+# close_tigger
+
+
+# #CHECK AGAIN
+# echo "-------------file a: PWD_ONLY------------"
+# open_tigger
+
+# 	echo x>a
+# 	echo y>b	
+# 	tigger-add  a b 
+# 	tigger-commit -m 'commit 0'
+# 	rm a
+	
+# 	tigger-branch b1
+# 	tigger-checkout b1
+# 	echo yy>b
+	
+# 	tigger-add a b 
+# 	tigger-commit -m 'commit 1'
+	
+# 	tigger-checkout master
+# 	rm a
+# 	tigger-branch b2
+# 	tigger-checkout b2
+# 	echo yy>b
+	
+# 	tigger-add a b 
+# 	echo x>a
+# 	tigger-commit -m 'commit 2'
+
+# 	tigger-merge b1 -m 'commit 3'
+# 	print_all 0 1 2 3
+
+# close_tigger
+
+
+# echo "-------------file a: INDEX_ONLY------------"
+# open_tigger
+
+# 	echo x>a
+# 	echo y>b	
+# 	tigger-add  a b 
+# 	tigger-commit -m 'commit 0'
+# 	rm a
+	
+# 	tigger-branch b1
+# 	tigger-checkout b1
+# 	echo yy>b
+	
+# 	tigger-add a b 
+# 	tigger-commit -m 'commit 1'
+	
+# 	tigger-checkout master
+# 	rm a
+# 	tigger-branch b2
+# 	tigger-checkout b2
+# 	echo yy>b
+	
+# 	tigger-add a b 
+	
+# 	tigger-commit -m 'commit 2'
+# 	echo x>a
+# 	tigger-add a
+# 	rm a
+
+# 	tigger-merge b1 -m 'commit 3'
+# 	print_all 0 1 2 3
+
+# close_tigger
+
+
+
+# echo "-------------file a: IND_AND_PWD------------"
+# open_tigger
+# # 
+# 	echo x>a
+# 	echo y>b	
+# 	tigger-add  a b 
+# 	tigger-commit -m 'commit 0'
+# 	rm a
+	
+# 	tigger-branch b1
+# 	tigger-checkout b1
+# 	echo yy>b
+	
+# 	tigger-add a b 
+# 	tigger-commit -m 'commit 1'
+	
+# 	tigger-checkout master
+# 	rm a
+# 	tigger-branch b2
+# 	tigger-checkout b2
+# 	echo yy>b
+	
+# 	tigger-add a b 
+	
+# 	tigger-commit -m 'commit 2'
+# 	echo x>a
+# 	tigger-add a
+
+# 	tigger-merge b1 -m 'commit 3'
+# 	print_all 0 1 2 3
+
+# close_tigger
+
+
+
+# echo "-------------file a: DELTA_IND_PWD------------"
+# open_tigger
+
+# 	echo x>a
+# 	echo y>b	
+# 	tigger-add  a b 
+# 	tigger-commit -m 'commit 0'
+# 	rm a
+	
+# 	tigger-branch b1
+# 	tigger-checkout b1
+# 	echo yy>b
+	
+# 	tigger-add a b 
+# 	tigger-commit -m 'commit 1'
+	
+# 	tigger-checkout master
+# 	rm a
+# 	tigger-branch b2
+# 	tigger-checkout b2
+# 	echo yy>b
+	
+# 	tigger-add a b 
+	
+# 	tigger-commit -m 'commit 2'
+# 	echo xx>a
+# 	tigger-add a
+# 	echo x>a
+
+# 	tigger-merge b1 -m 'commit 3'
+# 	print_all 0 1 2 3
+
+# close_tigger
+
+
+
+# echo "-------------file a: REP_ONLY------------"
+# open_tigger
+
+# 	echo x>a
+# 	echo y>b	
+# 	tigger-add  a 
+# 	tigger-commit -m 'commit 0'
+	
+	
+# 	tigger-branch b1
+# 	tigger-checkout b1
+# 	echo xx>a
+	
+# 	tigger-add a b 
+# 	rm b
+# 	tigger-commit -m 'commit 1'
+	
+# 	tigger-checkout master
+	
+# 	tigger-branch b2
+# 	tigger-checkout b2
+# 	echo xx>a
+	
+# 	tigger-add a 
+	
+# 	tigger-commit -m 'commit 2'
+# 	rm a 
+# 	tigger-add a 
+# 	echo y>b
+
+# 	tigger-merge b1 -m 'commit 3'
+# 	print_all 0 1 2 3
+
+# close_tigger
+
+
+
+
+# echo "-------------file a: REP_AND_PWD------------"
+# open_tigger
+
+# 	echo x>a
+# 	echo y>b	
+# 	tigger-add  a 
+# 	tigger-commit -m 'commit 0'
+	
+	
+# 	tigger-branch b1
+# 	tigger-checkout b1
+# 	echo xx>a
+	
+# 	tigger-add a b 
+# 	rm b
+# 	tigger-commit -m 'commit 1'
+	
+# 	tigger-checkout master
+	
+# 	tigger-branch b2
+# 	tigger-checkout b2
+# 	echo xx>a
+	
+# 	tigger-add a 
+	
+# 	tigger-commit -m 'commit 2'
+# 	rm a 
+# 	tigger-add a 
+# 	echo xx>a
+
+# 	tigger-merge b1 -m 'commit 3'
+# 	print_all 0 1 2 3
+
+# close_tigger
+
+
+
+# echo "-------------file a: DELTA_REP_PWD------------"
+# open_tigger
+
+# 	echo x>a
+# 	echo y>b	
+# 	tigger-add  a 
+# 	tigger-commit -m 'commit 0'
+	
+	
+# 	tigger-branch b1
+# 	tigger-checkout b1
+# 	echo xx>a
+	
+# 	tigger-add a b 
+# 	rm b
+# 	tigger-commit -m 'commit 1'
+	
+# 	tigger-checkout master
+	
+# 	tigger-branch b2
+# 	tigger-checkout b2
+# 	echo xx>a
+	
+# 	tigger-add a 
+	
+# 	tigger-commit -m 'commit 2'
+# 	rm a 
+# 	tigger-add a 
+# 	echo xxx>a
+
+# 	tigger-merge b1 -m 'commit 3'
+# 	print_all 0 1 2 3
+
+# close_tigger
+
+
+
+
+# #CHECK AGAIN
+# echo "-------------file a: REP_AND_IND------------"
+# open_tigger
+
+# 	echo x>a
+# 	echo y>b	
+# 	tigger-add  a b 
+# 	tigger-commit -m 'commit 0'
+# 	rm b
+	
+# 	tigger-branch b1
+# 	tigger-checkout b1
+# 	echo xx>a
+	
+# 	tigger-add a b 
+# 	tigger-commit -m 'commit 1'
+	
+# 	tigger-checkout master
+# 	rm b
+# 	tigger-branch b2
+# 	tigger-checkout b2
+# 	echo xx>a
+	
+# 	tigger-add a b 
+	
+# 	tigger-commit -m 'commit 2'
+	
+	
+# 	rm a 
+
+# 	tigger-merge b1 -m 'commit 3'
+# 	print_all 0 1 2 3
+
+# close_tigger
+
+
+
+
+
+
+# echo "-------------file a: DELTA_REP_IND------------"
+# open_tigger
+
+# 	echo x>a
+# 	echo y>b	
+# 	tigger-add  a b 
+# 	tigger-commit -m 'commit 0'
+# 	rm b
+	
+# 	tigger-branch b1
+# 	tigger-checkout b1
+# 	echo xx>a
+	
+# 	tigger-add a b 
+# 	tigger-commit -m 'commit 1'
+	
+# 	tigger-checkout master
+# 	rm b
+# 	tigger-branch b2
+# 	tigger-checkout b2
+# 	echo x>a
+	
+# 	tigger-add a b 
+	
+# 	tigger-commit -m 'commit 2'
+# 	echo xx>a
+	
+# 	tigger-add a 
+# 	rm a 
+
+# 	tigger-merge b1 -m 'commit 3'
+# 	print_all 0 1 2 3
+
+# close_tigger
+
+
+
+
+# echo "-------------file a: ALL_SAME------------"
+# open_tigger
+
+# 	echo x>a
+# 	echo y>b	
+# 	tigger-add  a b 
+# 	tigger-commit -m 'commit 0'
+	
+# 	tigger-branch b1
+# 	tigger-checkout b1
+# 	rm b
+	
+# 	tigger-add b 
+# 	tigger-commit -m 'commit 1'
+	
+# 	tigger-checkout master
+# 	rm b
+# 	tigger-branch b2
+# 	tigger-checkout b2
+# 	echo x>a
+	
+# 	tigger-add a b 
+	
+# 	tigger-commit -m 'commit 2'
+	
+# 	tigger-merge b1 -m 'commit 3'
+# 	print_all 0 1 2 3
+
+# close_tigger
+
+
+# CHECK LATER
+echo "-------------file a: DELTA_IND_PWD_DELTA_REP_PWD------------"
 open_tigger
-touch a 
-tigger-add a 
-tigger-commit -m commit-0
 
-tigger-branch b2
-tigger-branch b1
-tigger-checkout b1
+	echo x>a
+	echo y>b	
+	tigger-add  a 
+	tigger-commit -m 'commit 0'
+	
+	
+	tigger-branch b1
+	tigger-checkout b1
+	echo xx>a
+	
+	tigger-add a b 
+	rm b
+	tigger-commit -m 'commit 1'
+	
+	tigger-checkout master
+	
+	tigger-branch b2
+	tigger-checkout b2
+	echo xx>a
+	
+	tigger-add a 
+	
+	tigger-commit -m 'commit 2'
+	echo xx>a 
+	tigger-add a 
+	echo xxx>a
+	print_all 0 1 2 3
+	tigger-merge b1 -m 'commit 3'
+	print_all 0 1 2 3
 
-
-touch b
-tigger-add b
-tigger-commit -m commit-1
-
-touch c
-echo x > a
-rm  b
-tigger-add a b c
-tigger-commit -m commit-2
-
-
-touch d
-tigger-add d
-tigger-commit -m commit-3
-
-tigger-checkout b2
-
-
-
-
-touch e
-tigger-add e
-tigger-rm a
-tigger-commit -m commit-4
-
-touch f
-tigger-add f
-tigger-commit -m commit-5
-
-
-#ref_print_all 0 1 2 3 4 5
-
-
-tigger-checkout b2
-tigger-merge b1 -m m2
-
-print_all 0 1 2 3 4 5 6
 close_tigger
 
 
-# echo "-------------INDEX_ONLY------------"
 
 
-
-# echo "-------------IND_AND_PWD------------"
-
-
-
-# echo "-------------DELTA_IND_PWD------------"
-
-
-# echo "-------------REP_ONLY------------"
-
-
-# echo "-------------REP_AND_PWD------------"
-
-
-# echo "-------------DELTA_REP_PWD------------"
-
-
-# echo "-------------REP_AND_IND------------"
-
-
-
-
-# echo "-------------DELTA_REP_IND------------"
-
-
-# echo "-------------ALL_SAME------------"
-
-
-
-# #IND = REP
-# echo "-------------DELTA_IND_PWD_DELTA_REP_PWD------------"
-
-
-# #IND = PWD
-# echo "-------------DELTA_REP_IND_DELTA_REP_PWD------------"
-
-
-# #REP = PWD
-# echo "-------------DELTA_REP_IND_DELTA_IND_PWD------------"
-
-
-# echo "-------------ALL_DIFFERENT------------"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# echo "-------------file a: DELTA_REP_IND_DELTA_REP_PWD------------"
+# open_tigger
+
+# 	echo x>a
+# 	echo y>b	
+# 	tigger-add  a 
+# 	tigger-commit -m 'commit 0'
+	
+	
+# 	tigger-branch b1
+# 	tigger-checkout b1
+# 	echo xx>a
+	
+# 	tigger-add a b 
+# 	rm b
+# 	tigger-commit -m 'commit 1'
+	
+# 	tigger-checkout master
+	
+# 	tigger-branch b2
+# 	tigger-checkout b2
+# 	echo xx>a
+	
+# 	tigger-add a 
+	
+# 	tigger-commit -m 'commit 2'
+
+# 	echo xxx>a
+# 	tigger-add a 
+
+# 	tigger-merge b1 -m 'commit 3'
+# 	print_all 0 1 2 3
+
+# close_tigger
+
+
+
+
+# echo "-------------file a: DELTA_REP_IND_DELTA_IND_PWD------------"
+# open_tigger
+
+# 	echo x>a
+# 	echo y>b	
+# 	tigger-add  a 
+# 	tigger-commit -m 'commit 0'
+	
+	
+# 	tigger-branch b1
+# 	tigger-checkout b1
+# 	echo xx>a
+	
+# 	tigger-add a b 
+# 	rm b
+# 	tigger-commit -m 'commit 1'
+	
+# 	tigger-checkout master
+	
+# 	tigger-branch b2
+# 	tigger-checkout b2
+# 	echo xx>a
+	
+# 	tigger-add a 
+	
+# 	tigger-commit -m 'commit 2'
+
+# 	echo xxx>a
+# 	tigger-add a 
+# 	echo xx>a
+
+# 	tigger-merge b1 -m 'commit 3'
+# 	print_all 0 1 2 3
+
+# close_tigger
+
+
+# echo "-------------file a: ALL_DIFFERENT------------"
+# open_tigger
+
+# 	echo x>a
+# 	echo y>b	
+# 	tigger-add  a 
+# 	tigger-commit -m 'commit 0'
+	
+	
+# 	tigger-branch b1
+# 	tigger-checkout b1
+# 	echo xx>a
+	
+# 	tigger-add a b 
+# 	rm b
+# 	tigger-commit -m 'commit 1'
+	
+# 	tigger-checkout master
+	
+# 	tigger-branch b2
+# 	tigger-checkout b2
+# 	echo xx>a
+	
+# 	tigger-add a 
+	
+# 	tigger-commit -m 'commit 2'
+
+# 	echo xxx>a
+# 	tigger-add a 
+# 	echo x>a
+
+# 	tigger-merge b1 -m 'commit 3'
+# 	echo "$?"
+# 	print_all 0 1 2 3
+
+# close_tigger
 
 

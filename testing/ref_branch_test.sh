@@ -10,7 +10,7 @@ trap 'rm -f a b' EXIT INT
 
 
 
-
+:<<eof
 echo "-------------NO REPO---------"
 2041 tigger-branch
 echo ''
@@ -180,5 +180,37 @@ echo xx > a
 2041 tigger-branch b1 
 2041 tigger-branch 
 close_tigger
+
+eof
+
+echo "-------------DELETE BRANCH WHEN UNSTAGED CHANGES------------"
+ref_open_tigger
+echo x > a
+2041 tigger-add a
+2041 tigger-commit -m 'first commit' 1>/dev/null
+echo xx > a
+2041 tigger-branch b1 
+2041 tigger-branch 
+close_tigger
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
