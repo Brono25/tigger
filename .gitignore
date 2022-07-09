@@ -7,3 +7,4 @@ add_ssh.sh
 test.sh
 clean.sh
 ref.txt
+delete
