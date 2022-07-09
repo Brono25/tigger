@@ -59,7 +59,7 @@ find_common_ancestor_commit()
   commit_1="$1"
   commit_2="$2"
 
-  return 1
+  
   lineage_1=$(cat "$REPO/commit/$commit_1/.lineage")
   lineage_2=$(cat "$REPO/commit/$commit_2/.lineage")
 
@@ -81,6 +81,7 @@ find_common_ancestor_commit()
     done
     l1=$(echo "$l1" | sed -E 's/^[0-9]+->(.*)/\1/')
   done
+
   return 1
 }
 
@@ -226,7 +227,6 @@ else
   curr_branch="$(find_head)"
 fi
 
-
 [ "$curr_commit" -eq "$merge_commit" ] && die "Already up to date"
 
 
@@ -266,7 +266,6 @@ fi
   dir2="$REPO/commit/$merge_commit"
   dir3="$REPO/commit/$common_commit"
 
-  
 
 
   find  "$dir1" "$dir2" "$dir3" -maxdepth 1  -type f  -not -name '.*' | sort > "$REPO/.list" 
@@ -325,7 +324,6 @@ fi
 
   else
 
-
     echo "Committed as commit $next_commit"
     mkdir -- "$REPO/commit/$next_commit"
    
@@ -343,9 +341,22 @@ fi
     # update branch pointer
     echo -n "$next_commit" > "$REPO/heads/$curr_branch"
 
-    #merge log
+    #log commit
     branch="$(find_head)"
     log_comment "$next_commit" "$branch" "$message"
+
+
+    #merge logs
+    log1="$REPO/logs/$curr_branch"
+    log1_tmp="$REPO/logs/${curr_branch}_tmp"
+    log2="$REPO/logs/$branch_to_merge_with"
+
+    # a tmp name change is used as you cant cat a file and redirect that 
+    # the output into the same file
+    mv "$log1" "$log1_tmp" || die "failed to rename"
+    cat "$log1_tmp" "$log2" |sort -rn |uniq > "$log1"
+    rm -f "$log1_tmp"
+
 
 
     exit 0

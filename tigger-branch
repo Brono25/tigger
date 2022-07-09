@@ -42,7 +42,7 @@ create_branch()
 
 	[ ! -f "$REPO/heads/$new_branch" ] || die "$PRGRM: error: branch '$new_branch' already exists"
 
-	echo -n "$new_branch_location" > "$REPO/heads/$new_branch"
+	echo "$new_branch_location" > "$REPO/heads/$new_branch" #XX
 
 	#create branches log file. Each new branch inherrit
 	
@@ -96,25 +96,52 @@ done
 shift $((OPTIND - 1))
 
 branch=$1
-
-
 # Delete option
 if [ $DELETE_OPT -eq $TRUE ]
 then
 
-  find  "$COMMIT_DIR"/ "$INDEX_DIR"/ "$PWD"/ -maxdepth 1  -type f  -not -name '.*' |xargs -I@ basename "@"|sort|uniq|
+	[ "$branch" = 'master' ] && die "$PRGRM: error: can not delete branch 'master'"
 
-  while read -r file
-  do
-    status=$(find_files_state "$file" "$COMMIT_DIR" "$INDEX_DIR" "$PWD")
-   # echo "To DEL: $file"
+	commit_num_of_branch_to_delete=$(find_where_branch_points "$branch")
+	
 
-  done
+	CAN_DELETE=$FALSE
+	for file in "$REPO/heads/"* 
+	do 
+
+		[ "$file" = "$REPO/heads/$branch" ]  && continue
 
 
-	curr_head_pos="$(find_head)"
-	delete_branch "$branch" "$curr_head_pos"
-	exit 0
+		commit_num=$(cat "$file")
+		lineage=$(cat "$REPO/commit/$commit_num/.lineage")
+	  while [ "$lineage" != 'NULL' ]
+	  do
+	  	c1=${lineage%%->*}
+
+	   [ $commit_num_of_branch_to_delete -eq  $commit_num ] && CAN_DELETE=$TRUE
+	  	
+
+
+	    lineage=$(echo "$lineage" | sed -E 's/^[0-9]+->(.*)/\1/')
+	  done
+
+
+
+	done
+
+
+	if [ $CAN_DELETE -eq $TRUE ] 
+	then
+		curr_head_pos="$(find_head)"
+		delete_branch "$branch" "$curr_head_pos"
+		exit 0
+	else
+		die "$PRGRM: error: branch '$branch' has unmerged changes"
+	fi
+	
+
+
+	
 fi
 
 # Else create branch
