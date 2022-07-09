@@ -11,10 +11,9 @@ check_repo_exists
 
 CANNOT_OPEN_1="$D1_ONLY"  
 CANNOT_OPEN_2="$NONE_FOUND"
+INDEX="$REPO/index"
+COMMIT="$REPO/commit/$("find_where_head_points")"
 
-INDEX_ONLY="$D2_ONLY"  
-REP_AND_IND="$D1_AND_D2" 
-DELTA_REP_IND="$DELTA_D1_D2"
 
   #################
  #     Main      #
@@ -23,26 +22,21 @@ DELTA_REP_IND="$DELTA_D1_D2"
 # should never have 0 arguments
 [ "$#" -ne 0 ]  || die "$PRGRM: usage: $PRGRM <filename>" 
 
-INDEX="$REPO/index"
-COMMIT="$REPO/commit/$("find_where_head_points")"
-
-
 
 #add all files in arguments 
 for file in "$@"
 do
-
-	# 'Adding' a removed file
+	#Use files state to determine errors
 	status=$(find_files_state "$file" "$COMMIT" "$INDEX"  "$PWD")
-	
+
+	# 'Adding' a file that has been deleted
   if [ "$status" = "$INDEX_ONLY" ]  || [ "$status" =  "$REP_AND_IND" ] || [ "$status" =  "$DELTA_REP_IND" ] 
   then
     tigger-rm --cached --force "$file"
     continue
-
   else
 
-  	[ $(echo "$file" | grep -E "^\.") ] && die "$PRGRM: error: invalid filename '$file'"
+  	[ "$(echo "$file" | grep -E '^\.')" ] && die "$PRGRM: error: invalid filename '$file'"
 
 		if [ -e "$file" ] && [ ! -f "$file" ]  
 		then
@@ -51,7 +45,6 @@ do
 
 		[ "$status" = "$CANNOT_OPEN_1" ] && die "$PRGRM: error: can not open '$file'"
 		[ "$status" = "$CANNOT_OPEN_2" ] && die "$PRGRM: error: can not open '$file'"
-
 
 		cp -a -- "$file" "$REPO/index"   || die "$PRGRM: error: unable to copy $file"
 

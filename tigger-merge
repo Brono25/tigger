@@ -91,11 +91,11 @@ is_commit_on_branch()
 {
   commit="$1"
   branch_name="$2"
-  FOUND="$FALSE"
+  # FOUND="$FALSE"
 
   branch_lineage=$(cat "$REPO/commit/$(find_where_branch_points "$branch_name")/.lineage")
 
-  branches_head_commit="${branch_lineage%%->*}"
+  # branches_head_commit="${branch_lineage%%->*}"
   b="$branch_lineage"
   while [ "$b" != 'NULL' ]
   do
@@ -150,10 +150,10 @@ log_comment()
 
   if [ ! -s "$LOG_PATH/$branch" ]
   then
-    echo "$1 $3" > "$LOG_PATH/$branch"
+    echo "$commit $comment" > "$LOG_PATH/$branch"
   else 
     tmp=$(cat -- "$LOG_PATH/$branch")
-    echo  "$1 $3" > "$LOG_PATH/$branch"
+    echo  "$commit $comment" > "$LOG_PATH/$branch"
     echo "$tmp" >> "$LOG_PATH/$branch"
   fi
 }
@@ -182,8 +182,8 @@ done
 #if option -m present then check for message
 if [ "$OPTION_M" -eq "$TRUE" ] 
 then
-  shift "$(($OPTIND - 1))"
-  message="$@"
+  shift "$((OPTIND - 1))"
+  message="$1"
 fi
 
 #test if branch is a number or string and if the branches exist.
@@ -195,10 +195,9 @@ else
   [ -f "$REPO/heads/$merge_to" ] || die "$PRGRM: error: unknown branch '$merge_to'"
 fi
 
-
 #if no message given
 [ -n "$message" ] || die "$PRGRM: error: empty commit message"
-[ -n "$REPO/heads/$" ] || die "$PRGRM: error: empty commit message"
+
 
 
 
@@ -258,7 +257,10 @@ fi
 
 
 #-------------------- DO MERGE ---------------------
-
+#check the states of each file with respect to:
+#status1: pwd  current_commit and index
+#status2: the current commit, the commit to merge to and the common ancestor commit
+#
   next_commit=$(find "$REPO/commit/" -maxdepth 1|wc -l)
   next_commit=$((next_commit - 1))
 
@@ -272,45 +274,41 @@ fi
   while read -r file 
   do
 
-    status2=$(find_files_state "$(basename $file)" "$COMMIT_DIR" "$INDEX_DIR" "$PWD")
+    status1=$(find_files_state "$(basename "$file")" "$COMMIT_DIR" "$INDEX_DIR" "$PWD")
     error_msg="$PRGRM: error: can not merge: local changes to files"
    
-    [ "$status2" = "$INDEX_ONLY" ]                  && die "$error_msg"
-    [ "$status2" = "$IND_AND_PWD" ]                 && die "$error_msg"
-    [ "$status2" = "$DELTA_IND_PWD" ]               && die "$error_msg"
-    [ "$status2" = "$REP_ONLY" ]                    && die "$error_msg"
-    [ "$status2" = "$REP_AND_PWD" ]                 && die "$error_msg"
-    [ "$status2" = "$DELTA_REP_PWD" ]               && die "$error_msg"
-    [ "$status2" = "$DELTA_REP_IND" ]               && die "$error_msg"
-    [ "$status2" = "$DELTA_REP_IND_DELTA_REP_PWD" ] && die "$error_msg"
-    [ "$status2" = "$DELTA_REP_IND_DELTA_IND_PWD" ] && die "$error_msg"
-    [ "$status2" = "$ALL_DIFFERENT" ]               && die "$error_msg"
+    [ "$status1" = "$INDEX_ONLY" ]                  && die "$error_msg"
+    [ "$status1" = "$IND_AND_PWD" ]                 && die "$error_msg"
+    [ "$status1" = "$DELTA_IND_PWD" ]               && die "$error_msg"
+    [ "$status1" = "$REP_ONLY" ]                    && die "$error_msg"
+    [ "$status1" = "$REP_AND_PWD" ]                 && die "$error_msg"
+    [ "$status1" = "$DELTA_REP_PWD" ]               && die "$error_msg"
+    [ "$status1" = "$DELTA_REP_IND" ]               && die "$error_msg"
+    [ "$status1" = "$DELTA_REP_IND_DELTA_REP_PWD" ] && die "$error_msg"
+    [ "$status1" = "$DELTA_REP_IND_DELTA_IND_PWD" ] && die "$error_msg"
+    [ "$status1" = "$ALL_DIFFERENT" ]               && die "$error_msg"
 
-    # [ "$status2" = "$DELTA_IND_PWD_DELTA_REP_PWD" ] && echo "$file $status2"
-    status1=$(find_files_state "$(basename $file)" "$dir1" "$dir2" "$dir3")
 
-    #[ "$status1" = "$D3_ONLY" ]    && continue
-    #[ "$status1" = "$D2_AND_D3" ]  && continue
-    #[ "$status1" = "$D1_AND_D3" ]  && continue
+    status2=$(find_files_state "$(basename "$file")" "$dir1" "$dir2" "$dir3")
 
-    file_name="$(basename $file)"
-    [ "$status1" = "$DELTA_D1_D3" ]   && echo "$file_name">>"$REPO/.error_files"
-    [ "$status1" = "$DELTA_D2_D3" ]   && echo "$file_name">>"$REPO/.error_files"
-    [ "$status1" = "$DELTA_D1_D3" ]   && echo "$file_name">>"$REPO/.error_files"
-    [ "$status1" = "$DELTA_D1_D2" ]   && echo "$file_name">>"$REPO/.error_files"
+    file_name="$(basename "$file")"
+
+    [ "$status2" = "$DELTA_D1_D3" ]   && echo "$file_name">>"$REPO/.error_files"
+    [ "$status2" = "$DELTA_D2_D3" ]   && echo "$file_name">>"$REPO/.error_files"
+    [ "$status2" = "$DELTA_D1_D3" ]   && echo "$file_name">>"$REPO/.error_files"
+    [ "$status2" = "$DELTA_D1_D2" ]   && echo "$file_name">>"$REPO/.error_files"
   
-    [ "$status1" = "$ALL_DIFFERENT" ] && echo "$file_name">>"$REPO/.error_files"
+    [ "$status2" = "$ALL_DIFFERENT" ] && echo "$file_name">>"$REPO/.error_files"
 
-    [ "$status1" = "$D1_AND_D2" ]  && echo "$dir2/$file_name" >>"$REPO/.cp_files"
-    [ "$status1" = "$D2_ONLY" ]    && echo "$dir2/$file_name" >>"$REPO/.cp_files"
-    [ "$status1" = "$D1_ONLY" ]    && echo "$dir1/$file_name" >>"$REPO/.cp_files"
-    [ "$status1" = "$ALL_SAME" ]   && echo "$dir2/$file_name" >>"$REPO/.cp_files"
+    [ "$status2" = "$D1_AND_D2" ]  && echo "$dir2/$file_name" >>"$REPO/.cp_files"
+    [ "$status2" = "$D2_ONLY" ]    && echo "$dir2/$file_name" >>"$REPO/.cp_files"
+    [ "$status2" = "$D1_ONLY" ]    && echo "$dir1/$file_name" >>"$REPO/.cp_files"
+    [ "$status2" = "$ALL_SAME" ]   && echo "$dir2/$file_name" >>"$REPO/.cp_files"
 
-    [ "$status1" = "$DELTA_D2_D3_DELTA_D1_D3" ] && echo "$dir1/$file_name" >>"$REPO/.cp_files"
-    [ "$status1" = "$DELTA_D1_D2_DELTA_D1_D3" ] && echo "$dir1/$file_name" >>"$REPO/.cp_files"
-    [ "$status1" = "$DELTA_D1_D2_DELTA_D2_D3" ] && echo "$dir2/$file_name" >>"$REPO/.cp_files"
+    [ "$status2" = "$DELTA_D2_D3_DELTA_D1_D3" ] && echo "$dir1/$file_name" >>"$REPO/.cp_files"
+    [ "$status2" = "$DELTA_D1_D2_DELTA_D1_D3" ] && echo "$dir1/$file_name" >>"$REPO/.cp_files"
+    [ "$status2" = "$DELTA_D1_D2_DELTA_D2_D3" ] && echo "$dir2/$file_name" >>"$REPO/.cp_files"
 
-    # echo "$file $status1  $status2" >/dev/tty
   done < "$REPO/.list"
 
 
@@ -319,7 +317,7 @@ fi
   if [ -s "$REPO/.error_files" ] 
   then
     echo "$PRGRM: error: These files can not be merged:"
-    cat "$REPO/.error_files" |sort|uniq
+    sort <"$REPO/.error_files" |uniq
 
 
   else
@@ -327,7 +325,7 @@ fi
     echo "Committed as commit $next_commit"
     mkdir -- "$REPO/commit/$next_commit"
    
-    while read file 
+    while read -r file 
     do
       cp "$file" "$REPO/commit/$next_commit"
 
@@ -356,8 +354,6 @@ fi
     mv "$log1" "$log1_tmp" || die "failed to rename"
     cat "$log1_tmp" "$log2" |sort -rn |uniq > "$log1"
     rm -f "$log1_tmp"
-
-
 
     exit 0
     

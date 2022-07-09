@@ -7,33 +7,11 @@
 check_repo_exists
 
 
-
-trap "rm  -f $list" EXIT INT
-
-
-
-
   #################
  #    Defines    #
 #################
 
-
 COMMIT_DIR="$REPO/commit/$("find_where_head_points")"
-
-
-#File error for given status
-PWD_ONLY="$D3_ONLY"
-INDEX_ONLY="$D2_ONLY"  
-IND_AND_PWD="$D2_AND_D3"
-DELTA_IND_PWD="$DELTA_D2_D3"
-REP_ONLY="$D1_ONLY"   
-REP_AND_PWD="$D1_AND_D3"  
-DELTA_REP_PWD="$DELTA_D1_D3"   
-REP_AND_IND="$D1_AND_D2" 
-DELTA_REP_IND="$DELTA_D1_D2" 
-DELTA_IND_PWD_DELTA_REP_PWD="$DELTA_D2_D3_DELTA_D1_D3" 
-DELTA_REP_IND_DELTA_REP_PWD="$DELTA_D1_D2_DELTA_D1_D3"
-DELTA_REP_IND_DELTA_IND_PWD="$DELTA_D1_D2_DELTA_D2_D3"
 
 
   #################
@@ -62,7 +40,6 @@ do
   [ "$status" = "$DELTA_REP_IND" ]               && status_msg="file deleted, different changes staged for commit" 
 
   echo "$file - $status_msg"
-
 done
 
 exit 0

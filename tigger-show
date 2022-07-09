@@ -17,8 +17,8 @@ is_filename_valid()
 {
 	filename="$1"
 	[ -z "$filename" ] && return 1 #empty string check
-	[ $(echo "$filename" | grep -Eiv '[-A-Z0-9._]') ] && return 1
-	[ $(echo "$filename" | grep -E '^[-_.]') ] && return 1
+	[ "$(echo "$filename" | grep -Eiv '[-A-Z0-9._]')" ] && return 1
+	[ "$(echo "$filename" | grep -E '^[-_.]')" ] && return 1
 	return 0
 }
 
@@ -35,7 +35,7 @@ arg="$1"
 [ $num_args -eq 1 ]         || die "usage: $PRGRM <commit>:<filename>"
 
 # argument must contain delimiter ':'
-[ $(echo $arg | grep ':') ] || die "$PRGRM: error: invalid object $arg"
+[ "$(echo "$arg" | grep ':')" ] || die "$PRGRM: error: invalid object $arg"
 
 
 #get commit number and filename from commandline
@@ -46,7 +46,7 @@ filename="${arg#*:}"
 is_filename_valid "$filename"   || die "$PRGRM: error: invalid filename '$filename'"
 
 #if commit number omitted print file in index
-if [  ! -n "$commit_num" ]
+if [  -z "$commit_num" ]
 then
 	[ -f "$REPO/index/$filename" ] || die "$PRGRM: error: '$filename' not found in index"
 	cat "$REPO/index/$filename"
@@ -60,11 +60,8 @@ else
 	#search for file in the selected commit folder
 	[ -f  "$REPO/commit/$commit_num/$filename" ] || die "$PRGRM: error: '$filename' not found in commit $commit_num"
 
-	cat "$REPO/commit/$commit_num/$filename" #print file
-
-
+	cat "$REPO/commit/$commit_num/$filename" 
 fi
-
 
 exit 0
 

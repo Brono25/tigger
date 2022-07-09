@@ -1,18 +1,12 @@
 #!/bin/dash
 
-
 . tigger-utilities
 
 
 #make sure no arguments
 [ $# -ne 0 ] && die "usage: $PRGRM"
-
-
 [ -d '.tigger' ] && die "$PRGRM: error: .tigger already exists"
-
 [ -d '.git' ] && die "$PRGRM: error: can not run tigger because .git present in current directory" 
-
-
 
 
 #initialise the repo if it doesnt exist.
@@ -26,10 +20,8 @@ then
 	echo -n "master" > "$REPO/HEAD"       || die "$PRGRM: error: unable to create HEAD"
 	mkdir  "$REPO/logs"                   || die "$PRGRM: error: unable to create logs"
 
-	
 	echo "Initialized empty tigger repository in .tigger"
 	exit 0
-
 else
 	die "$PRGRM: error: .tigger already exists" 
 fi

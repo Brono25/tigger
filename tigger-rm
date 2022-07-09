@@ -75,7 +75,7 @@ do
 		\?) die "usage: $PRGRM [--force] [--cached] <filenames>"
 	esac
 done
-shift "$(($OPTIND - 1))"
+shift "$((OPTIND - 1))"
 
 
 #check usage

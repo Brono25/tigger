@@ -16,35 +16,27 @@ ref_open_tigger
 
 
 
-seq -f "line %.0f" 1 7 >a
-seq -f "line %.0f" 1 7 >b
-seq -f "line %.0f" 1 7 >c
-seq -f "line %.0f" 1 7 >d
-2041 tigger-add a b c d
+touch a
+2041 tigger-add a
 2041 tigger-commit -m commit-0
 
-2041 tigger-branch b1
-2041 tigger-checkout b1
+2041 tigger-branch branch1
+2041 tigger-branch branch2
+2041 tigger-branch master
 
-seq -f "line %.0f" 0 7 >a
-seq -f "line %.0f" 1 8 >b
-seq -f "line %.0f" 1 7 >e
-2041 tigger-add e
-2041 tigger-commit -a -m commit-1
+2041 tigger-branch
 
-2041 tigger-checkout master
+2041 tigger-branch -d branch2
 
-sed -i 4d c
-seq -f "line %.0f" 0 8 >d
-seq -f "line %.0f" 1 7 >f
-2041 tigger-add f
-2041 tigger-commit -a -m commit-2
+2041 tigger-branch -d master
 
-2041 tigger-merge b1 -m merge1
+2041 tigger-branch -d b1
 
-2041 tigger-log
+2041 tigger-branch
 
-2041 tigger-status
+
+
+
 
 
 # #-----------------------------------
@@ -61,36 +53,26 @@ open_tigger
 # #-----------------------------------
 
 
-seq -f "line %.0f" 1 7 >a
-seq -f "line %.0f" 1 7 >b
-seq -f "line %.0f" 1 7 >c
-seq -f "line %.0f" 1 7 >d
-tigger-add a b c d
+
+
+
+touch a
+tigger-add a
 tigger-commit -m commit-0
 
-tigger-branch b1
-tigger-checkout b1
+tigger-branch branch1
+tigger-branch branch2
+tigger-branch master
 
-seq -f "line %.0f" 0 7 >a
-seq -f "line %.0f" 1 8 >b
-seq -f "line %.0f" 1 7 >e
-tigger-add e
-tigger-commit -a -m commit-1
+tigger-branch
 
-tigger-checkout master
+tigger-branch -d branch2
 
-sed -i 4d c
-seq -f "line %.0f" 0 8 >d
-seq -f "line %.0f" 1 7 >f
-tigger-add f
-tigger-commit -a -m commit-2
+tigger-branch -d master
 
-tigger-merge b1 -m merge1
+tigger-branch -d b1
 
-tigger-log
-
-tigger-status
-
+# tigger-branch
 
 
 

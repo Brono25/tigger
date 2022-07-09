@@ -6,9 +6,6 @@
 check_repo_exists
 
 
-# COMMIT_DIR="$REPO/commit/$("find_where_head_points")" 
-
-CREATE_OPT=$FALSE
 DELETE_OPT=$FALSE
 
 #### to do invalid branch name as integer
@@ -27,8 +24,8 @@ delete_branch()
 	[ -f "$REPO/heads/$branch_to_delete" ]    || die "$PRGRM: error: branch '$branch_to_delete' doesn't exist" 
 	[ -n "$branch_to_delete" ]				        || die "usage: $PRGRM [-d] <branch>"
 
-
 	rm -f "$REPO/heads/$branch_to_delete"	    || die "$PRGRM: failed to delete branch $branch_to_delete"
+	rm -f "$REPO/logs/$branch_to_delete"
 	echo "Deleted branch '$branch_to_delete'"
 	return 0
 }
@@ -45,7 +42,6 @@ create_branch()
 	echo "$new_branch_location" > "$REPO/heads/$new_branch" #XX
 
 	#create branches log file. Each new branch inherrit
-	
 	cp -a "$REPO/logs/$curr_branch" "$REPO/logs/$new_branch"
 
 	return 0
@@ -63,9 +59,7 @@ create_branch()
 #If HEAD points to NULL then there are no commits.
 new_branches_initial_commit="$(find_where_head_points)"
 
-
-[ "$new_branches_initial_commit" = "NULL" ]  && die "$PRGRM: error: this command can not be run until after the first commit" 
-
+[ "$new_branches_initial_commit" = "NULL" ] && die "$PRGRM: error: this command can not be run until after the first commit" 
 
 
 #must have 0 - 2 arguments
@@ -84,7 +78,6 @@ then
 fi
 
 
-
 # if delete option or invalid options given
 while getopts ":d" opts
 do
@@ -95,38 +88,40 @@ do
 done
 shift $((OPTIND - 1))
 
+
+
 branch=$1
-# Delete option
+# ----Delete option
 if [ $DELETE_OPT -eq $TRUE ]
 then
 
-	[ "$branch" = 'master' ] && die "$PRGRM: error: can not delete branch 'master'"
+	[ "$branch" = 'master' ]     && die "$PRGRM: error: can not delete branch 'master'"
+	[ -f "$REPO/heads/$branch" ] || die "$PRGRM: error: branch '$branch' doesn't exist"
 
 	commit_num_of_branch_to_delete=$(find_where_branch_points "$branch")
 	
-
+	# Checking for merge errors by searching all commits lineages. If the commit to delete is 
+	# not found in another commits lineage then that branch cant be deleted as
+	# unmerged changes will be lost.
 	CAN_DELETE=$FALSE
 	for file in "$REPO/heads/"* 
 	do 
 
 		[ "$file" = "$REPO/heads/$branch" ]  && continue
 
-
 		commit_num=$(cat "$file")
 		lineage=$(cat "$REPO/commit/$commit_num/.lineage")
 	  while [ "$lineage" != 'NULL' ]
 	  do
-	  	c1=${lineage%%->*}
-
-	   [ $commit_num_of_branch_to_delete -eq  $commit_num ] && CAN_DELETE=$TRUE
-	  	
-
+	  
+	   if [ "$commit_num_of_branch_to_delete" -eq  "$commit_num" ] 
+	   then
+	   	CAN_DELETE=$TRUE
+	   	break
+	   fi
 
 	    lineage=$(echo "$lineage" | sed -E 's/^[0-9]+->(.*)/\1/')
 	  done
-
-
-
 	done
 
 
@@ -138,10 +133,7 @@ then
 	else
 		die "$PRGRM: error: branch '$branch' has unmerged changes"
 	fi
-	
 
-
-	
 fi
 
 # Else create branch

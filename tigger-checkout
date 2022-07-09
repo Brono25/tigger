@@ -12,23 +12,9 @@ trap 'rm -f .tigger/.tmp' EXIT INT
 #################
 
 COMMIT_DIR="$REPO/commit/$("find_where_head_points")" 
-ERROR_FOUND=1
 ERROR_MSG="$PRGRM: error: Your changes to the following files would be overwritten by checkout:"
 
 
-
-# DELETED="$D1_ONLY"  
-# CHANGES_NOT_STAGED="$DELTA_D2_D3_DELTA_D1_D3" 
-# DIFF_CHANGES_STAGED_1="$ALL_DIFFERENT"
-# DIFF_CHANGES_STAGED_2="$DELTA_D1_D2_DELTA_D2_D3"
-# CHANGES_STAGED="$DELTA_D1_D2_DELTA_D1_D3"
-# DELETED_STAGED="$DELTA_D1_D2" 
-# UNTRACKED_1="$D3_ONLY"
-# UNTRACKED_2="$DELTA_D1_D3"
-# UNTRACKED_3="$D1_AND_D3" 
-# ADDED_TO_INDEX_FILE_CHANGED="$DELTA_D2_D3"
-# ADDED_TO_INDEX="$D2_AND_D3"
-# ADDED_TO_INDEX_FILE_DELETED="$D2_ONLY" 
 
   #################
  #   Functions   #
@@ -70,8 +56,6 @@ update_index_from_commit()
  #     Main      #
 #################
 
-
-
 checkout_branch_name="$1"
 current_commit="$(find_where_head_points)"
 COMMIT_DIR="$REPO/commit/$current_commit"
@@ -87,8 +71,6 @@ current_branch="$(find_head)"
 checkout_commit=$(find_where_branch_points "$checkout_branch_name")
 
 
-
-
 # If new branch being checked out points to same commit as the one it branched from
 # then no commits have happened yet for this branch 
 # which changes the behaviour of checkout.
@@ -98,17 +80,12 @@ then
   #before checkout can proceed must check the status1 of all the 
   #files in pwd, index and current repo commit. Some status1's
   #will throw an error and prevent checkout.
-
-
-  find  "$COMMIT_DIR"/ "$INDEX_DIR"/ "$PWD"/ -maxdepth 1  -type f  -not -name '.*' |xargs -I@ basename "@"|sort|uniq|
+  find "$COMMIT_DIR"/ "$INDEX_DIR"/ "$PWD"/ -maxdepth 1  -type f  -not -name '.*'|xargs -I@ basename "@"|sort|uniq|
 
   while read -r file
   do
     status1=$(find_files_state "$file" "$COMMIT_DIR" "$INDEX_DIR" "$PWD")
     status2=$(find_files_state "$file" "$REPO/commit/$checkout_commit" "$INDEX_DIR" "$PWD")
-
-    # echo "$file $status1 $status2"
-	
 
     [ "$status1" = "$REP_ONLY" ]                    &&  echo "$file" >> '.tigger/.tmp'
     [ "$status1" = "$DELTA_IND_PWD_DELTA_REP_PWD" ] &&  echo "$file" >> '.tigger/.tmp'
@@ -117,20 +94,16 @@ then
     [ "$status1" = "$DELTA_REP_IND_DELTA_REP_PWD" ] &&  echo "$file" >> '.tigger/.tmp'
     [ "$status1" = "$DELTA_REP_IND" ]               &&  echo "$file" >> '.tigger/.tmp'
     [ "$status1" = "$REP_AND_PWD" ]                 &&  echo "$file" >> '.tigger/.tmp'
-
     [ "$status2" = "$DELTA_REP_PWD" ]               &&  echo "$file" >> '.tigger/.tmp'
     [ "$status2" = "$ALL_DIFFERENT" ]               &&  echo "$file" >> '.tigger/.tmp'
-    # [ "$status2" = "$DELTA_REP_IND_DELTA_REP_PWD" ] &&  echo "$file" >> '.tigger/.tmp'
-    
 
   done 
 
-
-
+  #if this file has size then errors happened
   if [ -s '.tigger/.tmp' ]
   then
     echo "$ERROR_MSG"
-    cat '.tigger/.tmp'|sort 
+    sort < '.tigger/.tmp'
     exit 1
   fi
   
@@ -141,8 +114,6 @@ then
 
 
 fi
-
-
 
 # update head to branch being checked out
 echo -n "$checkout_branch_name" > "$REPO/HEAD"
