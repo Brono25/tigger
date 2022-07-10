@@ -102,8 +102,8 @@ then
   #if this file has size then errors happened
   if [ -s '.tigger/.tmp' ]
   then
-    echo "$ERROR_MSG"
-    sort < '.tigger/.tmp'
+    echo "$ERROR_MSG" 1>&2
+    sort < '.tigger/.tmp' |uniq 1>&2
     exit 1
   fi
   
