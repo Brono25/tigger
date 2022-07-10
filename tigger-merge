@@ -231,7 +231,7 @@ else
   branch_to_merge_with="NULL"
 fi
 
-[ "$curr_commit" -eq "$merge_commit" ] && die "Already up to date"
+[ "$curr_commit" -eq "$merge_commit" ] && die_stdout "Already up to date" 
 
 
 
@@ -256,7 +256,7 @@ then
       cp -a "$REPO/logs/$branch_to_merge_with" "$REPO/logs/$curr_branch" 
       exit 0
     else
-      is_commit_on_branch "$merge_commit" "$curr_branch"  && die "Already up to date"
+      is_commit_on_branch "$merge_commit" "$curr_branch"  && die_stdout  "Already up to date"
   fi
 fi
 
@@ -335,7 +335,10 @@ fi
 
     done <"$REPO/.cp_files"
     
-
+    #bring lineage over to new commit and update it
+    cp "$REPO/commit/$curr_commit/.lineage" "$REPO/commit/$next_commit"
+    sed -i "s/^/${next_commit}->/" "$REPO/commit/$curr_commit/.lineage"
+    
     update_index_from_commit "$next_commit"
     remove_files_from_pwd_excluding_untracked
     update_pwd_from_index

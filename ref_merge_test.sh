@@ -3,175 +3,48 @@
 
 . ./test_functions.sh
 
-trap 'rm -f a b' EXIT INT
 
-[ -d  '.tigger' ] && rm -r '.tigger'
+[ -d  tmp ] && rm -r tmp
+
+mkdir tmp
+cd tmp
 
 
 (
 
-echo "-------------WRONG USAGE ------------"
+
+echo "-------------FAST FORWARD B1 TO MASTER------------"
 ref_open_tigger
 touch a 
 2041 tigger-add a
-2041 tigger-commit -m commit-1
+2041 tigger-commit -m commit-0
 
-2041 tigger-merge 
-2041 tigger-merge b1
-2041 tigger-merge b1 -m 
-2041 tigger-merge b1 -ma m2 
-2041 tigger-merge -m m3
-2041 tigger-merge b1 -m m4 m5
-2041 tigger-merge b1 b2 -m m4 m5
+2041 tigger-branch b2
+2041 tigger-branch b1
+2041 tigger-checkout b1
+
+
+2041 tigger-merge b1 -m m1
 
 close_tigger
 
 
-) 2>f 1>>f
 
 
+) 2> f 1> g 
 
-# echo "-------------UNKOWN BRANCH------------"
-# ref_open_tigger
-# touch a 
-# 2041 tigger-add a
-# 2041 tigger-commit -m commit-1
-
-# 2041 tigger-merge b1 -ma m1
-
-# close_tigger
-
-
-# echo "-------------MERGE BRANCH WITH ITSELF------------"
-# ref_open_tigger
-# touch a 
-# 2041 tigger-add a
-# 2041 tigger-commit -m commit-1
-
-# 2041 tigger-merge master -m m1
-
-# 2041 tigger-branch b1
-# 2041 tigger-checkout b1
-
-# 2041 tigger-merge b1 -m m1
-# 2041 tigger-merge master -m m1
-
-
-
-# touch b
-# 2041 tigger-add b
-# 2041 tigger-commit -m commit-2
-# ref_print_all 0 1
-# 2041 tigger-merge b1 -m m1
-# 2041 tigger-merge master -m m1
-
-# close_tigger
-
-
-# echo "-------------MERGE BRANCH NO COMMITS------------"
-# ref_open_tigger
-# touch a 
-# 2041 tigger-add a
-# 2041 tigger-commit -m commit-1
-
-# 2041 tigger-merge master -m m1
-
-# 2041 tigger-branch b1
-# 2041 tigger-checkout b1
-
-# 2041 tigger-merge b1 -m m1
-
-# 2041 tigger-merge master -m m1
-
-# close_tigger
-
-
-
-# echo "-------------FAST FORWARD MASTER------------"
-# ref_open_tigger
-# touch a 
-# 2041 tigger-add a
-# 2041 tigger-commit -m commit-0
-
-# 2041 tigger-branch b1
-# 2041 tigger-checkout b1
-
-# 2041 tigger-merge master -m m1
-
-
-# touch b  
-# 2041 tigger-add b
-# 2041 tigger-commit -m commit-1
-
-
-# 2041 tigger-branch b2
-# 2041 tigger-checkout b2
-# touch c
-# rm a b
-# 2041 tigger-add a b c
-# 2041 tigger-commit -m commit-2
-
-
-# 2041 tigger-checkout master
-# 2041 tigger-merge b1 -m m1
-
-# ref_print_all 0 1 2 3 4
+cat f g 
 
 
 
 
-# close_tigger
-
-# echo "-------------FAST FORWARD B1 TO MASTER------------"
-# ref_open_tigger
-# touch a 
-# 2041 tigger-add a
-# 2041 tigger-commit -m commit-0
-
-# 2041 tigger-branch b2
-# 2041 tigger-branch b1
-# 2041 tigger-checkout b1
-
-
-# touch b
-# 2041 tigger-add b
-# 2041 tigger-commit -m commit-1
-
-# touch c
-# rm a b
-# 2041 tigger-add a b c
-# 2041 tigger-commit -m commit-2
-
-
-# touch d
-# 2041 tigger-add d
-# 2041 tigger-commit -m commit-3
-
-# 2041 tigger-checkout b2
 
 
 
 
-# touch e
-# 2041 tigger-add e
-# 2041 tigger-commit -m commit-4
-
-# touch f
-# 2041 tigger-add f
-# 2041 tigger-commit -m commit-5
 
 
-# ref_print_all 0 1 2 3 4 5
 
-
-# 2041 tigger-checkout b1
-# 2041 tigger-merge master -m m2
-# 2041 tigger-checkout master
-# ref_print_all 0 1 2 3 4 5
-
-# # 2041 tigger-merge b1 -m m1
-
-# close_tigger
 
 
 # echo "-------------FAST FORWARD MASTER TO B1------------"
@@ -376,55 +249,55 @@ close_tigger
 # close_tigger
 
 
-echo "-------------DELTA_D1_D3------------"
-ref_open_tigger
-touch a 
-2041 tigger-add a 
-2041 tigger-commit -m commit-0
+# echo "-------------DELTA_D1_D3------------"
+# ref_open_tigger
+# touch a 
+# 2041 tigger-add a 
+# 2041 tigger-commit -m commit-0
 
-2041 tigger-branch b2
-2041 tigger-branch b1
-2041 tigger-checkout b1
-
-
-touch b
-2041 tigger-add b
-2041 tigger-commit -m commit-1
-
-touch c
-echo x > a
-rm  b
-2041 tigger-add a b c
-2041 tigger-commit -m commit-2
+# 2041 tigger-branch b2
+# 2041 tigger-branch b1
+# 2041 tigger-checkout b1
 
 
-touch d
-2041 tigger-add d
-2041 tigger-commit -m commit-3
+# touch b
+# 2041 tigger-add b
+# 2041 tigger-commit -m commit-1
 
-2041 tigger-checkout b2
-
-
-
-
-touch e
-2041 tigger-add e
-2041 tigger-rm a
-2041 tigger-commit -m commit-4
-
-touch f
-2041 tigger-add f
-2041 tigger-commit -m commit-5
+# touch c
+# echo x > a
+# rm  b
+# 2041 tigger-add a b c
+# 2041 tigger-commit -m commit-2
 
 
-#ref_print_all 0 1 2 3 4 5
+# touch d
+# 2041 tigger-add d
+# 2041 tigger-commit -m commit-3
+
+# 2041 tigger-checkout b2
 
 
-2041 tigger-checkout b2
-2041 tigger-merge b1 -m m2
 
-ref_print_all 0 1 2 3 4 5 6
-close_tigger
+
+# touch e
+# 2041 tigger-add e
+# 2041 tigger-rm a
+# 2041 tigger-commit -m commit-4
+
+# touch f
+# 2041 tigger-add f
+# 2041 tigger-commit -m commit-5
+
+
+# #ref_print_all 0 1 2 3 4 5
+
+
+# 2041 tigger-checkout b2
+# 2041 tigger-merge b1 -m m2
+
+# ref_print_all 0 1 2 3 4 5 6
+# close_tigger
 
 
 
@@ -485,7 +358,8 @@ close_tigger
 
 
 
-
+cd ..
+rm -fr tmp
 
 
 
