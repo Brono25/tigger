@@ -65,7 +65,7 @@ COMMIT_DIR="$REPO/commit/$current_commit"
 [ -f "$REPO/heads/$checkout_branch_name" ] || die "$PRGRM: error: unknown branch '$checkout_branch_name'" 
 
 current_branch="$(find_head)"
-[ "$checkout_branch_name" =  "$current_branch" ] && die "Already on '$current_branch'" 
+[ "$checkout_branch_name" =  "$current_branch" ] && die_stdout "Already on '$current_branch'" 
 
 
 checkout_commit=$(find_where_branch_points "$checkout_branch_name")
