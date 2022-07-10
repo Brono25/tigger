@@ -7,3 +7,6 @@
 ./test03.sh
 ./test04.sh
 ./test05.sh
+./test06.sh
+./test07.sh
+./test08.sh
