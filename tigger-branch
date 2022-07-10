@@ -39,7 +39,7 @@ create_branch()
 
 	[ ! -f "$REPO/heads/$new_branch" ] || die "$PRGRM: error: branch '$new_branch' already exists"
 
-	echo "$new_branch_location" > "$REPO/heads/$new_branch" #XX
+	echo "$new_branch_location" > "$REPO/heads/$new_branch" 
 
 	#create branches log file. Each new branch inherrit
 	cp -a "$REPO/logs/$curr_branch" "$REPO/logs/$new_branch"

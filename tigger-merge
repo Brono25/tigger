@@ -57,6 +57,8 @@ update_index_from_commit()
   
 }
 
+#each commit has a .lineage file which keeps track of their parent commits
+#this funciton takes two commits and returns their common ancestor
 find_common_ancestor_commit()
 {
   commit_1="$1"
@@ -84,21 +86,18 @@ find_common_ancestor_commit()
     done
     l1=$(echo "$l1" | sed -E 's/^[0-9]+->(.*)/\1/')
   done
-
   return 1
 }
 
 
-
+#takes a branch and finds if a commit number lies in its lineage
 is_commit_on_branch()
 {
   commit="$1"
   branch_name="$2"
-  # FOUND="$FALSE"
 
   branch_lineage=$(cat "$REPO/commit/$(find_where_branch_points "$branch_name")/.lineage")
 
-  # branches_head_commit="${branch_lineage%%->*}"
   b="$branch_lineage"
   while [ "$b" != 'NULL' ]
   do
@@ -240,8 +239,8 @@ fi
 #if this is the case and the 'merge to' branch is a more recent commit then
 #the 'merge from' branch, then it is pointed to this new location without making a commit.
 #if vice versa then throw already up to date error.
-
 is_commit_on_branch "$curr_commit"  "$branch_to_merge_with"
+
 if [ $? -eq  "$TRUE" ]
 then
   if [ "$curr_commit" -lt "$merge_commit" ]

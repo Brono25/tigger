@@ -21,7 +21,6 @@ export FALSE=1
  #   Functions   #
 #################
 
-
 #emulate perls die function
 die()
 {

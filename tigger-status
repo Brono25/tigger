@@ -18,7 +18,7 @@ COMMIT_DIR="$REPO/commit/$("find_where_head_points")"
  #     Main      #
 #################
 
-
+#create a list of files in the PWD COMMIT and INDEX then check each status
 for file in $(basename --multiple "$COMMIT_DIR"/* "$INDEX_DIR"/* "$PWD"/* |sort|uniq|sed '/*/d' |xargs)
 do
   
