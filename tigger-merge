@@ -8,6 +8,10 @@ check_repo_exists
 
 trap 'rm -f $REPO/.error_files $REPO/.cp_files $REPO/.list' EXIT INT
 
+
+
+
+
   #################
  #    Defines    #
 #################
@@ -224,6 +228,7 @@ else
   merge_commit="$merge_to"
   common_commit=$(find_common_ancestor_commit "$curr_commit" "$merge_commit")
   curr_branch="$(find_head)"
+  branch_to_merge_with="NULL"
 fi
 
 [ "$curr_commit" -eq "$merge_commit" ] && die "Already up to date"
@@ -234,7 +239,7 @@ fi
 #-------------------- FAST-FORWARD CONDITION ---------------------
 #fast forward happens when two branch names lie in the same branch.
 #if this is the case and the 'merge to' branch is a more recent commit then
-#the 'merge from' branch is pointed to this new location without making a commit.
+#the 'merge from' branch, then it is pointed to this new location without making a commit.
 #if vice versa then throw already up to date error.
 
 is_commit_on_branch "$curr_commit"  "$branch_to_merge_with"
@@ -261,13 +266,14 @@ fi
 #status1: pwd  current_commit and index
 #status2: the current commit, the commit to merge to and the common ancestor commit
 #
+#lists are made. 1 list for error messages and 1 list for files to copy.
+#if error message list has more than 0 bytes, then the merge aborts.
   next_commit=$(find "$REPO/commit/" -maxdepth 1|wc -l)
   next_commit=$((next_commit - 1))
 
   dir1="$REPO/commit/$curr_commit"
   dir2="$REPO/commit/$merge_commit"
   dir3="$REPO/commit/$common_commit"
-
 
 
   find  "$dir1" "$dir2" "$dir3" -maxdepth 1  -type f  -not -name '.*' | sort > "$REPO/.list" 
@@ -293,11 +299,9 @@ fi
 
     file_name="$(basename "$file")"
 
-    [ "$status2" = "$DELTA_D1_D3" ]   && echo "$file_name">>"$REPO/.error_files"
     [ "$status2" = "$DELTA_D2_D3" ]   && echo "$file_name">>"$REPO/.error_files"
     [ "$status2" = "$DELTA_D1_D3" ]   && echo "$file_name">>"$REPO/.error_files"
     [ "$status2" = "$DELTA_D1_D2" ]   && echo "$file_name">>"$REPO/.error_files"
-  
     [ "$status2" = "$ALL_DIFFERENT" ] && echo "$file_name">>"$REPO/.error_files"
 
     [ "$status2" = "$D1_AND_D2" ]  && echo "$dir2/$file_name" >>"$REPO/.cp_files"

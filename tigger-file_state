@@ -3,14 +3,12 @@
 . tigger-utilities
 
 
-# A files state is whether it exists, or is changed ∆, in the repo and/or index and/or pwd.
-# its existence or ∆ in each directory is given a bit position, total 6 bits. Each state is
+# A files state is whether it exists, or is changed ∆, between 3 given directories.
+# A files existence or ∆ in each directory is given a bit position, total 6 bits. Each state is
 # then tested and a bit set to 1 if the file is found to exist or be ∆ in that directory.
 # All the 6 bits at the end produce a unique hex number that gives each file a identifiable status.
 
 # These states are used to inform other tigger funcitons about what error messages to use.
-
-
 
   #################
  #    Defines    #
@@ -26,9 +24,9 @@ export DELTA_D1_D3_FLAG=0x01
 
 #The table below is a mapping of all possible file states to their hex number
 
-#                              |__exists___|_________is different____________|   
-#     Files states hex value   |D1 | D2| D3| ∆(D1-D2) | ∆(D2-D3)  | ∆(D1-D3) |  
-#------------------------------|---|---|---|----------|-----------|----------|
+#                                     |__exists___|_________is different____________|   
+#     Files states hex value          |D1 | D2| D3| ∆(D1-D2) | ∆(D2-D3)  | ∆(D1-D3) |  
+#-------------------------------------|---|---|---|----------|-----------|----------|
 export NONE_FOUND=0x00               #| 0 | 0 | 0 |     0    |     0     |    0     | 
 export D3_ONLY=0x08                  #| 0 | 0 | 1 |     0    |     0     |    0     |  
 export D2_ONLY=0x10                  #| 0 | 1 | 0 |     0    |     0     |    0     |  
@@ -53,7 +51,7 @@ export IND_AND_PWD="$D2_AND_D3"
 export DELTA_IND_PWD="$DELTA_D2_D3"
 export REP_ONLY="$D1_ONLY"   
 export REP_AND_PWD="$D1_AND_D3"  
-export DELTA_REP_PWD="$DELTA_D1_D3"   
+export DELTA_REP_PWD="$DELTA_D1_D3"    
 export REP_AND_IND="$D1_AND_D2" 
 export DELTA_REP_IND="$DELTA_D1_D2" 
 export DELTA_IND_PWD_DELTA_REP_PWD="$DELTA_D2_D3_DELTA_D1_D3" 

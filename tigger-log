@@ -11,4 +11,5 @@ check_repo_exists
 
 branch="$(find_head)"
 
+#display log belonging to current commit
 cat "$REPO/logs/$branch"

@@ -14,27 +14,21 @@ cd delete
 ref_open_tigger
 # #-----------------------------------
 
-
-
-touch a
+echo x > a
 2041 tigger-add a
-2041 tigger-commit -m commit-0
+2041 tigger-commit -m 'my first commit' 
+echo xx > a
+2041 tigger-commit -m 'my second commit' 
+echo "Exit status: $?"
+2041 tigger-log 
 
-2041 tigger-branch branch1
-2041 tigger-branch branch2
-2041 tigger-branch master
-
-2041 tigger-branch
-
-2041 tigger-branch -d branch2
-
-2041 tigger-branch -d master
-
-2041 tigger-branch -d b1
-
-2041 tigger-branch
-
-
+echo x > b
+2041 tigger-add b
+2041 tigger-commit -m 'my first commit' 
+echo xx > b
+2041 tigger-commit -am 'my second commit' 
+echo "Exit status: $?"
+2041 tigger-log 
 
 
 
@@ -55,24 +49,22 @@ open_tigger
 
 
 
-
-touch a
+echo x > a
 tigger-add a
-tigger-commit -m commit-0
+tigger-commit -m 'my first commit' 
+echo xx > a
+tigger-commit -m 'my second commit' 
+echo "Exit status: $?"
+tigger-log 
 
-tigger-branch branch1
-tigger-branch branch2
-tigger-branch master
+echo x > b
+tigger-add b
+tigger-commit -m 'my first commit' 
+echo xx > b
+tigger-commit -am 'my second commit' 
+echo "Exit status: $?"
+tigger-log 
 
-tigger-branch
-
-tigger-branch -d branch2
-
-tigger-branch -d master
-
-tigger-branch -d b1
-
-# tigger-branch
 
 
 

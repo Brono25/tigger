@@ -10,7 +10,7 @@
 
 export REPO="$PWD/.tigger"
 export INDEX_DIR="$REPO/index"
-PRGRM=$(basename "$0")
+PRGRM=$(basename "$0") 
 export  PRGRM
 
 export TRUE=0
