@@ -1,9 +1,10 @@
 #!/bin/dash
+
+
 # ==============================================================================
 # test01.sh
-# Testing tigger-add
 #
-# 
+# Testing tigger-init
 # ==============================================================================
 
 
@@ -30,94 +31,79 @@ test_outcome()
 	fi
 }
 
-
 mkdir tmp
 cd tmp
 
-#"-------------NO REPO------------"
-tigger-add  2> "$output" 
 
+#-------------WRONG USAGE------------
+(
+tigger-init -g wrong usage 
+tigger-init  wrong usage
+echo "$?" 1>&2
+) 2> "$output" 
 cat > "$expected_output" << eof
-tigger-add: error: tigger repository directory .tigger not found
+usage: tigger-init
+usage: tigger-init
+1
 eof
 test_outcome "$output" "$expected_output"
 
 
-# -------------WRONG USAGE NO REPO------------"
-tigger-add WRONG  2> "$output" 
+#-------------GIT PRESENT------------
+(
+mkdir '.git'
+tigger-init 
+echo "$?" 1>&2
+rm -r '.git'
+) 2> "$output" 
 cat > "$expected_output" << eof
-tigger-add: error: tigger repository directory .tigger not found
+tigger-init: error: can not run tigger because .git present in current directory
+1
 eof
 test_outcome "$output" "$expected_output"
 
 
-#-------------WRONG USAGE WITH REPO------------"
-tigger-init 1>"$output"
-tigger-add WRONG 2>> "$output"
+# #-------------INITIALISE tigger------------
+(
+tigger-init
+echo "$?"
+) 1> "$output" 
 cat > "$expected_output" << eof
 Initialized empty tigger repository in .tigger
-tigger-add: error: can not open 'WRONG'
+0
 eof
 test_outcome "$output" "$expected_output"
 
 
-#-------------ADD FILES------------
-echo x > a 
-echo x > b
-tigger-add a b >  "$output" 
-tigger-show :a >> "$output" 
-tigger-show :b >> "$output" 
+
+#-------------WRONG USAGE AFTER INIT------------
+(
+tigger-init -g wrong_usage
+tigger-init  wrong usage
+echo "$?" 1>&2
+) 2> "$output" 
 cat > "$expected_output" << eof
-x
-x
+usage: tigger-init
+usage: tigger-init
+1
 eof
 test_outcome "$output" "$expected_output"
 
 
-#-------------ADD NON-REGULAR FILE------------
-mkdir c
-tigger-add c 2> "$output" 
+
+#-------------REPO EXISTS------------
+(
+tigger-init
+echo "$?" 1>&2
+) 2> "$output" 
 cat > "$expected_output" << eof
-tigger-add: error: 'c' is not a regular file
+tigger-init: error: .tigger already exists
+1
 eof
-test_outcome "$output" "$expected_output"
-rm -rf c
-
-
-# echo "-------------ADD REGULAR THEN NON-REGULAR FILE------------"
-echo x |tee a b  1>/dev/null
-mkdir k 
-tigger-add a k b 2> "$output"
-cat > "$expected_output" << eof
-tigger-add: error: 'k' is not a regular file
-eof
-test_outcome "$output" "$expected_output"
-rm -rf k
-
-
-#-------------ADD NON-EXISTENT FILE------------
-tigger-add z 2> "$output"
-cat > "$expected_output" << eof
-tigger-add: error: can not open 'z'
-eof
-test_outcome "$output" "$expected_output"
 
 
 cd ..
-rm -fr 'tmp'
-
-
-
-
-
-
-
-
-
-
-
-
-
+rm -rf tmp
 
 
 

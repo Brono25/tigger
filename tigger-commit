@@ -23,9 +23,8 @@ CHANGES_TO_COMMIT_6="$D1_ONLY"
 CHANGES_TO_COMMIT_7="$D1_AND_D3"                 
 CHANGES_TO_COMMIT_8="$DELTA_D1_D3"                             
 CHANGES_TO_COMMIT_9="$DELTA_D1_D2"               
-#CHANGES_TO_COMMIT_10="$DELTA_D2_D3_DELTA_D1_D3"  
 CHANGES_TO_COMMIT_11="$DELTA_D1_D2_DELTA_D2_D3"
-CHANGES_TO_COMMIT_12="$ALL_DIFFERENT "
+CHANGES_TO_COMMIT_12="$ALL_DIFFERENT"
 CHANGES_TO_COMMIT_13="$DELTA_D1_D2_DELTA_D1_D3"
 
 
@@ -126,8 +125,7 @@ is_anything_to_commit()
 	for file in "$@"
 	do
 		status=$(find_files_state "$file" "$COMMIT_DIR" "$INDEX_DIR" "$PWD")
-		# echo $status
-		#[ "$status" = "$CHANGES_TO_COMMIT_1" ]  && return $TRUE
+
 	  [ "$status" = "$CHANGES_TO_COMMIT_2" ]  && return $TRUE
 	  [ "$status" = "$CHANGES_TO_COMMIT_3" ]  && return $TRUE
 	  [ "$status" = "$CHANGES_TO_COMMIT_4" ]  && return $TRUE
@@ -136,7 +134,6 @@ is_anything_to_commit()
 	  [ "$status" = "$CHANGES_TO_COMMIT_7" ]  && return $TRUE
 	  [ "$status" = "$CHANGES_TO_COMMIT_8" ]  && return $TRUE
 	  [ "$status" = "$CHANGES_TO_COMMIT_9" ]  && return $TRUE
-	  #[ "$status" = "$CHANGES_TO_COMMIT_10" ] && return $TRUE
 	  [ "$status" = "$CHANGES_TO_COMMIT_11" ] && return $TRUE
 	  [ "$status" = "$CHANGES_TO_COMMIT_12" ] && return $TRUE
 	  [ "$status" = "$CHANGES_TO_COMMIT_13" ] && return $TRUE

@@ -10,6 +10,9 @@ check_repo_exists
 
 
 branch="$(find_head)"
-
 #display log belonging to current commit
-cat "$REPO/logs/$branch"
+[ -f  "$REPO/logs/$branch" ] && cat "$REPO/logs/$branch"
+
+exit 0
+
+
